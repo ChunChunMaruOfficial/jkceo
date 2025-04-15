@@ -1,5 +1,5 @@
 .parent {
-  background-color: #1E2749;
+  background-color: #F0EFEB;
   width: 1000px;
   height: 600px;
   display: flex;
@@ -20,28 +20,28 @@
 
     gap: 15px;
 
-    >.microbolt {
+    .microbolt {
       border-radius: 100%;
-      background-color: blueviolet;
+      background-color: #B7B7A4;
       height: 6.5px;
       width: 6.5px;
-      border: 2px solid black;
+      border: 2px solid #242423;
     }
 
     .bolt {
       margin: 15px;
       height: 30px;
       width: 30px;
-      border: 4px solid black;
+      border: 4px solid #242423;
       position: relative;
       border-radius: 100%;
-      background-color: rgb(128, 255, 212);
+      background-color: #A5A58D;
       display: block;
 
       >div {
         height: 5px;
         width: 5px;
-        border: 2px solid black;
+        border: 2px solid #242423;
         position: absolute;
         background-color: white;
         border-radius: 100%;
@@ -51,13 +51,17 @@
     }
 
     >div {
-      border: 4px solid black;
+      border: 4px solid #242423;
       border-radius: 25px;
-      background-color: antiquewhite;
+      background-color: #FFF1E6;
       display: flex;
       flex-direction: row;
       padding: 15px;
       justify-content: space-between;
+
+      &:nth-of-type(2) {
+        background-color: #DDBEA9;
+      }
 
       >div {
         display: flex;
@@ -65,6 +69,8 @@
         justify-content: center;
         width: -webkit-fill-available;
         align-items: center;
+
+
 
         .headtext {
           display: flex;
@@ -96,14 +102,14 @@
 
         .point {
           border-radius: 100%;
-          background-color: blueviolet;
+          background-color: #EDDCD2;
           height: 5px;
           width: 5px;
-          border: 2px solid black;
+          border: 1px solid #242423;
         }
 
         img {
-          height: 50px;
+          height: 60px;
         }
 
       }
@@ -114,106 +120,247 @@
         flex-direction: row;
         gap: 15px;
 
-        >div {
-          padding: 15px;
-          background-color: burlywood;
-        }
+        >div {}
 
         >.main {
           width: -webkit-fill-available;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          gap: 30px;
 
-
-          >.display {
-            border: 4px solid black;
+          >div:first-of-type {
+            background-color: #EDDCD2;
+            width: -webkit-fill-available;
+            border: 4px solid #242423;
+            padding: 15px;
             border-radius: 15px;
-            overflow: hidden;
-            height: 150px;
-            gap: 0;
+            display: flex;
+            justify-content: center;
+
+            >.display {
+              height: 150px;
+              position: relative;
+              display: flex;
+              justify-content: center;
+              gap: 0;
+
+              >span {
+                width: 15px;
+                background-color: #CB997E;
+                height: inherit;
+                border: 3px solid #242423;
+
+
+                &:nth-of-type(1) {
+                  border-radius: 15px 0 0 15px;
+                  border-left: 3px solid #242423;
+                }
+
+                &:nth-of-type(4) {
+                  border-radius: 0 15px 15px 0;
+                  border-right: 3px solid #242423;
+                }
+              }
+
+              >div {
+                height: inherit;
+
+                >.slot {
+                  overflow: hidden;
+                  position: relative;
+                  width: 20px;
+                  height: inherit;
+                  transition: top 12s ease-out;
+                  background-color: white;
+                  color: #1E2749;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: flex-start;
+                  width: 150px;
+                  border-block: 3px solid #242423;
+
+
+                  >p {
+                    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+                    margin-inline: center;
+                    font-size: 88px;
+                    transform-origin: bottom;
+                    /* теперь он как будто стоит и падает назад */
+                    transform: perspective(300px) rotateX(15deg) translateX(-50%);
+                    left: 50%;
+
+                  }
+
+                  >.finalslot {
+                    animation: finalslot forwards linear;
+                  }
+
+                  >.activateslots {
+                    animation: slot 4s forwards linear;
+                    transition: .3s ease-in-out;
+                  }
+
+                  >.speed1 {
+                    animation-duration: 1.3s;
+                  }
+
+                  >.speed2 {
+                    animation-duration: 1s;
+                  }
+
+                  >.speed3 {
+                    animation-duration: .8s;
+                  }
+
+                  >.speed4 {
+                    animation-duration: .5s;
+                  }
+
+                  >.speed5 {
+                    animation-duration: .3s;
+                  }
+
+
+                  >.finalslotend {
+                    animation: finalslotend forwards 1.5s linear;
+                  }
+
+                  >p {
+                    top: -20px;
+                    position: absolute;
+                    margin-inline: auto;
+                    z-index: 1000;
+                  }
+                }
+              }
+
+              &::after {
+                content: '';
+                width: 105%;
+                position: absolute;
+                height: 3px;
+                background-color: #1E2749;
+                top: 50%;
+                transform: translateY(-50%);
+              }
+
+              >img {
+                position: absolute;
+                top: 50%;
+
+                z-index: 1;
+
+                &:first-of-type {
+                  left: -6%;
+                  transform: translateY(-50%);
+                }
+
+                &:nth-of-type(2) {
+                  left: 95%;
+                  transform: translateY(-50%) scaleX(-1);
+                }
+              }
+
+
+            }
+          }
+
+          >.botompanel {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 20px;
+            width: 100%;
             position: relative;
 
-            >span {
-              width: 15px;
-              background-color: #1E2749;
-              height: inherit;
+            >div:last-of-type {
+              position: absolute;
+              left: 50%;
+              bottom: -15%;
+              transform: translateX(-40%);
+              display: flex;
+              flex-direction: row;
+              flex-wrap: nowrap;
+
+              >.microbolt{
+                background-color: #F0EFEB;
+              }
+            }
+
+            >.botomcenter {
+              border: 3px solid #242423;
+              padding: 15px;
+              border-radius: 15px;
+              background-color: #EDDCD2;
+              height: 78%;
+              color: #242423;
+              font-size: x-large;
+              position: relative;
+              width: 100%;
+
+              >.microbolt {
+                position: absolute;
+
+                &:first-of-type,
+                &:nth-of-type(2) {
+                  top: 15px;
+                }
+
+                &:nth-of-type(3),
+                &:nth-of-type(2) {
+                  right: 15px;
+                }
+
+                &:nth-of-type(3),
+                &:nth-of-type(4) {
+                  bottom: 15px;
+                }
+
+              }
             }
 
             >div {
+              display: flex;
+              flex-direction: column;
+              flex-wrap: nowrap;
+              gap: 15px;
+              justify-content: center;
 
-              padding: 15px;
-              height: inherit;
+              >span {
+                border: 3px solid #242423;
+                padding: 15px;
+                border-radius: 15px;
+                text-align: center;
+                background-color: #CB997E;
+                font-size: x-large;
+                color: #242423;
+                font-weight: 700;
+                text-wrap: nowrap;
 
-              >.slot {
-                position: relative;
-                width: 20px;
-                height: inherit;
-                transition: top 12s ease-out;
-                background-color: white;
-                color: #1E2749;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-
-                >.finalslot {
-                  animation: finalslot forwards linear;
-                }
-
-                >.activateslots {
-                  animation: slot 4s forwards linear;
-                  transition:  .3s ease-in-out;
-                }
-
-                >.speed1 {
-                  animation-duration: 3s;
-                }
-
-                >.speed2 {
-                  animation-duration: 2s;
-                }
-
-                >.speed3 {
-                  animation-duration: 1s;
-                }
-
-                >.speed4 {
-                  animation-duration: .7s;
-                }
-
-                >.speed5 {
-                  animation-duration: .3s;
-                }
-
-
-
-                >.finalslotend {
-                  animation: finalslotend forwards 2s linear;
-                }
-
-                >p {
-                  top: -20px;
-                  position: absolute;
-                  margin-inline: auto;
-                  z-index: 1000;
+                &:nth-of-type(2) {
+                  background-color: #A5A58D;
                 }
               }
             }
           }
         }
 
-
-
         >.lever {
+          padding: 15px;
           height: -webkit-fill-available;
           width: max-content;
-          border: 4px solid black;
+          border: 4px solid #242423;
           border-radius: 15px;
+          background-color: #EDDCD2;
 
           >div {
             height: -webkit-fill-available;
 
             &:nth-of-type(2) {
               width: 36px;
-              background-color: darkmagenta;
-              border: 4px solid black;
+              background-color: #F0EFEB;
+              border: 3px solid #242423;
               border-radius: 50px;
               padding: 7px;
               margin: 15px 20px;
@@ -222,11 +369,11 @@
 
               >span {
                 position: relative;
-                border: 4px solid black;
+                border: 3px solid #242423;
                 border-radius: 50px;
                 height: -webkit-fill-available;
                 width: 30px;
-                background-color: crimson;
+                background-color: #CB997E;
 
                 >.circle {
                   left: 50%;
@@ -234,9 +381,22 @@
                   position: absolute;
                   width: 80px;
                   height: 80px;
-                  background-color: chartreuse;
+                  background-color: #A5A58D;
                   border-radius: 100%;
-                  border: 3px solid black;
+                  border: 3px solid #242423;
+                  cursor: grab;
+
+                  &::after {
+                    content: '';
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    width: 10px;
+                    height: 10px;
+                    background-color: #F0EFEB;
+                    border: 2px solid #242423;
+                    border-radius: 100%;
+                  }
                 }
 
               }
@@ -248,32 +408,44 @@
   }
 }
 
+.rotated {
+  transform: scaleX(-1);
+}
+
 @keyframes slot {
   from {
-    top: -100px;
+    transform: perspective(300px) rotateX(40deg) scale(1) translateX(-50%);
+    top: -120px;
   }
 
   to {
-    top: 250px;
+    transform: perspective(500px) rotateX(-40deg) scale(0.98) translateX(-50%);
+    transform-origin: top;
+    /* вращение от верхней грани */
+    top: 150px;
   }
 }
 
 @keyframes finalslot {
   from {
-    top: -100px;
+    transform: perspective(300px) rotateX(40deg) scale(1) translateX(-50%);
+    top: -120px;
   }
 
   to {
-    top: 70px;
+    transform: perspective(300px) rotateX(0deg) scale(1) translateX(-50%);
+    top: 18px;
   }
 }
 
 @keyframes finalslotend {
   from {
-    top: 70px;
+    transform: perspective(300px) rotateX(0deg) scale(1) translateX(-50%);
+    top: 18px;
   }
 
   to {
-    top: 250px;
+    transform: perspective(500px) rotateX(-40deg) scale(0.98) translateX(-50%);
+    top: 150px;
   }
 }
