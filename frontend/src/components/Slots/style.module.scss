@@ -1,0 +1,279 @@
+.parent {
+  background-color: #1E2749;
+  width: 1000px;
+  height: 600px;
+  display: flex;
+  flex-direction: row;
+
+  >div:nth-of-type(2) {
+    width: -webkit-fill-available;
+    padding: 15px 0;
+  }
+
+
+  .sidepart,
+  >div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: min-content;
+
+    gap: 15px;
+
+    >.microbolt {
+      border-radius: 100%;
+      background-color: blueviolet;
+      height: 6.5px;
+      width: 6.5px;
+      border: 2px solid black;
+    }
+
+    .bolt {
+      margin: 15px;
+      height: 30px;
+      width: 30px;
+      border: 4px solid black;
+      position: relative;
+      border-radius: 100%;
+      background-color: rgb(128, 255, 212);
+      display: block;
+
+      >div {
+        height: 5px;
+        width: 5px;
+        border: 2px solid black;
+        position: absolute;
+        background-color: white;
+        border-radius: 100%;
+        top: 6px;
+        right: 6px;
+      }
+    }
+
+    >div {
+      border: 4px solid black;
+      border-radius: 25px;
+      background-color: antiquewhite;
+      display: flex;
+      flex-direction: row;
+      padding: 15px;
+      justify-content: space-between;
+
+      >div {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: -webkit-fill-available;
+        align-items: center;
+
+        .headtext {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin: 25px 25px 15px 25px;
+
+          >h2 {
+            width: min-content;
+            line-height: .3em;
+            font-size: 32px;
+            color: #1E2749;
+
+            &:first-of-type {
+              font-size: 44px;
+
+            }
+          }
+        }
+
+        >div {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 20px;
+
+
+        }
+
+        .point {
+          border-radius: 100%;
+          background-color: blueviolet;
+          height: 5px;
+          width: 5px;
+          border: 2px solid black;
+        }
+
+        img {
+          height: 50px;
+        }
+
+      }
+
+      &:nth-of-type(2) {
+        height: -webkit-fill-available;
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+
+        >div {
+          padding: 15px;
+          background-color: burlywood;
+        }
+
+        >.main {
+          width: -webkit-fill-available;
+
+
+          >.display {
+            border: 4px solid black;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 150px;
+            gap: 0;
+            position: relative;
+
+            >span {
+              width: 15px;
+              background-color: #1E2749;
+              height: inherit;
+            }
+
+            >div {
+
+              padding: 15px;
+              height: inherit;
+
+              >.slot {
+                position: relative;
+                width: 20px;
+                height: inherit;
+                transition: top 12s ease-out;
+                background-color: white;
+                color: #1E2749;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+
+                >.finalslot {
+                  animation: finalslot forwards linear;
+                }
+
+                >.activateslots {
+                  animation: slot 4s forwards linear;
+                  transition:  .3s ease-in-out;
+                }
+
+                >.speed1 {
+                  animation-duration: 3s;
+                }
+
+                >.speed2 {
+                  animation-duration: 2s;
+                }
+
+                >.speed3 {
+                  animation-duration: 1s;
+                }
+
+                >.speed4 {
+                  animation-duration: .7s;
+                }
+
+                >.speed5 {
+                  animation-duration: .3s;
+                }
+
+
+
+                >.finalslotend {
+                  animation: finalslotend forwards 2s linear;
+                }
+
+                >p {
+                  top: -20px;
+                  position: absolute;
+                  margin-inline: auto;
+                  z-index: 1000;
+                }
+              }
+            }
+          }
+        }
+
+
+
+        >.lever {
+          height: -webkit-fill-available;
+          width: max-content;
+          border: 4px solid black;
+          border-radius: 15px;
+
+          >div {
+            height: -webkit-fill-available;
+
+            &:nth-of-type(2) {
+              width: 36px;
+              background-color: darkmagenta;
+              border: 4px solid black;
+              border-radius: 50px;
+              padding: 7px;
+              margin: 15px 20px;
+
+
+
+              >span {
+                position: relative;
+                border: 4px solid black;
+                border-radius: 50px;
+                height: -webkit-fill-available;
+                width: 30px;
+                background-color: crimson;
+
+                >.circle {
+                  left: 50%;
+                  transform: translate(-50%, -20%);
+                  position: absolute;
+                  width: 80px;
+                  height: 80px;
+                  background-color: chartreuse;
+                  border-radius: 100%;
+                  border: 3px solid black;
+                }
+
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slot {
+  from {
+    top: -100px;
+  }
+
+  to {
+    top: 250px;
+  }
+}
+
+@keyframes finalslot {
+  from {
+    top: -100px;
+  }
+
+  to {
+    top: 70px;
+  }
+}
+
+@keyframes finalslotend {
+  from {
+    top: 70px;
+  }
+
+  to {
+    top: 250px;
+  }
+}
