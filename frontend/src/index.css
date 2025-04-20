@@ -13,12 +13,29 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root{
+  width: 100vw;
+  height: 100vh;
+}
+
+@font-face {
+  font-family: 'specific';
+  src: url('./assets/fonts/TanaUncialSP.otf');
+}
+
+
+@font-face {
+  font-family: 'antique';
+  src: url('./assets/fonts/caesar-dressing-cyrillic.otf');
+}
+
+
 * {
   margin: 0;
   border: 0;
   padding: 0;
 
-  font-family: "Overpass", sans-serif;
+  font-family: "antique", sans-serif;
 }
 
 a {

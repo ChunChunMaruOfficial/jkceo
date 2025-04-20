@@ -3,7 +3,7 @@ import styles from './style.module.scss';
 import sword from '../../assets/svg/slots/sword.svg'
 import scales from '../../assets/svg/slots/scales.svg'
 import decor from '../../assets/svg/slots/decoration.svg'
-import getRandom from '../modules/getRandom';
+import getRandom from '../_modules/getRandom';
 import axios from 'axios';
 
 export default function Slots() {

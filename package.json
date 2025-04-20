@@ -8,6 +8,7 @@
     "util": "^0.12.5"
   },
   "scripts": {
-    "start": "node backend/index.js"
+    "start": "node backend/index.js",
+    "front": "cd frontend ; npm run dev"
   }
 }

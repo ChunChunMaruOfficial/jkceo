@@ -1,0 +1,217 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.parent {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    >.top {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        height: min-content;
+
+        >img:first-of-type {
+            scale: .8;
+        }
+
+        >header {
+            display: flex;
+            flex-direction: row;
+            gap: 45px;
+
+            >img:nth-of-type(3),
+            >img:nth-of-type(4),
+            >img:nth-of-type(6) {
+                scale: .85;
+            }
+        }
+
+        .bag:hover+.coins {
+            transform: translateX(-18%);
+        }
+
+        .bag:hover {
+            animation: flipAndShake 2s forwards;
+        }
+
+        .coins {
+            position: absolute;
+            top: 130px;
+            right: 0;
+            transform: translateX(100%);
+            transition: .3s ease-in-out;
+
+            >span {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                font-size: 3em;
+            }
+
+            img {
+                height: 60px;
+            }
+        }
+
+        img {
+            height: 120px;
+        }
+
+        img:hover {
+            animation: springy 1s cubic-bezier(0.3, 0.7, 0.4, 1.2) backwards;
+            cursor: pointer;
+        }
+    }
+
+    >main {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+        width: 60%;
+        padding: 40px;
+
+        >div {
+            border: 1px solid #CB997E;
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        >.masters {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 15px;
+
+            >h2 {
+                width: min-content;
+            }
+
+            >span {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                max-width: 300px;
+                align-items: flex-start;
+                justify-content: flex-start;
+                height: -webkit-fill-available;
+
+                >img {
+                    height: 60px;
+
+                }
+            }
+        }
+
+        >.rumors {
+            >h1 {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+gap: 15px;
+                img {
+                    height: 1.5em;
+                }
+            }
+
+        }
+
+
+        >.production {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: end;
+            gap: 5px;
+            position: relative;
+            height: 300px;
+            width: 600px;
+            justify-content: start;
+
+            >span {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                top: 10px;
+                left: 0;
+                transform: translateX(-130%);
+                height: 90%;
+
+            }
+
+            >p {
+                padding-inline: 20px;
+                border-radius: 5px;
+                border: 1px solid black;
+            }
+        }
+    }
+}
+
+
+@keyframes springy {
+    0% {
+        transform: rotate(0);
+    }
+
+    20% {
+        transform: rotate(5deg);
+    }
+
+    40% {
+        transform: rotate(-3deg);
+    }
+
+    60% {
+        transform: rotate(2deg);
+    }
+
+    80% {
+        transform: rotate(-1deg);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
+}
+
+@keyframes flipAndShake {
+    0% {
+        transform: rotate(0deg) translateY(0);
+    }
+
+    50% {
+        transform: rotate(180deg) translateY(0);
+    }
+
+    55%,
+    65%,
+    75%,
+    85%,
+    95% {
+        transform: rotate(180deg) translateY(-5px);
+    }
+
+    60%,
+    70%,
+    80%,
+    90%,
+    100% {
+        transform: rotate(180deg) translateY(5px);
+    }
+}
