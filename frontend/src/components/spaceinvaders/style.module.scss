@@ -4,10 +4,15 @@
 
     .plane {
         padding: 60px;
+        display: grid;
+        place-items: center;
+        position: absolute;
     }
 
     div {
         position: absolute;
+
+        
     }
 
     img {
@@ -19,17 +24,15 @@
         -moz-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
-
-
-
-
-
         transition: 5s ease-in-out;
-
-
     }
 
     .bullet {
-        transition: .7s ease-in-out;
+        transition: .7s ease;
+        width: 15px;
+        height: 20px;
+        background-position: auto auto;
+        background-size: contain;
+        background-image: url('../src/assets/svg/spaceinvaders/bullet.svg');
     }
 }

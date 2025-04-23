@@ -1,6 +1,4 @@
 import plane from '../../assets/svg/spaceinvaders/plane.svg'
-import bullet from '../../assets/svg/spaceinvaders/bullet.svg'
-
 import getRandom from '../_modules/getRandom'
 
 import bronze from '../../assets/svg/coins/bronze.svg'
@@ -23,29 +21,54 @@ export default function AntiqueInvaders() {
             const invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('img'))
             const lastinvader = invaders[invaders.length - 1]
             invaders.map(v => (v.getBoundingClientRect().top >= parentRef.current!.getBoundingClientRect().height) && v.remove())
-            console.log(lastinvader)
-
             lastinvader.getBoundingClientRect().left < (parentwidth / 2) ? (lastinvader.style.left = (lastinvader.getBoundingClientRect().left + getRandom(100, parentwidth)) + 'px') : ((lastinvader.getBoundingClientRect().left + getRandom(100, parentwidth)) + 'px')
             lastinvader.style.top = lastinvader.getBoundingClientRect().top + parentheight + 'px'
             setinvadersArray(invadersArray => [...invadersArray, { top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth + 100) : 300) }])
-        }, 1500)
+        }, 1000)
     }
 
     const bulletsRender = () => {
-        if (!planeRef.current || !parentRef.current) return 0
-        const newbullet = document.createElement('div')
-        newbullet.style.backgroundImage = `url('${bullet}')`
-        newbullet.style.top = planeRef.current!.getBoundingClientRect().top + 'px'
-        newbullet.style.left = planeRef.current!.getBoundingClientRect().left + 'px'
-        parentRef.current.appendChild(newbullet)
-        newbullet.style.top = '0px'
+        setInterval(() => {
+            if (!planeRef.current || !parentRef.current) return 0
+            const newbullet = document.createElement('div')
+            Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.classList.contains(styles.bullet)).map(v => (v.getBoundingClientRect().top == -20) && v.remove())
+            newbullet.style.top = planeRef.current!.getBoundingClientRect().top + 'px'
+            newbullet.style.left = (planeRef.current!.getBoundingClientRect().left + (planeRef.current!.getBoundingClientRect().width / 2)) + 'px'
+            parentRef.current.appendChild(newbullet)
+            newbullet.classList.toggle(styles.bullet);
+            setTimeout(() => {
+                newbullet.style.top = '-20px'
+            }, 5);
+        }, 500)
     }
+
+    const checkCollision = () => {
+        setInterval(() => {
+            const invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('img'))
+            const bullets = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('div'))
+           invaders.map(invader => (bullets.map(bullet => {
+            if (
+                bullet.getBoundingClientRect().right > invader.getBoundingClientRect().left &&
+                bullet.getBoundingClientRect().left < invader.getBoundingClientRect().right &&
+                bullet.getBoundingClientRect().bottom > invader.getBoundingClientRect().top &&
+                bullet.getBoundingClientRect().top < invader.getBoundingClientRect().bottom
+              ) {
+             bullet.remove()
+             invader.remove()
+              
+              }
+           })))
+        }, 16)
+    }
+
+
 
 
     useEffect(() => {
         parentwidth = parentRef.current!.getBoundingClientRect().width
         parentheight = parentRef.current!.getBoundingClientRect().height + 200 //+200!!!!!!!!!!!!
         invadersRender()
+        checkCollision()
         bulletsRender()
     }, [])
 
@@ -69,9 +92,9 @@ export default function AntiqueInvaders() {
 
     return (
         <div ref={parentRef} className={styles.parent}>
-            <div ref={planeRef} className={styles.plane} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
+            <main ref={planeRef} className={styles.plane} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
                 <img src={plane} alt="" />
-            </div>
+            </main>
             {invadersArray.map(v => (<img alt='' style={{ top: v.top, left: v.left }} src={bronze} />))}
         </div>
     )
