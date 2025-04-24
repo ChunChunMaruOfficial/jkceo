@@ -1,0 +1,7 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" width="800px" height="800px" fill="#000000">
+<g id="SVGRepo_bgCarrier" stroke-width="0"/>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="SVGRepo_iconCarrier"> <g> <path style="fill:#;" d="M496,16c-8.836,0-16,7.164-16,16v16H32V32c0-8.836-7.164-16-16-16S0,23.164,0,32v32v192v224 c0,8.836,7.164,16,16,16s16-7.164,16-16V272h448v208c0,8.836,7.164,16,16,16s16-7.164,16-16V256V64V32 C512,23.164,504.836,16,496,16z M416,240v-80h-80v80h-80v-80h-80v80H96v-80H32V80h64v80h80V80h80v80h80V80h80v80h64v80H416z"/> <g> <rect x="256" y="160" style="fill:#FFFFFF;" width="80" height="80"/> <rect x="32" y="80" style="fill:#FFFFFF;" width="64" height="80"/> <rect x="96" y="160" style="fill:#FFFFFF;" width="80" height="80"/> <rect x="416" y="160" style="fill:#FFFFFF;" width="64" height="80"/> <rect x="336" y="80" style="fill:#FFFFFF;" width="80" height="80"/> <rect x="176" y="80" style="fill:#FFFFFF;" width="80" height="80"/> </g> </g> </g>
+</svg>

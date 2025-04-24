@@ -90,7 +90,7 @@ export default function Slots() {
                 }
 
                 parent.appendChild(chld)
-            }, getRandom(950, 1200) / (slotsspeed + 1))
+            }, getRandom(600, 900) / (slotsspeed + 1))
         }
     }
 

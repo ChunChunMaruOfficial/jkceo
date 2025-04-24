@@ -201,6 +201,10 @@
                     transition: .3s ease-in-out;
                   }
 
+                  >.finalslotend {
+                    animation: finalslotend forwards linear;
+                  }
+
                   >.speed1 {
                     animation-duration: 1.3s;
                   }
@@ -222,9 +226,7 @@
                   }
 
 
-                  >.finalslotend {
-                    animation: finalslotend forwards 1.5s linear;
-                  }
+
 
                   >p {
                     top: -20px;
@@ -434,14 +436,14 @@
 
   to {
     transform: perspective(300px) rotateX(0deg) scale(1) translateX(-50%);
-    top: 18px;
+    top: 10px;
   }
 }
 
 @keyframes finalslotend {
   from {
     transform: perspective(300px) rotateX(0deg) scale(1) translateX(-50%);
-    top: 18px;
+    top: 10px;
   }
 
   to {
