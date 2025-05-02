@@ -1,19 +1,58 @@
 .parent {
     width: 600px;
-    height: 600px;
     display: flex;
     flex-direction: column;
     margin: 20px;
+    justify-content: center;
+    align-items: center;
+
+    >h2 {
+        text-wrap: nowrap;
+        position: absolute;
+        transform: translateY(134%);
+        top: 80px;
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        >img {
+            height: 3em;
+        }
+    }
+
+    button {
+        text-wrap: nowrap;
+        margin: 10px;
+        background-image: url('../src/assets/img/system/bg.jpg');
+        background-size: cover;
+        border: 4px solid #8a5a3d;
+        border-radius: 15px;
+        padding: 12px;
+        width: min-content;
+        height: min-content;
+        box-shadow: inset 0 0 12px #754c29, 0 8px 15px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        position: relative;
+        font-size: 24px;
+        color: #3b1e14;
+        text-shadow: -.1px -.1px 0 #6a3d1c, .1px .1px 0 #6a3d1c, 2px 2px 8px rgba(0, 0, 0, 0.4);
+        align-items: center;
+        display: flex;
+        gap: 10px;
+
+        >img {
+            height: 1em;
+        }
+    }
 
     >img {
-        height: 35%;
         object-position: bottom;
         object-fit: cover;
         width: 100%;
     }
 
-    >div {
-        height: 66%;
+    >.raceplace {
         width: 100%;
         background: #6D2B2D;
         background: linear-gradient(90deg, rgba(109, 43, 45, 1) 0%, rgba(80, 23, 29, 1) 100%);
@@ -22,6 +61,14 @@
         gap: 10px;
 
         >div {
+
+            >.fireworks{
+                position: absolute;
+                z-index: 1;
+                right: 50px;
+                top: -20px;
+                animation: firework 1.5s infinite;
+            }
             >img {
                 height: 4em;
             }
@@ -29,8 +76,17 @@
             >.chariot {
                 position: absolute;
                 bottom: -10px;
-                left: 15px;
+                left: -15px;
                 transition: .3s ease;
+
+                >img {
+                    height: 4em;
+
+                    &.cloud {
+                        height: 2em;
+                        transition: .3s ease-in-out;
+                    }
+                }
             }
 
             position: relative;
@@ -44,5 +100,72 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 
         }
+
+
+    }
+
+    >.controlpanel {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+
+        >div {
+            >img {
+                height: 3.5em;
+            }
+        }
+
+        >.starplace {
+            width: min-content;
+
+            >img {
+                height: 6.5em;
+            }
+
+            >p {
+                text-wrap: wrap;
+                transform: translateY(-50%);
+                color: #d5bdaf;
+                font-size: 12px;
+                text-align: center;
+            }
+        }
+
+        >.star {
+            cursor: grab;
+            left: 332px;
+            top: 713px;
+            position: absolute;
+
+        }
+
+
+        >.words {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            flex-wrap: wrap;
+        }
     }
 }
+
+@keyframes firework {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.5);
+    }
+  }

@@ -6,6 +6,9 @@ import Slots from "../Slots/slots"
 import Mainscreen from "../Mainscreen";
 import ChariotsRace from "../chariotsrace";
 import Notfound from "../404/404";
+import CombinationGame from "../combinationgame";
+
+
 export default function Index() {
     return (
         <>
@@ -16,6 +19,7 @@ export default function Index() {
                         <Route path='/current' element={<Mainscreen />} />
                         <Route path='/invaders' element={<AntiqueInvaders />} />
                         <Route path='/race' element={<ChariotsRace />} />
+                        <Route path='/combination' element={<CombinationGame />} />
                         <Route path='*' element={<Notfound />} />
                     </Routes>
                 </BrowserRouter>
