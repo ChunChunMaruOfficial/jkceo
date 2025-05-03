@@ -16,6 +16,7 @@ export default function Slots() {
     const [maxTop, setmaxTop] = useState<number>(0)
     const [serveremoji, setserveremoji] = useState<{ emoji: String, name: string }[]>([])
     const [silvercoins, setsilvercoins] = useState<number>(500)
+    const [serveranswer, setserveranswer] = useState<string>('')
     const [attempts, setattempts] = useState<number>(0)
     const [winning, setwinning] = useState<string[]>()
     const [slotsspeed, setslotsspeed] = useState<number>(0)
@@ -42,6 +43,16 @@ export default function Slots() {
                 console.log('дата:', res.data.answer)
             })
     }, [])
+
+    useEffect(() => {
+        if (winning?.length == 3) {
+            axios.post('http://localhost:3001/getwinningtext', {promt: winning.join()})
+                .then((res) => {
+                    setserveranswer(res.data.answer);
+                    console.log('ответ сервера:', res.data.answer)
+                })
+        }
+    }, [winning])
 
     useEffect(() => {
         if (slotsisactive) {
@@ -85,7 +96,6 @@ export default function Slots() {
                     setwinning(win => [...(win ?? []), String(item)]);
                 } else {
                     chld.classList.toggle(styles.activateslots);
-
                     count++
                 }
 
@@ -107,15 +117,11 @@ export default function Slots() {
         if (maxTop - 10 < newTop && fisrstslotRef.current && secondslotRef.current && thirdslotRef.current) { //поочередный старт слотов
             //здесь триггер только на левер, нажатый до конца
             if (!slotsisactive) { //если не активен
-
                 setslotsisactive(true)
-
             } else { //во время крутки
                 slotsspeed < 4 && setslotsspeed(slotsspeed + 1)
             }
         }
-
-
 
         dragRef.current.style.top = `${Math.max(0, Math.min(maxTop, newTop))}px`; //смотреть, не залазит ли левер за родителя
         dragRef.current.style.transition = 'none'
@@ -127,11 +133,9 @@ export default function Slots() {
             dragRef.current.style.transition = 'top .7s ease-out';
             dragRef.current.style.top = '0px';
         }
-
         document.removeEventListener('mousemove', handleMouseMove as EventListener);
         document.removeEventListener('mouseup', handleMouseUp);
-    };
-
+    }
 
     return (
         <div className={styles.parent}>
@@ -141,9 +145,6 @@ export default function Slots() {
                 <span className={styles.bolt}><div></div></span>
                 <span className={styles.bolt}><div></div></span>
             </div>
-
-            {/* sk-082bf745e96f451aa0cae95fd0fc2a24  */}
-
             <div>
                 <div>
                     <div className={styles.sidepart}>
@@ -193,13 +194,13 @@ export default function Slots() {
                             </div>
                             <div className={styles.botomcenter}>
                                 {[...Array(4)].map(() => (<p className={styles.microbolt}></p>))}
-                                {winning?.map(v => (v))}
+                                {typeof serveranswer == 'string' && serveranswer}
                             </div>
                             <div>
                                 <span>Attempts</span>
                                 <span>{attempts}</span>
                             </div>
-                            <div> {[...Array(4)].map((_, i) => (<p style={{ background: slotsspeed <= i  ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
+                            <div> {[...Array(4)].map((_, i) => (<p style={{ background: slotsspeed <= i ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
                         </div>
                     </div>
                     <div className={styles.lever}>
@@ -228,6 +229,7 @@ export default function Slots() {
                 <span className={styles.bolt}><div></div></span>
                 <span className={styles.bolt}><div></div></span>
             </div>
+            <button>принять свою участь</button>
         </div>
     )
 }
