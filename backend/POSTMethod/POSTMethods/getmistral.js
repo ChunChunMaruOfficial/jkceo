@@ -1,20 +1,24 @@
+const User = require('../../data/userdata.js')
+
 const mistralModule = require('@mistralai/mistralai');
 const Mistral = mistralModule.Mistral;
 
-// Вставьте ваш API ключ напрямую в код
 const apiKey = 'kXXdvcu0SGA6XHrcvyki2KvN2dbTj79O';
-console.log('API Key:', apiKey); // Проверка, что API ключ загружен
+console.log('API Key:', apiKey)
 
 const client = new Mistral({ apiKey: apiKey });
 
-async function getMistral(type, promt,res) {
-    console.log('get a try');
+async function getMistral(type, promt, res) {
+    console.log('get Mistral');
+
     let startpromt
     switch (type) {
         case 'emoji':
-            startpromt = 'Я дам тебе 3 эмодзи, а ты должен описать довольно кратко и простым текстом в одно предложение (без эмодзи в скобках) мою модель бизнеса. Первый смайлик — это то, что я продаю, второй — это то, кому я продаю, третий — способ монетизации (то, как со мной расплачиваются за товар). Прими во внимание, что все это должно быть в сеттинге античности и максимально сильено соответствовать эмодзи, это самое главное. не обязательно это должно быть чтото адекватное, в том числе и способ монетизации. Эмодзи: '
+            startpromt = 'Я дам тебе 3 эмодзи, а ты должен описать довольно кратко и простым текстом в одно предложение (без эмодзи в скобках!!!) мою модель бизнеса. Первый смайлик — это то, что я продаю, второй — это то, кому я продаю, третий — способ монетизации (то, как со мной расплачиваются за товар). Прими во внимание, что все это должно быть в сеттинге античности и максимально сильено соответствовать эмодзи, это самое главное. не обязательно это должно быть чтото адекватное, в том числе и способ монетизации. Эмодзи: '
             break;
-    
+        case 'examplename':
+            startpromt = 'придумай название из 1-4 слов на русском, которое может быть странным, но не примитивным (ответь только наванием без кавычек) и должно отображать каждое слово в формулировке, можешь с смешением английского и русского языков, для компании, которую можно описать как: '
+            break;
         default:
             break;
     }
@@ -27,11 +31,24 @@ async function getMistral(type, promt,res) {
             model: 'mistral-large-latest',
             messages: [{ role: 'user', content: startpromt + promt }],
         });
-        console.log(chatResponse.choices[0].message.content);
+
+        const MistralRes = chatResponse.choices[0].message.content
+
+        console.log("ANSWER: ", MistralRes);
         
-        res.json({answer: chatResponse.choices[0].message.content})
+        switch (type) {
+            case 'emoji':
+                User.setprofessionformulation(MistralRes)
+                break;
+            case 'examplename':
+                console.log('examplename');
+                User.setname(MistralRes)
+                break;
+        }
+        res.json({ answer: MistralRes })
+
     } catch (error) {
-        console.error('Error:',error );
+        console.error('Error:', error);
     }
 }
 

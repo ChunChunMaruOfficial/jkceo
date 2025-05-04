@@ -1,9 +1,15 @@
 .parent {
   background-color: #F0EFEB;
   width: 1000px;
-  height: 600px;
   display: flex;
   flex-direction: row;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid #242423;
+  border-radius: 20px 20px 0 0;
+  transition: .3s ease-in-out;
 
   >div:nth-of-type(2) {
     width: -webkit-fill-available;
@@ -61,6 +67,7 @@
 
       &:nth-of-type(2) {
         background-color: #DDBEA9;
+        padding-bottom: 30px;
       }
 
       >div {
@@ -279,13 +286,13 @@
             >div:last-of-type {
               position: absolute;
               left: 50%;
-              bottom: -15%;
-              transform: translateX(-40%);
+              bottom: -12%;
+              transform: translateX(-70%);
               display: flex;
               flex-direction: row;
               flex-wrap: nowrap;
 
-              >.microbolt{
+              >.microbolt {
                 background-color: #F0EFEB;
               }
             }
@@ -407,6 +414,27 @@
           }
         }
       }
+    }
+  }
+
+  >a {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 107%;
+
+    >button {
+
+
+      background-color: #A5A58D;
+      border: 3px solid #242423;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      font-size: x-large;
+      color: #242423;
+      font-weight: 700;
+      text-wrap: nowrap;
     }
   }
 }

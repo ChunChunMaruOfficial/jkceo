@@ -38,6 +38,10 @@ img{
   -ms-user-select: none;
 }
 
+button{
+  transition: .1s ease-in-out;
+}
+
 * {
   margin: 0;
   border: 0;
@@ -74,9 +78,9 @@ button:hover {
   cursor: pointer;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+button:active {
+  transform: none;
+  scale: .99;
 }
 
 @media (prefers-color-scheme: light) {

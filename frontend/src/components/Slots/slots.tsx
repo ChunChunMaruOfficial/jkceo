@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './style.module.scss';
 import sword from '../../assets/svg/slots/sword.svg'
 import scales from '../../assets/svg/slots/scales.svg'
 import decor from '../../assets/svg/slots/decoration.svg'
 import getRandom from '../_modules/getRandom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import { setmoney, setprofessionformulation } from '../_slices/baseslice';
 
 export default function Slots() {
+    const dispatch = useDispatch()
+    const badanswer = 'Кажется боги не отвечают.. твою судьбу они не предрешат!'
+
     const slotsspeedarray = [styles.speed1, styles.speed2, styles.speed3, styles.speed4, styles.speed5]
     const dragRef = useRef<HTMLDivElement>(null);
     const parentRef = useRef<HTMLDivElement>(null);
@@ -23,6 +30,10 @@ export default function Slots() {
     const [slotsisactive, setslotsisactive] = useState<boolean>(false)
     const pos = useRef({ y: 0, top: 0 })
 
+    const fatesaccept = () => {
+        dispatch(setmoney(silvercoins))
+        dispatch(setprofessionformulation(serveranswer))
+    }
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         pos.current = {
@@ -40,16 +51,14 @@ export default function Slots() {
         axios.get('http://localhost:3001/getdata')
             .then((res) => {
                 setserveremoji(res.data.answer);
-                console.log('дата:', res.data.answer)
             })
     }, [])
 
     useEffect(() => {
         if (winning?.length == 3) {
-            axios.post('http://localhost:3001/getwinningtext', {promt: winning.join()})
+            axios.post('http://localhost:3001/getwinningtext', { promt: winning.join() })
                 .then((res) => {
-                    setserveranswer(res.data.answer);
-                    console.log('ответ сервера:', res.data.answer)
+                    setserveranswer(res.data.answer)
                 })
         }
     }, [winning])
@@ -117,7 +126,8 @@ export default function Slots() {
         if (maxTop - 10 < newTop && fisrstslotRef.current && secondslotRef.current && thirdslotRef.current) { //поочередный старт слотов
             //здесь триггер только на левер, нажатый до конца
             if (!slotsisactive) { //если не активен
-                setslotsisactive(true)
+                serveremoji.length == 0 ? setserveranswer(badanswer) :
+                    setslotsisactive(true)
             } else { //во время крутки
                 slotsspeed < 4 && setslotsspeed(slotsspeed + 1)
             }
@@ -189,7 +199,7 @@ export default function Slots() {
                         </div>
                         <div className={styles.botompanel}>
                             <div>
-                                <span>Silver Coin</span>
+                                <span>Гроссо</span>
                                 <span>{silvercoins}</span>
                             </div>
                             <div className={styles.botomcenter}>
@@ -197,7 +207,7 @@ export default function Slots() {
                                 {typeof serveranswer == 'string' && serveranswer}
                             </div>
                             <div>
-                                <span>Attempts</span>
+                                <span>Попытки</span>
                                 <span>{attempts}</span>
                             </div>
                             <div> {[...Array(4)].map((_, i) => (<p style={{ background: slotsspeed <= i ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
@@ -229,7 +239,7 @@ export default function Slots() {
                 <span className={styles.bolt}><div></div></span>
                 <span className={styles.bolt}><div></div></span>
             </div>
-            <button>принять свою участь</button>
+            {serveranswer && serveranswer != badanswer && ( <Link to='../current/formulation'> <button onClick={() => fatesaccept()}>принять свою участь</button> </Link>)}
         </div>
     )
 }

@@ -16,7 +16,7 @@ export default function Index() {
                 <BrowserRouter>
                     <Routes>
                         <Route path='' element={<Slots />} />
-                        <Route path='/current' element={<Mainscreen />} />
+                        <Route path='/current/*' element={<Mainscreen />} />
                         <Route path='/invaders' element={<AntiqueInvaders />} />
                         <Route path='/race' element={<ChariotsRace />} />
                         <Route path='/combination' element={<CombinationGame />} />

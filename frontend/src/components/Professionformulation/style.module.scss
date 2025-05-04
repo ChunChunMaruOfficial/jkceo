@@ -1,0 +1,113 @@
+.parent {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    justify-content: center;
+    align-items: center;
+    gap: 70px;
+    margin: auto;
+
+    .maingroup {
+        display: flex;
+        flex-direction: row;
+        width: 50%;
+        height: min-content;
+        gap: 50px;
+
+        .inputgroup {
+            position: relative;
+            margin-bottom: 30px;
+            width: 60%;
+        }
+
+        .inputfield {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            border: 2px solid #DDBEA9;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .inputlabel {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 24px;
+            color: #CB997E;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background-color: transparent;
+        }
+
+        .inputfield:focus {
+            border-color: #A5A58D;
+        }
+
+        .inputfield:focus+.inputlabel,
+        .inputfield:not(:placeholder-shown)+.inputlabel {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            color: #A5A58D;
+            background-color: #30343F;
+            padding: 0 5px;
+        }
+
+        /* Добавляем подсказки к полям */
+        .inputgroup::after {
+            content: attr(data-hint);
+            position: absolute;
+            left: 2px;
+            bottom: -18px;
+            font-size: 12px;
+            color: #888;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.2s ease;
+        }
+
+        /* Показываем подсказку при фокусе */
+        .inputgroup:focus-within::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        >div:last-of-type {
+            height: -webkit-fill-available;
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+
+            .isLoading{
+                animation: loading .5s ease infinite;
+            }
+
+            button {
+                border: 2px solid #DDBEA9;
+                border-radius: 4px;
+                background-color: #30343F;
+                height: -webkit-fill-available;
+                padding: 8px;
+
+                >img {
+                    height: 3em;
+                }
+            }
+        }
+    }
+    >h2{
+        width: 75%;
+        text-align: center;
+    }
+}
+
+@keyframes loading {
+    from{
+        transform: rotate(0deg)
+    }
+    to{
+        transform: rotate(360deg);
+    }
+}

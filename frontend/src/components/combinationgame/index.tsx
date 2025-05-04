@@ -10,12 +10,16 @@ export default function CombinationGame() {
     const [parentheight, useparentheight] = useState(0);
     const [parentwidth, useparentwidth] = useState(0);
     const [fillstate, setfillstate] = useState<number[]>([0, 0, 0, 0, 0, 0])
+    const [isdragging, setisdragging] = useState<boolean>(false)
+    const [newX, setnewX] = useState<number>(0)
+    const [newY, setnewY] = useState<number>(0)
+
 
     const CreateComponents = (length: number) => {
         const result = [...new Array(length)].map((v, i) => {
             return {
                 text: queue[i],
-                top: getRandom(0, parentheight),
+                top: getRandom(0, parentheight - 100),
                 Xposition: getRandom(0, parentwidth / 2),
                 isLeft: getRandom(0, 1) ? true : false,
             };
@@ -37,32 +41,64 @@ export default function CombinationGame() {
         }
     }, []);
 
+
+
     const filling = useCallback((index: number) => {
         setintervalState(true)
 
         const fillinterval = setInterval(() => {
-            setintervalState(intervalState => { if (intervalState == false) clearInterval(fillinterval); console.log(intervalState); return intervalState })
-
+            setintervalState(intervalState => {
+                if (intervalState == false) clearInterval(fillinterval)
+                return intervalState
+            })
             setfillstate(fs => fs.map((v, i) => i == index ? v + 1 : v))
-            setfillstate(fs => { fs.forEach((v) => v == 100 && clearInterval(fillinterval)); console.log(fs); return fs })
+            setfillstate(fs => { fs.forEach((v, i) => v == 100 && i == index && clearInterval(fillinterval)); return fs })
         }, 32)
     }, [fillstate, intervalState])
+
+
 
     const unfilling = useCallback((index: number) => {
         setintervalState(false)
         const unfillinterval = setInterval(() => {
-            setintervalState(intervalState => { if (intervalState == true || fillstate[index] == 100 || fillstate[index] == 1) clearInterval(unfillinterval); console.log('un', intervalState); return intervalState })
+            setintervalState(intervalState => { if (intervalState == true || fillstate[index] == 100 || fillstate[index] == 1) clearInterval(unfillinterval); return intervalState })
             setfillstate(fs => fs.map((v, i) => i == index ? v - 1 : v))
-            setfillstate(fs => { fs.forEach((v, i) => i == index && (v < 1 || v == 100) && clearInterval(unfillinterval)); console.log(fs); return fs })
+            setfillstate(fs => { fs.forEach((v, i) => i == index && (v < 1 || v == 100) && clearInterval(unfillinterval)); return fs })
         }, 32)
     }, [fillstate, intervalState])
+
+
+    const grabbing = (e: unknown, i: number) => {
+        if (!componentsRef.current[i] || !parentRef.current) return
+        console.log('grabbing');
+        const trueE = e as MouseEvent;
+        setisdragging(true)
+        setnewX(trueE.clientX - parentRef.current?.getBoundingClientRect().left - (componentsRef.current[i].getBoundingClientRect().left - parentRef.current?.getBoundingClientRect().left))
+        setnewY(trueE.clientY - parentRef.current?.getBoundingClientRect().top - (componentsRef.current[i].getBoundingClientRect().top - parentRef.current?.getBoundingClientRect().top))
+
+
+    }
+
+    const moving = (e: unknown, i: number) => {
+        if (!isdragging || !parentRef.current) return;
+        if (!componentsRef.current[i]) return
+        console.log('moving');
+
+        // Обновляем позицию элемента
+        const trueE = e as MouseEvent;
+        componentsRef.current[i].style.left = `${trueE.clientX - parentRef.current?.getBoundingClientRect().left - newX}px`;
+        componentsRef.current[i].style.right = 'auto'
+        componentsRef.current[i].style.top = `${trueE.clientY - parentRef.current?.getBoundingClientRect().top - newY}px`;
+    }
+
 
     return (
         <div ref={parentRef} className={styles.parent}>
             {componentsarray.map((v, i) => (
-                <div onMouseDown={() => filling(i)}
-                    onMouseUp={() => fillstate[i] != 100 && unfilling(i)}
-                    onMouseOut={() => fillstate[i] != 100 && fillstate[i] > 0 && unfilling(i)}
+                <div onMouseDown={(e) => { filling(i); grabbing(e, i) }}
+                    onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false) }}
+                    onMouseOut={(e) => { fillstate[i] != 100 && fillstate[i] > 0 && unfilling(i); setisdragging(false) }}
+                    onMouseMove={(e) => moving(e, i)}
                     ref={el => { componentsRef.current[i] = el; }}
                     key={i}
                     style={{
