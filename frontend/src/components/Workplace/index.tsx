@@ -4,15 +4,76 @@ import { RootState } from '../mainstore';
 import getRandom from '../_modules/getRandom';
 import back from '../../assets/svg/system/back.svg'
 import CombinationGame from '../combinationgame';
+import newnote from '../../assets/svg/maininterface/newnote.svg'
+import { useEffect, useRef, useState } from 'react';
+import { addnewnote, deletecurrentnote } from '../_slices/baseslice';
+import { NoteInterface } from '../_slices/baseslice';
+import thinkingimg from '../../assets/svg/maininterface/thinking.svg'
+import thinkingprocess from '../../assets/svg/maininterface/thinkingprocess.svg'
+import axios from 'axios';
+import cancel from '../../assets/svg/system/cancel.svg'
+import table from '../../assets/svg/maininterface/table.svg'
 
 
 export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidemenu: number, setshowsidemenu: any }) {
+    const dispatch = useDispatch()
+    const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
+
+    const [stepscurrent, setstepscurrent] = useState<string[]>([])
+    const [thinking, setthinking] = useState<boolean>(false)
+    const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
+    const inputHeadRef = useRef<HTMLInputElement>(null)
+    const inputtextRef = useRef<HTMLInputElement>(null)
+
     const workers: number = useSelector((state: RootState) => state.base.workers);
     const goodsPerHour: number = useSelector((state: RootState) => state.base.goodsPerHour);
     const messengerrange: number = useSelector((state: RootState) => state.base.messengerrange);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
     const productionArray: number[] = useSelector((state: RootState) => state.base.productionArray);
 
+    const deletenote = (note: NoteInterface) => {
+
+        dispatch(deletecurrentnote(note))
+        axios.post('http://localhost:3001/deletecurrentnote', {
+            note: note
+        })
+    }
+
+    const thinkingfunc = () => {
+        setthinking(true)
+        axios.get('http://localhost:3001/getsteps')
+            .then((res) => {
+                setthinking(false)
+                console.log(res.data.answer);
+
+                dispatch(addnewnote({
+                    title: 'Нужно попробовать',
+                    text: res.data.answer
+                }));
+                axios.post('http://localhost:3001/addnewnote', {
+                    note: {
+                        title: 'Нужно попробовать',
+                        text: res.data.answer
+                    }
+                })
+            })
+    }
+
+    useEffect(() => {
+        notes.length == 0 && axios.get('http://localhost:3001/getnotes')
+            .then((res) => {
+                console.log(res.data.notes);
+                res.data.notes.map((v: NoteInterface) => {
+                    console.log(v);
+
+                    dispatch(addnewnote({
+                        title: v.title,
+                        text: v.text
+                    }));
+                })
+            })
+
+    }, [])
 
     const getRumorsText = (): string => {
         switch (Math.round(rumorsstatus)) {
@@ -35,7 +96,18 @@ export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidem
     return (<main>
 
         <div>
-            <div className={styles.messenger}>
+            <div className={styles.clockplace}>
+                <div className={styles.clock}>
+                    <div className={styles.button}></div>
+                    <div className={styles.clockdisplay}>
+                        <p>AM</p>
+                        <h1>12 : 00</h1>
+                        <p> 0</p>
+                    </div>
+                </div>
+                <img src={table} alt="" />
+            </div>
+            {/* <div className={styles.messenger}>
                 <h2>Every day the messenger brings</h2>
                 <h1>{messengerrange}</h1>
                 <h3>raw materials</h3>
@@ -51,7 +123,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidem
             <div className={styles.produces}>
                 <h2>your business produces</h2>
                 <h1>{goodsPerHour}</h1>
-            </div>
+            </div>*/}
             <div className={styles.production}>
                 <span>
                     <p>{productionmax}</p>
@@ -61,20 +133,39 @@ export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidem
                 {productionArray.map((v, i) => (<p style={{ height: `${v / productionmax * 100}%`, background: v / productionmax > .7 ? '#b2f2bb' : v / productionmax > .4 ? '#ffec99' : '#ffc9c9', borderColor: v / productionmax > .7 ? '#2f9e44' : v / productionmax > .4 ? '#f08c00' : '#e03131' }}>{i}</p>))}
             </div>
         </div>
-        <div className={styles.gameplace}>
-        <CombinationGame/>
+        {stepscurrent.length != 0 && (<div className={styles.gameplace}>
+            <CombinationGame steps={stepscurrent} />
 
-        </div>
-        <div className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}><span><img onClick={() => setshowsidemenu(0)} src={back} alt="" /><h1>Здесь будут ваши записи</h1></span>
-            <div>
-                <div>
-                    <h2>TEst</h2>
-                    <p>dkfjgnjk</p>
-                    <p>hklehfg</p>
-                    <p>lkdjfgglkdfj</p>
-                    <p>gflkhjfglj</p>
+        </div>)}
+        <div className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}>
+            <span><img onClick={() => setshowsidemenu(0)} src={back} alt="" /><h1>Ваши записи</h1><img onClick={() => { setnewnoteisopen(newnoteisopen == 1 ? 0 : 1) }} src={newnote} alt="" /></span>
+            <div className={styles.allnotes}>
+                {notes.map(v => (<div>
+                    <h2 onClick={() => {
+                        setstepscurrent(v.text.split(',')); setshowsidemenu(false)
+                    }}>{v.title} <img onClick={() => deletenote(v)} src={cancel} alt="" /></h2>
+                    <p>{v.title == 'Нужно попробовать' ? v.text.split(',').map(v => (<>• {v} <br /></>)) : v.text}</p>
+                </div>))}
+                <span onClick={() => thinkingfunc()}>
+                    <img src={thinking ? thinkingprocess : thinkingimg} alt="" />
+                    <h4>Думать над новым продуктом...</h4>
+                </span>
+            </div>
+            <div className={styles.newnote + ' ' + (newnoteisopen == 0 ? styles.hidenewnote : newnoteisopen == 1 && styles.shownewnote)}>
+                <div className={styles.inputgroup}>
+                    <input ref={inputHeadRef} type="text" className={styles.inputfield} id="title" placeholder=' ' />
+                    <label htmlFor="title" className={styles.inputlabel}>Название</label>
                 </div>
-
+                <div className={styles.inputgroup}>
+                    <input ref={inputtextRef} type="text" className={styles.inputfield} id="text" placeholder=' ' />
+                    <label htmlFor="text" className={styles.inputlabel}>Текст заметки</label>
+                </div>
+                <button onClick={() => {
+                    setnewnoteisopen(0); dispatch(addnewnote({
+                        title: inputHeadRef.current?.value,
+                        text: inputtextRef.current?.value
+                    })); inputHeadRef.current!.value = ''; inputtextRef.current!.value = ''
+                }}>Сохранить</button>
             </div>
         </div>
     </main>)

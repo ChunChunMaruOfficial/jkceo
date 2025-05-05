@@ -9,6 +9,13 @@ function POSTmethod(req, res) {
         case '/setname':
             User.setname(req.body.name)
             break;
+        case '/addnewnote':
+            User.addnewnote(req.body.note)
+            break;
+        case '/deletecurrentnote':
+            User.deletecurrentnote(req.body.note)
+            break;
+
     }
 }
 

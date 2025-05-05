@@ -24,7 +24,7 @@ import { RootState } from '../mainstore';
 import Workplace from '../Workplace';
 
 export default function Mainscreen() {
-    const [showsidemenu, setshowsidemenu] = useState<number>(2)
+    const [showsidemenu, setshowsidemenu] = useState<number>(2) 
 
     //это вроде данные, которые мы получаем из слайса
     const money: number = useSelector((state: RootState) => state.base.money)
@@ -42,9 +42,8 @@ export default function Mainscreen() {
                 </span>
             </div>
             <Routes>
-                <Route path='formulation' element={<Professionformulation />}></Route>
-
-                    <Route path='workplace' element={<Workplace showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} />}></Route>
+                <Route path='formulation' element={<Professionformulation/>}></Route>
+                <Route path='workplace' element={<Workplace showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} />}></Route>
 
             </Routes>
 

@@ -1,9 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+export interface NoteInterface {
+    title: string,
+    text: string
+}
+
 export interface BaseState {
     name: string,
     professionformulation: string,
     money: number,
+    notes: NoteInterface[],
     messengerrange: number,
     rumorsstatus: number,
     workers: number,
@@ -14,35 +20,45 @@ export interface BaseState {
 
 const initialState: BaseState = {
     name: '',
-    professionformulation:'',
+    professionformulation: '',
     money: 534,
+    notes: [],
     messengerrange: 1,
     rumorsstatus: 0,
     workers: 6,
     goodsPerHour: 1,
-    productionArray: [3, 4, 5, 6, 7, 2, 6, 1, 9] //все переменные, что хранятся в слайсе
+    productionArray: [] //все переменные, что хранятся в слайсе
 }
 
 export const BaseSlice = createSlice({
     name: 'base',
     initialState,
     reducers: {
-        increment: (state) => {
-            //    state.value += 1
+        setprofessionformulation: (state, action) => { //формулировка профессии
+            state.professionformulation = action.payload
         },
-        setprofessionformulation: (state, value) => { //формулировка профессии
-            state.professionformulation = value.payload
+        setmoney: (state, action) => {
+            state.money = action.payload
         },
-        setmoney: (state, value) => {
-            state.money = value.payload
+        setname: (state, action) => {
+            state.name = action.payload
         },
-        setname: (state, value) => {
-            state.name = value.payload
-        }
+        addnewnote: (state, action) => {
+            state.notes.push(action.payload)
+        },
+        addproductionArray: (state, action) => {
+            state.productionArray[action.payload] = state.productionArray[action.payload] ? state.productionArray[action.payload] + 1 : 1
+        },
+        deletecurrentnote: (state, action) => {
+            state.notes = state.notes.filter(v => v.text !== action.payload.text);
+            console.log(action.payload);
+            console.log(state.notes);
+            
+        },
     },
 })
 
-export const { increment, setmoney,setprofessionformulation,setname } = BaseSlice.actions //все методы сюда импортировать:3
+export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote,addproductionArray } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

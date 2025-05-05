@@ -1,11 +1,15 @@
 import styles from './style.module.scss';
 import getRandom from '../_modules/getRandom';
+import { useDispatch } from 'react-redux';
+import { addproductionArray } from '../_slices/baseslice';
+
 import { Ref, useMemo, useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 
-export default function CombinationGame() {
+export default function CombinationGame({ steps }: { steps: string[] }) {
+    const dispatch = useDispatch()
     const parentRef = useRef<HTMLDivElement>(null);
 
-    const queue = ['Подготовка ингредиентов', 'Смешивание яиц', 'Разогрев сковороды', 'Добавление яичной смеси', 'Завершение приготовления']
+    const [isworkdone, setisworkdone] = useState(false);
     const [intervalState, setintervalState] = useState(false);
     const [parentheight, useparentheight] = useState(0);
     const [parentwidth, useparentwidth] = useState(0);
@@ -15,10 +19,10 @@ export default function CombinationGame() {
     const [newY, setnewY] = useState<number>(0)
 
 
-    const CreateComponents = (length: number) => {
-        const result = [...new Array(length)].map((v, i) => {
+    const CreateComponents = () => {
+        const result = steps.map((v, i) => {
             return {
-                text: queue[i],
+                text: steps[i],
                 top: getRandom(0, parentheight - 100),
                 Xposition: getRandom(0, parentwidth / 2),
                 isLeft: getRandom(0, 1) ? true : false,
@@ -28,7 +32,16 @@ export default function CombinationGame() {
         return result;
     };
 
-    const componentsarray: { text: string, top: number, Xposition: number, isLeft: boolean }[] = useMemo(() => CreateComponents(getRandom(3, 5)), [parentheight, parentwidth])
+    useEffect(()=> {
+        setfillstate([0, 0, 0, 0, 0, 0])
+    },[steps])
+
+    useEffect(()=> {
+        fillstate.every(v => v >= 100) && setisworkdone(true)
+    },[fillstate])
+
+    const componentsarray: { text: string, top: number, Xposition: number, isLeft: boolean }[] = useMemo(() => CreateComponents(), [parentheight, parentwidth, steps])
+
     const componentsRef = useRef<(HTMLDivElement | null)[]>([]);
 
     useLayoutEffect(() => {
@@ -86,9 +99,11 @@ export default function CombinationGame() {
 
         // Обновляем позицию элемента
         const trueE = e as MouseEvent;
-        componentsRef.current[i].style.left = `${trueE.clientX - parentRef.current?.getBoundingClientRect().left - newX}px`;
-        componentsRef.current[i].style.right = 'auto'
-        componentsRef.current[i].style.top = `${trueE.clientY - parentRef.current?.getBoundingClientRect().top - newY}px`;
+        const boolvalueX = trueE.clientX > parentRef.current?.getBoundingClientRect().left 
+        const boolvalueY = trueE.clientY > parentRef.current?.getBoundingClientRect().top
+        boolvalueX ? componentsRef.current[i].style.left = `${trueE.clientX - parentRef.current?.getBoundingClientRect().left - newX}px` : 0
+        boolvalueX ? componentsRef.current[i].style.right = 'auto': 0
+        boolvalueY ? componentsRef.current[i].style.top = `${trueE.clientY - parentRef.current?.getBoundingClientRect().top - newY}px` : 0
     }
 
 
@@ -105,11 +120,12 @@ export default function CombinationGame() {
                         top: `${v.top}px`,
                         left: v.isLeft ? `${v.Xposition}px` : '',
                         right: v.isLeft ? '' : `${v.Xposition}px`,
-                        background: `linear-gradient(to top, #ff0000 ${fillstate[i]}%, rgb(31, 75, 75) 1%)`
+                        background: `linear-gradient(to top, #CB997E ${fillstate[i]}%, #6b705c 1%)`
                     }} >
-                    {v.text} | {fillstate[i]}
+                    {v.text} {fillstate[i]}%
                 </div>
             ))}
+           {isworkdone && ( <button onClick={() => dispatch(addproductionArray(0))}> Закончить работу </button>)}
         </div >
     );
 }

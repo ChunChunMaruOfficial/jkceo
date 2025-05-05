@@ -14,4 +14,19 @@
         -ms-user-select: none;
         user-select: none;
     }
+
+    >button{
+        padding: 15px;
+        font-size: 16px;
+        border: 3px solid #FFF1E6;
+        border-radius: 15px;
+        outline: none;
+        color: FFF1E6;
+        transition: border-color 0.3s;
+        background-color: #30343F;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 10%;
+    }
 }

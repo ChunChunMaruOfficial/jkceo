@@ -21,7 +21,12 @@ function GETmethod(req, res) {
     case '/getdemotivation':
       res.json({ answer: demotivation })
       break;
-
+    case '/getsteps':
+      getMistral('steps', User.professionformulation, res)
+      break;
+    case '/getnotes':
+      res.json({ notes: User.notes })
+      break;
   }
 }
 

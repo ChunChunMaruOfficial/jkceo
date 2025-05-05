@@ -11,6 +11,67 @@ main {
             width: 60%;
             padding: 40px;
 
+            >.clockplace {
+                position: absolute;
+                left: -50px;
+                bottom: -140px;
+                border: none;
+
+                >.clock {
+                    background-color: #DDBEA9;
+                    border-radius: 20px;
+                    border: none;
+                    padding: 10px;
+                    height: fit-content;
+                    position: relative;
+                    z-index: 1;
+                    transform: translateY(125%);
+
+                    >.clockdisplay {
+                        border-radius: 10px;
+                        border: 6px solid #CB997E;
+                        background-color: #EDDCD2;
+                        padding: 10px;
+                        position: relative;
+
+                        >p {
+                            position: absolute;
+                            color: #A5A58D;
+
+                            &:nth-of-type(2) {
+                                top: 45px;
+                            }
+                        }
+
+                        >h1 {
+                            margin-inline: 30px 15px;
+                            color: #A5A58D;
+                        }
+                    }
+
+                    >.button {
+                        position: absolute;
+                        width: 50%;
+                        z-index: -1;
+                        height: 15px;
+                        left: 50%;
+                        transform: translate(-50%, -150%);
+                        background-color: #cb997e;
+                        border-radius: 10px 10px 0 0;
+                        transition: .1s ease-in-out;
+                        cursor: pointer;
+
+                        &:active {
+                            height: 12px;
+                        }
+                    }
+                }
+
+                >img {
+                    height: 25em;
+                }
+            }
+
             >div {
                 border: 1px solid #CB997E;
                 border-radius: 20px;
@@ -71,16 +132,36 @@ main {
                 height: 300px;
                 width: 600px;
                 justify-content: start;
+                overflow-y: hidden;
+
+                &::-webkit-scrollbar {
+                    height: 8px;
+                }
+
+                &::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0);
+                    border-radius: 6px;
+                    margin-inline: 10px;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    background: #CB997E;
+                    border-radius: 6px;
+                }
+
+                &::-webkit-scrollbar-thumb:hover {
+                    background: #CB997E;
+                }
 
                 >span {
-                    position: absolute;
+                    position: sticky;
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
-                    top: 10px;
+                    top: 0;
                     left: 0;
-                    transform: translateX(-130%);
-                    height: 90%;
+                    transform: translateX(-65%);
+                    height: 100%;
 
                 }
 
@@ -100,6 +181,8 @@ main {
             height: fit-content;
             aspect-ratio: 1/1;
             position: relative;
+            animation: showgameplace .3s ease-in-out forwards;
+            opacity: 0;
         }
     }
 
@@ -108,9 +191,11 @@ main {
         height: 100vh;
         position: absolute;
         top: 0;
-        transform: translateX(-100%);
+        transform: translateX(-105%);
         padding: 20px;
         width: min-content;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        z-index: 2;
 
         >span {
             text-wrap: nowrap;
@@ -123,26 +208,94 @@ main {
 
             >img {
                 height: 4em;
-                transform: rotate(180deg);
                 cursor: pointer;
+
+                &:first-of-type {
+                    transform: rotate(180deg);
+                }
             }
         }
 
-        >div {
+        >.allnotes {
             width: 100%;
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
             gap: 15px;
-            align-items: center;
             justify-content: center;
+            position: relative;
+            overflow-y: auto;
+            height: 85%;
+
+
+            &::-webkit-scrollbar {
+                width: 12px;
+                height: 12px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #F0EFEB;
+                border-radius: 6px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #B7B7A4;
+                border-radius: 6px;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background: #B7B7A4;
+            }
 
             >div {
                 background-color: #F0EFEB;
+                max-width: 300px;
                 color: #A5A58D;
                 padding: 15px;
-                width: min-content;
                 border-radius: 15px;
+                height: fit-content;
+
+                &:hover img {
+                    opacity: 1;
+                }
+
+                >h2 {
+                    color: #CB997E;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                    justify-content: space-between;
+                    cursor: pointer;
+
+                    >img {
+                        height: 1.5em;
+                        transition: .2s ease-in-out;
+                        opacity: 0;
+                        cursor: pointer;
+                    }
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+
+                >* {
+                    overflow-wrap: break-word;
+                    white-space: normal;
+                }
+            }
+
+            >span {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                cursor: pointer;
+                height: fit-content;
+
+                >img {
+                    height: 10em;
+                }
             }
 
 
@@ -150,12 +303,87 @@ main {
 
 
         &.hidesidemenu {
-            animation: hidesidemenu .2s forwards ease-in-out;
+            animation: hidesidemenu .3s forwards ease-in-out;
         }
 
         &.showsidemenu {
-            animation: showsidemenu .2s forwards ease-in-out;
+            animation: showsidemenu .3s forwards ease-in-out;
         }
+
+
+        .newnote {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            position: absolute;
+            bottom: 8%;
+            transform: translateY(130%);
+            background-color: #CB997E;
+
+            .inputgroup {
+                width: 93%;
+                position: relative;
+            }
+
+            .inputfield {
+                width: 100%;
+                padding: 15px;
+                font-size: 16px;
+                border: 3px solid #FFF1E6;
+                background-color: #CB997E;
+                border-radius: 4px;
+                outline: none;
+                transition: border-color 0.3s;
+            }
+
+            .inputlabel {
+                position: absolute;
+                left: 15px;
+                top: 15px;
+                font-size: 16px;
+                color: #FFF1E6;
+                transition: all 0.3s ease;
+                pointer-events: none;
+                background-color: transparent;
+            }
+
+            .inputfield:focus {
+                border-color: #EDDCD2;
+            }
+
+            .inputfield:focus+.inputlabel,
+            .inputfield:not(:placeholder-shown)+.inputlabel {
+                top: -10px;
+                left: 10px;
+                font-size: 12px;
+                color: #EDDCD2;
+                background-color: #CB997E;
+                padding: 0 5px;
+            }
+
+            >button {
+                border-radius: 4px;
+                padding: 10px;
+                font-size: 16px;
+                background-color: #FFF1E6;
+                color: #CB997E;
+                width: min-content;
+                align-self: flex-end;
+            }
+
+
+
+            &.hidenewnote {
+                animation: hidenewnote .3s forwards ease-in-out;
+            }
+
+            &.shownewnote {
+                animation: shownewnote .3s forwards ease-in-out;
+            }
+
+        }
+
     }
 }
 
@@ -165,16 +393,46 @@ main {
     }
 
     to {
-        transform: translateX(-100%);
+        transform: translateX(-105%);
     }
 }
 
 @keyframes showsidemenu {
     from {
-        transform: translateX(-100%);
+        transform: translateX(-105%);
     }
 
     to {
         transform: translateX(0);
+    }
+}
+
+@keyframes hidenewnote {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateY(130%);
+    }
+}
+
+@keyframes shownewnote {
+    from {
+        transform: translateY(130%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes showgameplace {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 100;
     }
 }
