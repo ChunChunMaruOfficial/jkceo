@@ -223,9 +223,10 @@ main {
             flex-wrap: wrap;
             gap: 15px;
             justify-content: center;
+            align-items: flex-start;
             position: relative;
             overflow-y: auto;
-            height: 85%;
+            max-height: 85%;
 
 
             &::-webkit-scrollbar {
@@ -259,31 +260,34 @@ main {
                     opacity: 1;
                 }
 
-                >h2 {
-                    color: #CB997E;
+                >span {
                     margin-bottom: 15px;
                     display: flex;
                     align-items: center;
                     gap: 20px;
                     justify-content: space-between;
-                    cursor: pointer;
 
                     >img {
-                        height: 1.5em;
+                        height: 2em;
                         transition: .2s ease-in-out;
                         opacity: 0;
                         cursor: pointer;
                     }
 
-                    &:hover {
-                        text-decoration: underline;
+                    >* {
+                        overflow-wrap: break-word;
+                        white-space: normal;
+                    }
+                    >h2 {
+                        color: #CB997E;
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
                     }
                 }
 
-                >* {
-                    overflow-wrap: break-word;
-                    white-space: normal;
-                }
             }
 
             >span {

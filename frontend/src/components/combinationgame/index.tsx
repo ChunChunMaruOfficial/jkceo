@@ -5,15 +5,17 @@ import { addproductionArray } from '../_slices/baseslice';
 
 import { Ref, useMemo, useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 
-export default function CombinationGame({ steps }: { steps: string[] }) {
+export default function CombinationGame({ steps, setstepscurrent }: { steps: string[], setstepscurrent: any }) {
     const dispatch = useDispatch()
-    const parentRef = useRef<HTMLDivElement>(null);
+    const parentRef = useRef<HTMLDivElement>(null)
 
-    const [isworkdone, setisworkdone] = useState(false);
-    const [intervalState, setintervalState] = useState(false);
-    const [parentheight, useparentheight] = useState(0);
-    const [parentwidth, useparentwidth] = useState(0);
-    const [fillstate, setfillstate] = useState<number[]>([0, 0, 0, 0, 0, 0])
+    const [ismistake, setismistake] = useState(false)
+    const [stepnumber, setstepnumber] = useState(0)
+    const [isworkdone, setisworkdone] = useState(false)
+    const [intervalState, setintervalState] = useState(false)
+    const [parentheight, useparentheight] = useState(0)
+    const [parentwidth, useparentwidth] = useState(0)
+    const [fillstate, setfillstate] = useState<number[]>(new Array(steps.length).fill(0))
     const [isdragging, setisdragging] = useState<boolean>(false)
     const [newX, setnewX] = useState<number>(0)
     const [newY, setnewY] = useState<number>(0)
@@ -28,17 +30,17 @@ export default function CombinationGame({ steps }: { steps: string[] }) {
                 isLeft: getRandom(0, 1) ? true : false,
             };
         });
-        console.log(result);
         return result;
     };
 
-    useEffect(()=> {
-        setfillstate([0, 0, 0, 0, 0, 0])
-    },[steps])
+    useEffect(() => {
+        setfillstate(new Array(steps.length).fill(0))
+    }, [steps])
 
-    useEffect(()=> {
-        fillstate.every(v => v >= 100) && setisworkdone(true)
-    },[fillstate])
+    useEffect(() => {
+        
+        fillstate.every(v => v >= 100) ? setisworkdone(true) : setisworkdone(false)
+    }, [fillstate])
 
     const componentsarray: { text: string, top: number, Xposition: number, isLeft: boolean }[] = useMemo(() => CreateComponents(), [parentheight, parentwidth, steps])
 
@@ -65,7 +67,21 @@ export default function CombinationGame({ steps }: { steps: string[] }) {
                 return intervalState
             })
             setfillstate(fs => fs.map((v, i) => i == index ? v + 1 : v))
-            setfillstate(fs => { fs.forEach((v, i) => v == 100 && i == index && clearInterval(fillinterval)); return fs })
+            setfillstate(fs => {
+                fs.forEach((v, i) => {
+                    i == index && setismistake(false)
+                    if (i == index && v == 100) {
+                        setstepnumber(stepnumber => {
+                            if (stepnumber == index) { setstepnumber(num => num + 1) } else {
+                                setintervalState(false)
+                                setismistake(true)
+                                setstepnumber(0)
+                                componentsarray.map((v, i) => unfilling(i))
+                            }; return stepnumber
+                        }); clearInterval(fillinterval)
+                    }
+                }); return fs
+            })
         }, 32)
     }, [fillstate, intervalState])
 
@@ -74,16 +90,17 @@ export default function CombinationGame({ steps }: { steps: string[] }) {
     const unfilling = useCallback((index: number) => {
         setintervalState(false)
         const unfillinterval = setInterval(() => {
-            setintervalState(intervalState => { if (intervalState == true || fillstate[index] == 100 || fillstate[index] == 1) clearInterval(unfillinterval); return intervalState })
+            setintervalState(intervalState => { if (intervalState == true || fillstate[index] == 1) clearInterval(unfillinterval);
+             return intervalState })
             setfillstate(fs => fs.map((v, i) => i == index ? v - 1 : v))
-            setfillstate(fs => { fs.forEach((v, i) => i == index && (v < 1 || v == 100) && clearInterval(unfillinterval)); return fs })
+            setfillstate(fs => { fs.forEach((v, i) => i == index && v < 1 && clearInterval(unfillinterval));
+             return fs })
         }, 32)
     }, [fillstate, intervalState])
 
 
     const grabbing = (e: unknown, i: number) => {
         if (!componentsRef.current[i] || !parentRef.current) return
-        console.log('grabbing');
         const trueE = e as MouseEvent;
         setisdragging(true)
         setnewX(trueE.clientX - parentRef.current?.getBoundingClientRect().left - (componentsRef.current[i].getBoundingClientRect().left - parentRef.current?.getBoundingClientRect().left))
@@ -95,20 +112,19 @@ export default function CombinationGame({ steps }: { steps: string[] }) {
     const moving = (e: unknown, i: number) => {
         if (!isdragging || !parentRef.current) return;
         if (!componentsRef.current[i]) return
-        console.log('moving');
-
         // Обновляем позицию элемента
         const trueE = e as MouseEvent;
-        const boolvalueX = trueE.clientX > parentRef.current?.getBoundingClientRect().left 
+        const boolvalueX = trueE.clientX > parentRef.current?.getBoundingClientRect().left
         const boolvalueY = trueE.clientY > parentRef.current?.getBoundingClientRect().top
         boolvalueX ? componentsRef.current[i].style.left = `${trueE.clientX - parentRef.current?.getBoundingClientRect().left - newX}px` : 0
-        boolvalueX ? componentsRef.current[i].style.right = 'auto': 0
+        boolvalueX ? componentsRef.current[i].style.right = 'auto' : 0
         boolvalueY ? componentsRef.current[i].style.top = `${trueE.clientY - parentRef.current?.getBoundingClientRect().top - newY}px` : 0
     }
 
 
     return (
         <div ref={parentRef} className={styles.parent}>
+            <h1 style={{top: ismistake ? '10px' : '-60px'}}>Надо строго следовать инструкции..</h1>
             {componentsarray.map((v, i) => (
                 <div onMouseDown={(e) => { filling(i); grabbing(e, i) }}
                     onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false) }}
@@ -125,7 +141,7 @@ export default function CombinationGame({ steps }: { steps: string[] }) {
                     {v.text} {fillstate[i]}%
                 </div>
             ))}
-           {isworkdone && ( <button onClick={() => dispatch(addproductionArray(0))}> Закончить работу </button>)}
+            {isworkdone && (<button onClick={() => {dispatch(addproductionArray(0)); setstepscurrent([])}}> Закончить работу </button>)}
         </div >
     );
 }

@@ -5,6 +5,17 @@ export interface NoteInterface {
     text: string
 }
 
+export interface worker {
+    name: string, 
+    surname: string, 
+    age: string, 
+    sex: string, 
+    prof: string, 
+    imgsrc: string, 
+    income: number,
+    efficiency: number
+}
+
 export interface BaseState {
     name: string,
     professionformulation: string,
@@ -12,7 +23,7 @@ export interface BaseState {
     notes: NoteInterface[],
     messengerrange: number,
     rumorsstatus: number,
-    workers: number,
+    workersarray: worker[],
     goodsPerHour: number,
     productionArray: number[],
 
@@ -25,9 +36,10 @@ const initialState: BaseState = {
     notes: [],
     messengerrange: 1,
     rumorsstatus: 0,
-    workers: 6,
     goodsPerHour: 1,
-    productionArray: [] //все переменные, что хранятся в слайсе
+    productionArray: [], //все переменные, что хранятся в слайсе
+
+    workersarray: []
 }
 
 export const BaseSlice = createSlice({
@@ -50,15 +62,15 @@ export const BaseSlice = createSlice({
             state.productionArray[action.payload] = state.productionArray[action.payload] ? state.productionArray[action.payload] + 1 : 1
         },
         deletecurrentnote: (state, action) => {
-            state.notes = state.notes.filter(v => v.text !== action.payload.text);
-            console.log(action.payload);
-            console.log(state.notes);
-            
+            state.notes = state.notes.filter(v => v.text !== action.payload.text); 
+        },
+        addworker: (state, action):void => {
+            state.workersarray.push(action.payload)
         },
     },
 })
 
-export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote,addproductionArray } = BaseSlice.actions //все методы сюда импортировать:3
+export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote,addproductionArray, addworker } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

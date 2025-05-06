@@ -28,10 +28,29 @@ body {
             flex-direction: row;
             gap: 45px;
 
-            >img:nth-of-type(3),
-            >img:nth-of-type(4),
-            >img:nth-of-type(6) {
-                scale: .85;
+            >a>span {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                >img:nth-of-type(3),
+                >img:nth-of-type(4),
+                >img:nth-of-type(6) {
+                    scale: .85;
+                }
+
+                &:hover p {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                >p {
+                    color: #F0EFEB;
+                    transform: translateY(-100%);
+                    transition: .1s ease-in-out;
+                    opacity: 0;
+                }
             }
         }
 

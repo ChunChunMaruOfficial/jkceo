@@ -15,7 +15,9 @@ function POSTmethod(req, res) {
         case '/deletecurrentnote':
             User.deletecurrentnote(req.body.note)
             break;
-
+        case '/getstory':
+            getMistral('getstory', req.body.worker, res)
+            break;
     }
 }
 

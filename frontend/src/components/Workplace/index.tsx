@@ -15,7 +15,9 @@ import cancel from '../../assets/svg/system/cancel.svg'
 import table from '../../assets/svg/maininterface/table.svg'
 
 
-export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidemenu: number, setshowsidemenu: any }) {
+export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { showsidemenu: number, setshowsidemenu: any, seconds: number }) {
+    const sidemenuRef = useRef<HTMLDivElement>(null)
+
     const dispatch = useDispatch()
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
 
@@ -25,9 +27,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidem
     const inputHeadRef = useRef<HTMLInputElement>(null)
     const inputtextRef = useRef<HTMLInputElement>(null)
 
-    const workers: number = useSelector((state: RootState) => state.base.workers);
-    const goodsPerHour: number = useSelector((state: RootState) => state.base.goodsPerHour);
-    const messengerrange: number = useSelector((state: RootState) => state.base.messengerrange);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
     const productionArray: number[] = useSelector((state: RootState) => state.base.productionArray);
 
@@ -93,15 +92,19 @@ export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidem
     let productionmax: number = 0
     productionArray.map(v => v > productionmax ? productionmax = v : 0)
 
-    return (<main>
+    return (<main onClick={(e) => {
+        if (sidemenuRef.current && !sidemenuRef.current.contains(e.target as Node)) {
+            setshowsidemenu(0)
+        }
+    }}>
 
         <div>
             <div className={styles.clockplace}>
                 <div className={styles.clock}>
                     <div className={styles.button}></div>
                     <div className={styles.clockdisplay}>
-                        <p>AM</p>
-                        <h1>12 : 00</h1>
+                        <p>{Math.floor(seconds / 60) < 12 ? 'AM' : 'PM'}</p>
+                        <h1>{Math.floor(seconds / 60) < 10 ? '0' : ''}{Math.floor(seconds / 60)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}</h1>
                         <p> 0</p>
                     </div>
                 </div>
@@ -134,16 +137,17 @@ export default function Workplace({ showsidemenu, setshowsidemenu }: { showsidem
             </div>
         </div>
         {stepscurrent.length != 0 && (<div className={styles.gameplace}>
-            <CombinationGame steps={stepscurrent} />
+            <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} />
 
         </div>)}
-        <div className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}>
+        <div ref={sidemenuRef} className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}>
             <span><img onClick={() => setshowsidemenu(0)} src={back} alt="" /><h1>Ваши записи</h1><img onClick={() => { setnewnoteisopen(newnoteisopen == 1 ? 0 : 1) }} src={newnote} alt="" /></span>
             <div className={styles.allnotes}>
                 {notes.map(v => (<div>
-                    <h2 onClick={() => {
-                        setstepscurrent(v.text.split(',')); setshowsidemenu(false)
-                    }}>{v.title} <img onClick={() => deletenote(v)} src={cancel} alt="" /></h2>
+                    <span>
+                        <h2 onClick={() => {
+                            setstepscurrent(v.text.split(',')); setshowsidemenu(false)
+                        }}>{v.title}</h2> <img onClick={() => deletenote(v)} src={cancel} alt="" /></span>
                     <p>{v.title == 'Нужно попробовать' ? v.text.split(',').map(v => (<>• {v} <br /></>)) : v.text}</p>
                 </div>))}
                 <span onClick={() => thinkingfunc()}>

@@ -15,7 +15,7 @@ const User = {
         this.notes.push(note)
     },
     deletecurrentnote(note){
-        this.notes = this.notes.filter(v => v != note)
+        this.notes = this.notes.filter(v => v.text != note.text)
         console.log(this.notes, note);
         
     },

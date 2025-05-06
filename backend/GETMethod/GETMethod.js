@@ -27,6 +27,9 @@ function GETmethod(req, res) {
     case '/getnotes':
       res.json({ notes: User.notes })
       break;
+    case '/getworkers':
+      getMistral('getworkers', '', res)
+      break;
   }
 }
 
