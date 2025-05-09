@@ -5,6 +5,9 @@ import { addproductionArray } from '../_slices/baseslice';
 
 import { Ref, useMemo, useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 
+
+
+
 export default function CombinationGame({ steps, setstepscurrent }: { steps: string[], setstepscurrent: any }) {
     const dispatch = useDispatch()
     const parentRef = useRef<HTMLDivElement>(null)
@@ -93,14 +96,14 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
             setintervalState(intervalState => { if (intervalState == true || fillstate[index] == 1) clearInterval(unfillinterval);
              return intervalState })
             setfillstate(fs => fs.map((v, i) => i == index ? v - 1 : v))
-            setfillstate(fs => { fs.forEach((v, i) => i == index && v < 1 && clearInterval(unfillinterval));
+            setfillstate(fs => { fs.forEach((v, i) => { i == index && v < 1 && ( v = 0, clearInterval(unfillinterval))}); 
              return fs })
         }, 32)
     }, [fillstate, intervalState])
 
 
     const grabbing = (e: unknown, i: number) => {
-        if (!componentsRef.current[i] || !parentRef.current) return
+        if (!componentsRef.current[i] || !parentRef.current) return 
         const trueE = e as MouseEvent;
         setisdragging(true)
         setnewX(trueE.clientX - parentRef.current?.getBoundingClientRect().left - (componentsRef.current[i].getBoundingClientRect().left - parentRef.current?.getBoundingClientRect().left))
@@ -126,7 +129,7 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
         <div ref={parentRef} className={styles.parent}>
             <h1 style={{top: ismistake ? '10px' : '-60px'}}>Надо строго следовать инструкции..</h1>
             {componentsarray.map((v, i) => (
-                <div onMouseDown={(e) => { filling(i); grabbing(e, i) }}
+                <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i) }}
                     onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false) }}
                     onMouseOut={(e) => { fillstate[i] != 100 && fillstate[i] > 0 && unfilling(i); setisdragging(false) }}
                     onMouseMove={(e) => moving(e, i)}

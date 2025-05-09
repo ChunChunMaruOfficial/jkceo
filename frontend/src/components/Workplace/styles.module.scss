@@ -72,6 +72,34 @@ main {
                 }
             }
 
+            >.workers {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+
+                >div {
+
+                    >.worker {
+                        display: flex;
+                        flex-direction: row;
+
+                        >span {
+                            background-color: #CB997E;
+                            border-radius: 100%;
+                            padding: 5px;
+                            aspect-ratio: 1/1;
+                            height: -webkit-fill-available;
+                            >img {
+                                height: 4em;
+                                border-radius: 100%;
+                                background-color: #30343F;
+                                aspect-ratio: 1/1;
+                            }
+                        }
+                    }
+                }
+            }
+
             >div {
                 border: 1px solid #CB997E;
                 border-radius: 20px;
@@ -130,7 +158,6 @@ main {
                 gap: 5px;
                 position: relative;
                 height: 300px;
-                width: 600px;
                 justify-content: start;
                 overflow-y: hidden;
 
@@ -278,6 +305,7 @@ main {
                         overflow-wrap: break-word;
                         white-space: normal;
                     }
+
                     >h2 {
                         color: #CB997E;
                         cursor: pointer;

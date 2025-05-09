@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react';
 
 import customer from '../../assets/svg/maininterface/customer.svg'
 import provider from '../../assets/svg/maininterface/provider.svg'
-import providerway from '../../assets/svg/maininterface/providerway.svg'
 import rating from '../../assets/svg/maininterface/rating.svg'
 import upgradegear from '../../assets/svg/maininterface/upgradegear.svg'
 import worker from '../../assets/svg/maininterface/worker.svg'
-import ad from '../../assets/svg/maininterface/ad.svg'
 
 import home from '../../assets/svg/maininterface/home.svg'
 import bag from '../../assets/svg/coins/bag.svg'
@@ -22,9 +20,10 @@ import styles from './style.module.scss'
 import { Link, Route, Routes,useLocation  } from 'react-router-dom';
 import notes from '../../assets/svg/maininterface/notes.svg'
 import { RootState } from '../mainstore';
+
 import Workplace from '../Workplace';
 import Workers from '../workers';
-
+import Provider from '../providers';
 
 export default function Mainscreen() {
     const location = useLocation();
@@ -39,9 +38,7 @@ export default function Mainscreen() {
         }, 15000)
     }, [])
     useEffect(() => {
-        window.location.pathname == '/current/workplace' ? setmainbutton(true) : setmainbutton(false)
-        console.log(mainbutton);
-        
+        window.location.pathname == '/current/workplace' ? setmainbutton(true) : setmainbutton(false)        
     }, [location.pathname])
 
 
@@ -50,11 +47,9 @@ export default function Mainscreen() {
 
     const headerarray = [{ img: customer, text: 'Клиенты', link: 'customer' },
     { img: provider, text: 'Поставка', link: 'providers' },
-    { img: providerway, text: 'Маршрут поставок', link: 'providerways' },
     { img: rating, text: 'Огласка', link: 'rating' },
     { img: upgradegear, text: 'Оборудование', link: 'upgradegear' },
-    { img: worker, text: 'Рабочие', link: 'workers' },
-    { img: ad, text: 'Реклама', link: 'ad' }]
+    { img: worker, text: 'Рабочие', link: 'workers' }]
 
     const coinsarray = [goldencoin, silvercoin, bronze]
 
@@ -72,6 +67,7 @@ export default function Mainscreen() {
                 <Route path='formulation' element={<Professionformulation />}></Route>
                 <Route path='workplace' element={<Workplace showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} seconds={seconds} />}></Route>
                 <Route path='workers' element={<Workers />}></Route>
+                <Route path='providers' element={<Provider />}></Route>
 
             </Routes>
 

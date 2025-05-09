@@ -60,6 +60,10 @@ export default function Professionformulation() {
                     setprofessionformulation(res.data.answer);
                 })
         }
+        axios.get('http://localhost:3001/getmaterials')
+        .then((res) => {
+            console.log(res.data.answer);
+        })
     }, [])
 
     return (

@@ -37,9 +37,9 @@ const initialState: BaseState = {
     messengerrange: 1,
     rumorsstatus: 0,
     goodsPerHour: 1,
-    productionArray: [], //все переменные, что хранятся в слайсе
+    productionArray: [2,4,6,10,3,12,4,5,6], //все переменные, что хранятся в слайсе
 
-    workersarray: []
+    workersarray: [] //уже имеющееся работники
 }
 
 export const BaseSlice = createSlice({

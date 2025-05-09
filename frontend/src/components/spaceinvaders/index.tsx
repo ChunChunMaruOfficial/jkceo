@@ -24,7 +24,7 @@ export default function AntiqueInvaders() {
             lastinvader.getBoundingClientRect().left < (parentwidth / 2) ? (lastinvader.style.left = (lastinvader.getBoundingClientRect().left + getRandom(100, parentwidth)) + 'px') : ((lastinvader.getBoundingClientRect().left + getRandom(100, parentwidth)) + 'px')
             lastinvader.style.top = lastinvader.getBoundingClientRect().top + parentheight + 'px'
             setinvadersArray(invadersArray => [...invadersArray, { top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth + 100) : 300) }])
-        }, 1000)
+        }, 300)
     }
 
     const bulletsRender = () => {
@@ -39,7 +39,7 @@ export default function AntiqueInvaders() {
             setTimeout(() => {
                 newbullet.style.top = '-20px'
             }, 5);
-        }, 500)
+        }, 150)
     }
 
     const checkCollision = () => {

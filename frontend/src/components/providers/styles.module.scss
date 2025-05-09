@@ -1,0 +1,36 @@
+.parent {
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    gap: 40px;
+    width: 100%;
+
+    >.providersarray {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+
+        >.provider {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            width: 400px;
+            gap: 15px;
+            border: 2px solid #A5A58D;
+            border-radius: 20px;
+
+            >span {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 10px;
+
+                >img {
+                    height: 2em;
+                }
+            }
+        }
+    }
+}

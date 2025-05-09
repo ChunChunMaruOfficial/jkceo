@@ -1,15 +1,22 @@
 .parent {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: calc(100% - 80px);
     height: 71%;
     padding: 40px;
     gap: 50px;
 
-    >h1 {
-        >span {
-            text-decoration: line-through;
-            color: #FFF1E6;
+    >div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        >h1 {
+            >span {
+                text-decoration: line-through;
+                color: #FFF1E6;
+            }
         }
     }
 
@@ -20,6 +27,7 @@
         flex-wrap: nowrap;
         height: 100%;
 
+        >.myworkers,
         >.list {
             display: flex;
             flex-direction: column;
@@ -88,15 +96,49 @@
                 margin-inline: auto;
             }
         }
+        
+        >.myworkers{
+            >div{
+                border: 1px solid #6b705c;
+                border-radius: 20px;
+                padding: 15px;
+                margin: 20px;
+                margin-top: 0;
+            }
+        }
 
         >.currentworker {
             padding-inline: 30px;
             width: 40%;
             display: flex;
             flex-direction: column;
-            transform: translateY(-100px);
+            transform: translateY(-50px);
+            height: 100%;
+            overflow: auto;
 
-            span{
+
+
+            &::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0);
+                border-radius: 6px;
+
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #CB997E;
+                border-radius: 6px;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background: #CB997E;
+            }
+
+
+            span {
                 color: #DDBEA9;
             }
 
@@ -174,7 +216,7 @@
             }
         }
 
-        >.loading{
+        >.loading {
             transform: translateY(-100px);
         }
     }

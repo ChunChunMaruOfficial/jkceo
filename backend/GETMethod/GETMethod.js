@@ -30,6 +30,12 @@ function GETmethod(req, res) {
     case '/getworkers':
       getMistral('getworkers', '', res)
       break;
+    case '/getmaterials':
+      getMistral('getmaterials', User.professionformulation, res)
+      break;
+    case '/getmaterialannouncement':
+      getMistral('getmaterialannouncement', '', res)
+      break;
   }
 }
 

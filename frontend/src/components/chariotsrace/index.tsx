@@ -92,7 +92,6 @@ export default function ChariotsRace() {
 
     const changeWordsArray = () => {
         const startwordarray: { effect: boolean, text: string }[] = new Array(4).fill(null).map(() => { return getRandom(0, 2) ? { effect: true, text: motivation[getRandom(0, motivation.length)] } : { effect: false, text: demotivation[getRandom(0, demotivation.length)] } })
-        console.log(wordsarray);
         setwordsarray(startwordarray)
     }
 

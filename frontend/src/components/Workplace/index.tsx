@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import styles from './styles.module.scss'
 import { RootState } from '../mainstore';
+import { worker } from '../_slices/baseslice';
 import getRandom from '../_modules/getRandom';
 import back from '../../assets/svg/system/back.svg'
 import CombinationGame from '../combinationgame';
@@ -17,7 +18,7 @@ import table from '../../assets/svg/maininterface/table.svg'
 
 export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { showsidemenu: number, setshowsidemenu: any, seconds: number }) {
     const sidemenuRef = useRef<HTMLDivElement>(null)
-
+    const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
     const dispatch = useDispatch()
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
 
@@ -43,8 +44,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
         axios.get('http://localhost:3001/getsteps')
             .then((res) => {
                 setthinking(false)
-                console.log(res.data.answer);
-
                 dispatch(addnewnote({
                     title: 'Нужно попробовать',
                     text: res.data.answer
@@ -61,10 +60,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
     useEffect(() => {
         notes.length == 0 && axios.get('http://localhost:3001/getnotes')
             .then((res) => {
-                console.log(res.data.notes);
                 res.data.notes.map((v: NoteInterface) => {
-                    console.log(v);
-
                     dispatch(addnewnote({
                         title: v.title,
                         text: v.text
@@ -110,6 +106,14 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
                 </div>
                 <img src={table} alt="" />
             </div>
+            {workers.length > 0 && (<div className={styles.workers}>
+                <h2>Ваши работники:</h2>
+                <div>
+                    {workers.map((v) => (<div className={styles.worker}>
+                        <span><img src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} alt="" /></span>
+                    </div>))}
+                </div>
+            </div>)}
             {/* <div className={styles.messenger}>
                 <h2>Every day the messenger brings</h2>
                 <h1>{messengerrange}</h1>
@@ -127,14 +131,14 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
                 <h2>your business produces</h2>
                 <h1>{goodsPerHour}</h1>
             </div>*/}
-            <div className={styles.production}>
+            {productionArray.length > 0 && (<div className={styles.production}>
                 <span>
                     <p>{productionmax}</p>
                     <p>{productionmax / 2}</p>
                     <p>0</p>
                 </span>
                 {productionArray.map((v, i) => (<p style={{ height: `${v / productionmax * 100}%`, background: v / productionmax > .7 ? '#b2f2bb' : v / productionmax > .4 ? '#ffec99' : '#ffc9c9', borderColor: v / productionmax > .7 ? '#2f9e44' : v / productionmax > .4 ? '#f08c00' : '#e03131' }}>{i}</p>))}
-            </div>
+            </div>)}
         </div>
         {stepscurrent.length != 0 && (<div className={styles.gameplace}>
             <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} />
