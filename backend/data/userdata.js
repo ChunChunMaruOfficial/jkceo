@@ -2,6 +2,11 @@ const User = {
     name: 'КровьЖонглерШоу',
     professionformulation: 'Я продаю представления жонглеров старикам за анализ их крови.',
     notes: [],
+    money: 0,
+
+    setmoney(money) {
+        this.money = money
+    },
 
     setname(name) {
         this.name = name
@@ -11,13 +16,13 @@ const User = {
         this.professionformulation = professionformulation
     },
 
-    addnewnote(note){
+    addnewnote(note) {
         this.notes.push(note)
     },
-    deletecurrentnote(note){
+    deletecurrentnote(note) {
         this.notes = this.notes.filter(v => v.text != note.text)
         console.log(this.notes, note);
-        
+
     },
 }
 

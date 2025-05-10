@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
+
 
 export interface NoteInterface {
     title: string,
@@ -6,12 +8,12 @@ export interface NoteInterface {
 }
 
 export interface worker {
-    name: string, 
-    surname: string, 
-    age: string, 
-    sex: string, 
-    prof: string, 
-    imgsrc: string, 
+    name: string,
+    surname: string,
+    age: string,
+    sex: string,
+    prof: string,
+    imgsrc: string,
     income: number,
     efficiency: number
 }
@@ -32,12 +34,12 @@ export interface BaseState {
 const initialState: BaseState = {
     name: '',
     professionformulation: '',
-    money: 534,
+    money: -1,
     notes: [],
     messengerrange: 1,
     rumorsstatus: 0,
     goodsPerHour: 1,
-    productionArray: [2,4,6,10,3,12,4,5,6], //все переменные, что хранятся в слайсе
+    productionArray: [2, 4, 6, 10, 3, 12, 4, 5, 6], //все переменные, что хранятся в слайсе
 
     workersarray: [] //уже имеющееся работники
 }
@@ -51,26 +53,31 @@ export const BaseSlice = createSlice({
         },
         setmoney: (state, action) => {
             state.money = action.payload
+            axios.post('http://localhost:3001/setmoney', { money: action.payload })
         },
         setname: (state, action) => {
             state.name = action.payload
         },
         addnewnote: (state, action) => {
             state.notes.push(action.payload)
+            axios.post('http://localhost:3001/addnewnote', { note: action.payload })
+
         },
         addproductionArray: (state, action) => {
             state.productionArray[action.payload] = state.productionArray[action.payload] ? state.productionArray[action.payload] + 1 : 1
         },
         deletecurrentnote: (state, action) => {
-            state.notes = state.notes.filter(v => v.text !== action.payload.text); 
+            state.notes = state.notes.filter(v => v.text !== action.payload.text);
+            axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
+
         },
-        addworker: (state, action):void => {
+        addworker: (state, action): void => {
             state.workersarray.push(action.payload)
         },
     },
 })
 
-export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote,addproductionArray, addworker } = BaseSlice.actions //все методы сюда импортировать:3
+export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addproductionArray, addworker } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

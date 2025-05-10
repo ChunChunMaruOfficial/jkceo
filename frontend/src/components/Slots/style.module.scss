@@ -308,6 +308,7 @@
               position: relative;
               width: 100%;
               text-align: center;
+              position: relative;
 
               >.microbolt {
                 position: absolute;
@@ -327,6 +328,63 @@
                   bottom: 15px;
                 }
 
+              }
+
+              >*{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+
+              >.botomcenter_front {
+                width: 100%;
+                z-index: 1;
+                position: relative;
+                height: 100%;
+                backface-visibility: hidden;
+                transition: transform .3s cubic-bezier(.2, .85, .4, 1.275);
+
+                >.textarea {
+                  margin: 10px;
+                }
+              }
+
+              >.botomcenter_back {
+
+                z-index: 0;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                transform: rotateY(-180deg);
+                transition: transform .3s cubic-bezier(.2, .85, .4, 1.275);
+
+                >a {
+                  >button {
+                    background-color: #A5A58D;
+                    border: 3px solid #242423;
+                    padding: 15px;
+                    border-radius: 15px;
+                    text-align: center;
+                    font-size: x-large;
+                    color: #242423;
+                    font-weight: 700;
+                    text-wrap: nowrap;
+                  }
+                }
+              }
+
+
+              &:hover .botomcenter_back {
+                transform: rotateY(0deg);
+                z-index: 2;
+              }
+
+              &:hover .botomcenter_front {
+                transform: rotateY(180deg);
+                z-index: -1;
               }
             }
 
@@ -408,33 +466,11 @@
                     border-radius: 100%;
                   }
                 }
-
               }
             }
           }
         }
       }
-    }
-  }
-
-  >a {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 107%;
-
-    >button {
-
-
-      background-color: #A5A58D;
-      border: 3px solid #242423;
-      padding: 15px;
-      border-radius: 15px;
-      text-align: center;
-      font-size: x-large;
-      color: #242423;
-      font-weight: 700;
-      text-wrap: nowrap;
     }
   }
 }

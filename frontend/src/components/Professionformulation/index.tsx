@@ -11,9 +11,6 @@ import accept from '../../assets/svg/system/accept.svg'
 import loading from '../../assets/svg/system/loading.svg'
 import { addnewnote } from '../_slices/baseslice';
 
-
-
-
 export default function Professionformulation() {
     const dispatch = useDispatch()
     const [professionformulation, setprofessionformulation] = useState<string>(useSelector((state: RootState) => state.base.professionformulation))
@@ -46,7 +43,6 @@ export default function Professionformulation() {
             }
 
             dispatch(addnewnote(newnote))
-            axios.post('http://localhost:3001/addnewnote', { note: newnote })
         } else {
             setlabelvalue("Даруй себе имя!")
         }

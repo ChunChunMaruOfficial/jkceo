@@ -9,6 +9,9 @@ function POSTmethod(req, res) {
         case '/setname':
             User.setname(req.body.name)
             break;
+        case '/setmoney':
+            req.body.money != User.money && User.setmoney(req.body.money)
+            break;
         case '/addnewnote':
             User.addnewnote(req.body.note)
             break;

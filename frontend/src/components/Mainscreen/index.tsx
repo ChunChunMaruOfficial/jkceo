@@ -17,33 +17,44 @@ import bronze from '../../assets/svg/coins/bronze.svg'
 
 import styles from './style.module.scss'
 
-import { Link, Route, Routes,useLocation  } from 'react-router-dom';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import notes from '../../assets/svg/maininterface/notes.svg'
 import { RootState } from '../mainstore';
+import { setmoney } from '../_slices/baseslice';
 
 import Workplace from '../Workplace';
 import Workers from '../workers';
 import Provider from '../providers';
+import axios from 'axios';
 
 export default function Mainscreen() {
     const location = useLocation();
+    const dispatch = useDispatch()
+    //это вроде данные, которые мы получаем из слайса
+    const money: number = useSelector((state: RootState) => state.base.money)
 
     const [showsidemenu, setshowsidemenu] = useState<number>(2)
     const [seconds, setseconds] = useState<number>(360)
     const [mainbutton, setmainbutton] = useState<boolean>(false)
 
     useEffect(() => {
-        setInterval(() => {
-            setseconds(sec => sec + 10)
-        }, 15000)
+        axios.get('http://localhost:3001/getmoney')
+            .then((res) => {
+                console.log(res.data);
+                dispatch(setmoney(res.data.money));
+            });
+             setInterval(() => {
+                setseconds(sec => sec + 10)
+            }, 15000)
     }, [])
+
+
     useEffect(() => {
-        window.location.pathname == '/current/workplace' ? setmainbutton(true) : setmainbutton(false)        
+        window.location.pathname == '/current/workplace' ? setmainbutton(true) : setmainbutton(false)
     }, [location.pathname])
 
 
-    //это вроде данные, которые мы получаем из слайса
-    const money: number = useSelector((state: RootState) => state.base.money)
+
 
     const headerarray = [{ img: customer, text: 'Клиенты', link: 'customer' },
     { img: provider, text: 'Поставка', link: 'providers' },
@@ -55,8 +66,8 @@ export default function Mainscreen() {
 
     return (
         <div className={styles.parent}>
-            <div  className={styles.top}>
-                <Link to={!mainbutton ? '../current/workplace' : '' }><img onClick={() => mainbutton && setshowsidemenu(1)} src={mainbutton ? notes : home} alt="" /></Link>
+            <div className={styles.top}>
+                <Link to={!mainbutton ? '../current/workplace' : ''}><img onClick={() => mainbutton && setshowsidemenu(1)} src={mainbutton ? notes : home} alt="" /></Link>
                 <header>{headerarray.map((v, i) => (<Link onClick={() => setshowsidemenu(2)} to={'../current/' + v.link}><span><img src={v.img} alt={i.toString()} /><p>{v.text}</p></span></Link>))}</header>
                 <img className={styles.bag} src={bag} alt="" />
                 <span className={styles.coins}>

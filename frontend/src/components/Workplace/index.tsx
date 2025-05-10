@@ -32,11 +32,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
     const productionArray: number[] = useSelector((state: RootState) => state.base.productionArray);
 
     const deletenote = (note: NoteInterface) => {
-
         dispatch(deletecurrentnote(note))
-        axios.post('http://localhost:3001/deletecurrentnote', {
-            note: note
-        })
     }
 
     const thinkingfunc = () => {
@@ -48,12 +44,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
                     title: 'Нужно попробовать',
                     text: res.data.answer
                 }));
-                axios.post('http://localhost:3001/addnewnote', {
-                    note: {
-                        title: 'Нужно попробовать',
-                        text: res.data.answer
-                    }
-                })
             })
     }
 

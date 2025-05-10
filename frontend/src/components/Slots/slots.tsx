@@ -8,6 +8,8 @@ import getRandom from '../_modules/getRandom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+import loading from '../../assets/svg/system/loading.svg'
+
 import { setmoney, setprofessionformulation } from '../_slices/baseslice';
 
 export default function Slots() {
@@ -31,7 +33,7 @@ export default function Slots() {
     const pos = useRef({ y: 0, top: 0 })
 
     const fatesaccept = () => {
-        dispatch(setmoney(silvercoins))
+        dispatch(setmoney(silvercoins / 10))
         dispatch(setprofessionformulation(serveranswer))
     }
 
@@ -202,9 +204,16 @@ export default function Slots() {
                                 <span>Гроссо</span>
                                 <span>{silvercoins}</span>
                             </div>
+
                             <div className={styles.botomcenter}>
                                 {[...Array(4)].map(() => (<p className={styles.microbolt}></p>))}
-                                {typeof serveranswer == 'string' && serveranswer}
+                                <div className={styles.botomcenter_front}>
+                                    <p className={styles.textarea}>{typeof serveranswer == 'string' && serveranswer}</p>
+                                </div>
+                                <div className={styles.botomcenter_back}>
+                                    {serveranswer && serveranswer != badanswer && (<Link to='../current/formulation'> <button onClick={() => fatesaccept()}>принять свою участь</button> </Link>)}
+
+                                </div>
                             </div>
                             <div>
                                 <span>Попытки</span>
@@ -239,7 +248,6 @@ export default function Slots() {
                 <span className={styles.bolt}><div></div></span>
                 <span className={styles.bolt}><div></div></span>
             </div>
-            {serveranswer && serveranswer != badanswer && ( <Link to='../current/formulation'> <button onClick={() => fatesaccept()}>принять свою участь</button> </Link>)}
         </div>
     )
 }

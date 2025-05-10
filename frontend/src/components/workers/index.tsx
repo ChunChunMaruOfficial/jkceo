@@ -67,8 +67,8 @@ export default function Workers() {
 
         <div className={styles.parent}>
             <div>
-                <h1>Наймите себе <span>раба</span> работника ({workersarray.length}): </h1>
-                <h1>Ваши рабочие:</h1>
+                <h1>Наймите себе <span>раб</span>отника ({workersarray.length}): </h1>
+               { workers.length > 0 && !currentworker && !newworker && <h1>Ваши рабочие:</h1>}
             </div>
             <main>
                 <div className={styles.list}>

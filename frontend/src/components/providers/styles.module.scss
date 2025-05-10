@@ -1,15 +1,50 @@
 .parent {
     display: flex;
     flex-direction: column;
-    padding: 40px;
+    padding: 0 40px;
     gap: 40px;
-    width: 100%;
+    height: 78%;
+    width: calc(100% - 80px);
 
     >.providersarray {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         gap: 20px;
+        height: 100%;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0);
+            border-radius: 6px;
+
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #A5A58D;
+            border-radius: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #A5A58D;
+        }
+
+        >span {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+
+            >img {
+                height: 15em;
+            }
+        }
+
 
         >.provider {
             display: flex;
@@ -19,17 +54,130 @@
             gap: 15px;
             border: 2px solid #A5A58D;
             border-radius: 20px;
+            justify-content: space-between;
 
-            >span {
+            >div {
                 display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                align-items: center;
+                flex-direction: column;
                 gap: 10px;
 
-                >img {
-                    height: 2em;
+                >span {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    align-items: center;
+                    gap: 10px;
+
+                    >img {
+                        height: 2em;
+                    }
                 }
+            }
+
+
+        }
+    }
+
+    button {
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 20px;
+        transition: .1s ease-in-out;
+        border: 3px solid #CB997E;
+        background-color: #30343F;
+        color: #CB997E;
+        width: min-content;
+        align-self: flex-end;
+        text-wrap: nowrap;
+        width: 100%;
+
+        &:hover {
+            background-color: #CB997E;
+            color: #30343F;
+        }
+    }
+
+
+
+    .popup {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #A5A58D;
+        border-radius: 15px;
+        padding: 15px;
+        gap: 15px;
+
+        >span {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+            gap: 30px;
+            align-items: center;
+
+            .rangeinput {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 10px;
+                border-radius: 5px;
+                background: #d3d3d3;
+                outline: none;
+                position: relative;
+              }
+              
+              .rangeinput::before {
+                content: var(--thumb-value);
+                position: absolute;
+                top: -10px;
+                left: var(--thumb-pos);
+                transform: translateX(-50%);
+                background: #4CAF50;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                z-index: 2;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: bold;
+              }
+              
+              .rangeinput::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: #4CAF50;
+                cursor: pointer;
+                position: relative;
+                z-index: 1;
+              }
+            &:first-of-type {
+                margin-bottom: 30px;
+                align-items: start;
+            }
+
+            >button {
+                border: 3px solid #F0EFEB;
+                color: #F0EFEB;
+                background-color: #A5A58D;
+
+                &:hover {
+                    background-color: #F0EFEB;
+                    color: #A5A58D;
+                }
+            }
+
+            >img {
+                height: 2em;
+                cursor: pointer;
             }
         }
     }
