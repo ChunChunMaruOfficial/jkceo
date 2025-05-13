@@ -3,6 +3,7 @@ const User = {
     professionformulation: 'Я продаю представления жонглеров старикам за анализ их крови.',
     notes: [],
     money: 0,
+    workers: [],
 
     setmoney(money) {
         this.money = money
@@ -18,6 +19,9 @@ const User = {
 
     addnewnote(note) {
         this.notes.push(note)
+    },
+    addnewworker(worker) {
+        this.workers.push(worker)
     },
     deletecurrentnote(note) {
         this.notes = this.notes.filter(v => v.text != note.text)

@@ -32,6 +32,7 @@ export default function Workers() {
         dispatch(addworker(worker))
         dispatch(deleteworker(worker))
         setworkersarray(wa => wa.filter(v => v != worker))
+        axios.post('http://localhost:3001/addnewworker', { worker: worker })
         setnewworker(true)
         setTimeout(() => {
             setnewworker(false)
@@ -51,7 +52,39 @@ export default function Workers() {
             res.data.answer.slice(0, -1).split('.').map((v: string) => {
                 const v1 = v.split(',');
                 const income = getRandom(80, 500)
-                const workerdata: worker = { name: v1[0], surname: v1[1], age: v1[2], sex: v1[3], prof: v1[4], imgsrc: v1[3].toLowerCase().trim() == 'мужской' ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`, income: income, efficiency: Math.round(income / Math.PI) }
+                const efficiency = Math.round(income / Math.PI)
+                const workerdata: worker = {
+                    name: v1[0],
+                    surname: v1[1],
+                    age: v1[2],
+                    sex: v1[3],
+                    prof: v1[4],
+                    imgsrc: v1[3].toLowerCase().trim() == 'мужской' ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`,
+                    income: income,
+                    efficiency: efficiency,
+                    statistic: {
+                        drawers: {
+                            value: Math.round(150 / efficiency),
+                            level: 0,
+                            maxlevel: Math.floor(efficiency / 25)
+                        },
+                        lamp: {
+                            value: 20,
+                            level: 0,
+                            maxlevel: Math.floor(efficiency / 25)
+                        },
+                        mug: {
+                            value: 10,
+                            level: 0,
+                            maxlevel: Math.floor(efficiency / 25)
+                        },
+                        table: {
+                            value: Math.round(2000 / efficiency),
+                            level: 0,
+                            maxlevel: Math.floor(efficiency / 25)
+                        }
+                    }
+                }
                 setworkersarray(workersarray => [...workersarray, workerdata])
                 dispatch(setworkers(workerdata))
             })
@@ -61,6 +94,11 @@ export default function Workers() {
 
     useEffect(() => {
         newworkers.length == 0 ? getworkers() : setworkersarray(newworkers)
+        if (workers.length == 0) {
+            axios.get('http://localhost:3001/getmyworkers').then((res) => {
+                res.data.workers.map((v: worker) => dispatch(addworker(v)))
+            })
+        }
     }, [])
 
     return (
@@ -68,13 +106,13 @@ export default function Workers() {
         <div className={styles.parent}>
             <div>
                 <h1>Наймите себе <span>раб</span>отника ({workersarray.length}): </h1>
-               { workers.length > 0 && !currentworker && !newworker && <h1>Ваши рабочие:</h1>}
+                {workers.length > 0 && !currentworker && !newworker && <h1>Ваши рабочие:</h1>}
             </div>
             <main>
                 <div className={styles.list}>
 
-                    {workersarray.length > 0 ? workersarray.map((v) =>
-                    (<div onClick={() => { setnewworker(false); setcurrentworker(v), getcurrent(Object.values(v)) }}>
+                    {workersarray.length > 0 ? workersarray.map((v, i) =>
+                    (<div key={i} onClick={() => { setnewworker(false); setcurrentworker(v), getcurrent(Object.values(v)) }}>
                         <img alt='' src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} />
                         <span><h2>{v.name} {v.surname}</h2><p>{v.age} лет • {v.sex} • {v.prof}</p></span>
                         <h2>Желаемый заработок: {Math.floor(v.income / 100) > 0 && (<>{Math.floor(v.income / 100)} <img alt='' src={silver} /></>)}   {v.income % 100} <img src={bronze} alt="" /></h2>
@@ -92,8 +130,8 @@ export default function Workers() {
                     </div>
                 </div>) : (<span className={styles.loading}><img src={Questioning} alt="" /><p>Пытаемся разобрать подчерк..</p></span>))}
                 {newworker && (<span className={styles.loading}><img src={deal} alt="" /><p>Новый коллега выйдет на работу завтра</p></span>)}
-                {!newworker && !currentworker && (<div className={styles.myworkers}>{workers.map((v) => (
-                    <div>
+                {!newworker && !currentworker && (<div className={styles.myworkers}>{workers.map((v, i) => (
+                    <div key={i}>
                         <img alt='' src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} />
                         <span><h2>{v.name} {v.surname}</h2><p>{v.age} лет • {v.sex} • {v.prof}</p></span>
                         <h2>Заработок: {Math.floor(v.income / 100) > 0 && (<>{Math.floor(v.income / 100)} <img alt='' src={silver} /></>)}   {v.income % 100} <img src={bronze} alt="" /></h2>

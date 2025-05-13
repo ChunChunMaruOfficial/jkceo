@@ -1,34 +1,27 @@
 const GetAllEmoji = require("./GETMethods/getemoji")
 const getMistral = require("../POSTMethod/POSTMethods/getmistral")
+
 const motivation = require('../data/motivation.json')
 const demotivation = require('../data/demotivation.json')
+
 const User = require('../data/userdata.js')
+
+const refusal = require('../data/refusal.json')
+const agreement = require('../data/agreement.json')
+const offers = require('../data/offers.json')
+const deal = require('../data/deal.json')
+const breakdeal = require('../data/breakdeal.json')
+const concessions = require('../data/concessions.json')
 
 function GETmethod(req, res) {
   switch (req.path) {
-    case '/getdata':
-      res.json({ answer: GetAllEmoji() })
-      break;
+
+    /*---------------- Mistral ----------------*/
     case '/getexamplename':
       getMistral('examplename', User.professionformulation, res)
       break;
-    case '/getprofessionformulation':
-      res.json({ answer: User.professionformulation })
-      break;
-    case '/getmotivation':
-      res.json({ answer: motivation })
-      break;
-    case '/getdemotivation':
-      res.json({ answer: demotivation })
-      break;
     case '/getsteps':
       getMistral('steps', User.professionformulation, res)
-      break;
-    case '/getnotes':
-      res.json({ notes: User.notes })
-      break;
-    case '/getmoney':
-      res.json({ money: User.money })
       break;
     case '/getworkers':
       getMistral('getworkers', '', res)
@@ -38,6 +31,37 @@ function GETmethod(req, res) {
       break;
     case '/getmaterialannouncement':
       getMistral('getmaterialannouncement', '', res)
+      break;
+
+    /*---------------- User ----------------*/
+    case '/getnotes':
+      res.json({ notes: User.notes })
+      break;
+    case '/getmoney':
+      res.json({ money: User.money })
+      break;
+    case '/getprofessionformulation':
+      res.json({ answer: User.professionformulation })
+      break;
+    case '/getmyworkers':
+      res.json({ workers: User.workers })
+      break;
+
+    /*---------------- JSON ----------------*/
+    case '/getmessages':
+      res.json({ refusal: refusal, agreement: agreement, offers: offers, deal: deal, breakdeal: breakdeal, concessions: concessions })
+      break;
+
+    case '/getmotivation':
+      res.json({ answer: motivation })
+      break;
+    case '/getdemotivation':
+      res.json({ answer: demotivation })
+      break;
+
+
+    case '/getdata':
+      res.json({ answer: GetAllEmoji() })
       break;
   }
 }

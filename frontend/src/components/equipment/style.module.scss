@@ -1,0 +1,119 @@
+.statistic {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: absolute;
+    left: 60px;
+    top: 200px;
+
+    >span {
+        display: flex;
+        flex-direction: row;
+        margin-left: 15px;
+        align-items: center;
+        justify-content: space-between;
+
+        >img {
+            height: 4em;
+            cursor: pointer;
+        }
+
+        >div {
+            padding: 5px;
+            font-size: 20px;
+            border: 2px solid #CB997E;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-inline: 10px 30px;
+        }
+
+        .next {
+            height: 5.5em;
+        }
+
+        .back {
+            transform: scale(-1);
+        }
+    }
+}
+
+.parent {
+    width: 1000px;
+    height: 600px;
+    position: relative;
+    margin: auto;
+    transform: translateX(40%);
+
+    >img {
+        position: absolute;
+        cursor: pointer;
+        transition: .3s ease-in-out;
+
+        &:hover {
+            scale: 1.03;
+        }
+    }
+
+    >.table {
+        height: 700px;
+        left: -200px;
+        bottom: 0;
+        transform: translateY(35%);
+    }
+
+    >.mug {
+        height: 200px;
+        left: 740px;
+        top: 185px;
+    }
+
+    >.lamp {
+        z-index: 1;
+        height: 400px;
+        left: -90px;
+        top: 70px;
+    }
+
+    >.drawers {
+        height: 600px;
+        left: 600px;
+        bottom: 0;
+        transform: translateY(30%);
+    }
+
+    .upgrade {
+        z-index: 2;
+        cursor: pointer;
+        position: absolute;
+        width: max-content;
+        padding: 15px;
+        font-size: 20px;
+        border: 2px solid #A5A58D;
+        border-radius: 20px;
+    }
+
+    >.uprgadelamp {
+        left: 140px;
+        top: 70px;
+    }
+
+    >.uprgadetable {
+        left: 350px;
+        top: 250px;
+    }
+
+    >.uprgademug {
+        left: 740px;
+        top: 110px;
+    }
+
+    >.uprgadedrawers {
+        left: 1000px;
+        top: 250px;
+    }
+
+}

@@ -6,6 +6,12 @@ export interface NoteInterface {
     title: string,
     text: string
 }
+export interface statisticInterface {
+    drawers: { value: number, level: number, maxlevel: number },
+    lamp: { value: number, level: number, maxlevel: number },
+    mug: { value: number, level: number, maxlevel: number },
+    table: { value: number, level: number, maxlevel: number }
+}
 
 export interface worker {
     name: string,
@@ -15,7 +21,9 @@ export interface worker {
     prof: string,
     imgsrc: string,
     income: number,
-    efficiency: number
+    efficiency: number,
+
+    statistic: statisticInterface
 }
 
 export interface BaseState {
@@ -28,7 +36,6 @@ export interface BaseState {
     workersarray: worker[],
     goodsPerHour: number,
     productionArray: number[],
-
 }
 
 const initialState: BaseState = {
@@ -69,15 +76,32 @@ export const BaseSlice = createSlice({
         deletecurrentnote: (state, action) => {
             state.notes = state.notes.filter(v => v.text !== action.payload.text);
             axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
-
         },
         addworker: (state, action): void => {
             state.workersarray.push(action.payload)
         },
+        upgradestatistic: (state, action): void => {
+
+            const [id, characteristic]: [number, string] = action.payload;
+            const workersstatistic = state.workersarray[id].statistic[characteristic as keyof statisticInterface];
+            workersstatistic.maxlevel < workersstatistic.level ? workersstatistic.level += 1 : ''
+            switch (characteristic) {
+                case 'table':
+                case 'drawers':
+                    workersstatistic.value -= workersstatistic.value * 0.05
+                    break;
+                case 'lamp':
+                    workersstatistic.value += 1
+                    break;
+                case 'mug':
+                    workersstatistic.value -= 1
+                    break;
+            }
+        },
     },
 })
 
-export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addproductionArray, addworker } = BaseSlice.actions //все методы сюда импортировать:3
+export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addproductionArray, addworker, upgradestatistic } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

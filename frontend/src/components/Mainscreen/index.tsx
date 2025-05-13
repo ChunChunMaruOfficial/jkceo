@@ -13,7 +13,7 @@ import bag from '../../assets/svg/coins/bag.svg'
 
 import goldencoin from '../../assets/svg/coins/gold.svg'
 import silvercoin from '../../assets/svg/coins/silver.svg'
-import bronze from '../../assets/svg/coins/bronze.svg'
+import bronzecoin from '../../assets/svg/coins/bronze.svg'
 
 import styles from './style.module.scss'
 
@@ -25,6 +25,8 @@ import { setmoney } from '../_slices/baseslice';
 import Workplace from '../Workplace';
 import Workers from '../workers';
 import Provider from '../providers';
+import Equipment from '../equipment';
+
 import axios from 'axios';
 
 export default function Mainscreen() {
@@ -40,7 +42,6 @@ export default function Mainscreen() {
     useEffect(() => {
         axios.get('http://localhost:3001/getmoney')
             .then((res) => {
-                console.log(res.data);
                 dispatch(setmoney(res.data.money));
             });
              setInterval(() => {
@@ -62,16 +63,16 @@ export default function Mainscreen() {
     { img: upgradegear, text: 'Оборудование', link: 'upgradegear' },
     { img: worker, text: 'Рабочие', link: 'workers' }]
 
-    const coinsarray = [goldencoin, silvercoin, bronze]
+    const coinsarray = [goldencoin, silvercoin, bronzecoin]
 
     return (
         <div className={styles.parent}>
             <div className={styles.top}>
                 <Link to={!mainbutton ? '../current/workplace' : ''}><img onClick={() => mainbutton && setshowsidemenu(1)} src={mainbutton ? notes : home} alt="" /></Link>
-                <header>{headerarray.map((v, i) => (<Link onClick={() => setshowsidemenu(2)} to={'../current/' + v.link}><span><img src={v.img} alt={i.toString()} /><p>{v.text}</p></span></Link>))}</header>
+                <header>{headerarray.map((v, i) => (<Link key={i} onClick={() => setshowsidemenu(2)} to={'../current/' + v.link}><span><img src={v.img} alt={i.toString()} /><p>{v.text}</p></span></Link>))}</header>
                 <img className={styles.bag} src={bag} alt="" />
                 <span className={styles.coins}>
-                    {coinsarray.map((v, i) => (<span><p>{Math.floor(i == 0 ? (money / 100) : (i == 1 ? money % 100 / 10 : money % 10))}</p><img src={v} alt="" /></span>))}
+                    {coinsarray.map((v, i) => (<span key={i}><p>{Math.floor(i == 0 ? (money / 100) : (i == 1 ? money % 100 / 10 : money % 10))}</p><img src={v} alt="" /></span>))}
                 </span>
             </div>
             <Routes>
@@ -79,6 +80,7 @@ export default function Mainscreen() {
                 <Route path='workplace' element={<Workplace showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} seconds={seconds} />}></Route>
                 <Route path='workers' element={<Workers />}></Route>
                 <Route path='providers' element={<Provider />}></Route>
+                <Route path='upgradegear' element={<Equipment />}></Route>
 
             </Routes>
 

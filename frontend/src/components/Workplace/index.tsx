@@ -17,6 +17,7 @@ import table from '../../assets/svg/maininterface/table.svg'
 
 
 export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { showsidemenu: number, setshowsidemenu: any, seconds: number }) {
+
     const sidemenuRef = useRef<HTMLDivElement>(null)
     const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
     const dispatch = useDispatch()
@@ -80,7 +81,8 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
 
     return (<main onClick={(e) => {
         if (sidemenuRef.current && !sidemenuRef.current.contains(e.target as Node)) {
-            setshowsidemenu(0)
+            setshowsidemenu((ssm:number) => { if (ssm != 2) return 0  
+                else return 2 })
         }
     }}>
 
@@ -140,7 +142,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds }: { 
                 {notes.map(v => (<div>
                     <span>
                         <h2 onClick={() => {
-                            setstepscurrent(v.text.split(',')); setshowsidemenu(false)
+                            v.title == 'Нужно попробовать' && setstepscurrent(v.text.split(',')); setshowsidemenu(false)
                         }}>{v.title}</h2> <img onClick={() => deletenote(v)} src={cancel} alt="" /></span>
                     <p>{v.title == 'Нужно попробовать' ? v.text.split(',').map(v => (<>• {v} <br /></>)) : v.text}</p>
                 </div>))}
