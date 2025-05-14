@@ -25,6 +25,9 @@ function POSTmethod(req, res) {
         case '/deletecurrentnote':
             User.deletecurrentnote(req.body.note)
             break;
+        case '/updateworkerstat':
+            User.updateworkerstat(req.body.index, req.body.worker)
+            break;
 
     }
 }

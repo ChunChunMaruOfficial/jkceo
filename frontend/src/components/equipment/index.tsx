@@ -14,6 +14,8 @@ import lampselected from '../../assets/svg/equipment/selected/lamp.svg'
 import muselected from '../../assets/svg/equipment/selected/mug.svg'
 import tableselected from '../../assets/svg/equipment/selected/table.svg'
 
+import noworkers from '../../assets/svg/equipment/noworkers.svg'
+
 import gauge from '../../assets/svg/equipment/statistic/gauge.svg'
 import sisyphus from '../../assets/svg/equipment/statistic/sisyphus.svg'
 import clock from '../../assets/svg/equipment/statistic/clock.svg'
@@ -23,6 +25,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../mainstore'
 import { useState } from 'react'
 import { addworker, upgradestatistic } from '../_slices/baseslice'
+
+
 
 import axios from 'axios'
 
@@ -40,6 +44,11 @@ export default function Equipment() {
             })
         }
     }, [])
+
+    const upgradestat = (i:number) => { //тут тупой баг какой то
+        dispatch(upgradestatistic([workerindex, characteristic[i]]))
+        axios.post('http://localhost:3001/updateworkerstat', { index: workerindex, worker: myworkers[workerindex] })
+    }
 
     const characteristic = ['drawers', 'lamp', 'mug', 'table']
 
@@ -64,14 +73,14 @@ export default function Equipment() {
 
     return (<>
 
-        {myworkers.length > 0 && (<><div className={styles.statistic}>
+        {myworkers.length > 0 ? (<><div className={styles.statistic}>
             <span>{workerindex != 0 && (<img onClick={() => setworkerindex(prevIndex => prevIndex - 1)} className={styles.next + " " + styles.back} src={next} alt="" />)}<h1>{workerindex + 1}. {myworkers[workerindex].name} {myworkers[workerindex].surname}</h1>{myworkers.length - 1 > workerindex && (<img onClick={() => setworkerindex(prevIndex => prevIndex + 1)} className={styles.next} src={next} alt="" />)}</span>
-            {statistics.map((v, i) => (<span key={i}><img src={v.imgsrc} alt="" /><h2>{v.text}</h2><div>{Object.values(myworkers[workerindex].statistic)[i].value.toFixed(2)}  {i == 1 && 'PM'}{i == 2 && 'AM'}</div></span>))}
+            {statistics.map((v, i) => { const currentstat = Object.values(myworkers[workerindex].statistic)[i]; return (<span key={i}><img src={v.imgsrc} alt="" /><h2>{v.text}</h2><div style={{ background: currentstat.level != 0 ? `linear-gradient(to right, red ${Math.floor((currentstat.level / currentstat.maxlevel) * 100)}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}>{currentstat.value.toFixed(2)}  {i == 1 && 'PM'}{i == 2 && 'AM'}</div></span>) })}
         </div>
             <div className={styles.parent}>
-                {imgs.map((v, i) => (<img key={i} onClick={() => dispatch(upgradestatistic([workerindex, characteristic[i]]))} onMouseOver={() => setselectedequipment(i)} onMouseOut={() => setselectedequipment(-1)} className={v.class} src={selectedequipment == i ? v.selected : v.src} />))}
-                {paragraphs.map((v, i) => selectedequipment == i && (<p onClick={() => dispatch(upgradestatistic([workerindex, characteristic[i]]))} key={i} onMouseOver={() => setselectedequipment(i)} onMouseOut={() => setselectedequipment(-1)} className={v.class + ' ' + styles.upgrade}>{v.text}</p>))}
-            </div></>)}
+                {imgs.map((v, i) => (<img key={i} onClick={() => upgradestat(i)} onMouseOver={() => setselectedequipment(i)} onMouseOut={() => setselectedequipment(-1)} className={v.class} src={selectedequipment == i ? v.selected : v.src} />))}
+                {paragraphs.map((v, i) => selectedequipment == i && (<p onClick={() => upgradestat(i)} key={i} onMouseOver={() => setselectedequipment(i)} onMouseOut={() => setselectedequipment(-1)} className={v.class + ' ' + styles.upgrade}>{v.text}</p>))}
+            </div></>) : (<span className={styles.noworkers}><img src={noworkers} alt="" /><p>У вас еще нет работников, <br /> чтобы улучшать для них оборудования</p></span>)}
     </>
     )
 }

@@ -84,7 +84,8 @@ export const BaseSlice = createSlice({
 
             const [id, characteristic]: [number, string] = action.payload;
             const workersstatistic = state.workersarray[id].statistic[characteristic as keyof statisticInterface];
-            workersstatistic.maxlevel < workersstatistic.level ? workersstatistic.level += 1 : ''
+            workersstatistic.maxlevel > workersstatistic.level ? workersstatistic.level += 1 : ''
+            
             switch (characteristic) {
                 case 'table':
                 case 'drawers':

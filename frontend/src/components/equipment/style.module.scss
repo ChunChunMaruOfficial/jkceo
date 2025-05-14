@@ -117,3 +117,21 @@
     }
 
 }
+
+.noworkers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    gap: 25px;
+
+    >img {
+        height: 20em;
+    }
+
+    >p {
+        text-align: center;
+        font-size: 32px;
+    }
+}

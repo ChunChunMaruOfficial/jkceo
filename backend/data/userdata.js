@@ -28,6 +28,9 @@ const User = {
         console.log(this.notes, note);
 
     },
+    updateworkerstat(index, worker) { //потом можно оптимизировать на обновление определенной характеристики для экономии траффика
+        this.workers[index] = worker
+    },
 }
 
 module.exports = User
