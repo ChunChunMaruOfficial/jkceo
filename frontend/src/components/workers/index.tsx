@@ -62,16 +62,17 @@ export default function Workers() {
                     imgsrc: v1[3].toLowerCase().trim() == 'мужской' ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`,
                     income: income,
                     efficiency: efficiency,
+                    production: '',
                     statistic: {
                         drawers: {
-                            value: Math.round(150 / efficiency),
+                            value: Math.round(2000 / efficiency * 200),
                             level: 0,
                             maxlevel: Math.floor(efficiency / 25)
                         },
                         lamp: {
                             value: 20,
                             level: 0,
-                            maxlevel: Math.floor(efficiency / 25)
+                            maxlevel: Math.floor(efficiency / 25),
                         },
                         mug: {
                             value: 10,

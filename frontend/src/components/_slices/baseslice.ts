@@ -7,10 +7,10 @@ export interface NoteInterface {
     text: string
 }
 export interface statisticInterface {
-    drawers: { value: number, level: number, maxlevel: number },
+    drawers: { value: number, level: number, maxlevel: number }, //кулдаун
     lamp: { value: number, level: number, maxlevel: number },
     mug: { value: number, level: number, maxlevel: number },
-    table: { value: number, level: number, maxlevel: number }
+    table: { value: number, level: number, maxlevel: number } // скорость производства
 }
 
 export interface worker {
@@ -23,10 +23,13 @@ export interface worker {
     income: number,
     efficiency: number,
 
-    statistic: statisticInterface
+    statistic: statisticInterface,
+
+    production: string
 }
 
 export interface BaseState {
+    day: number,
     name: string,
     professionformulation: string,
     money: number,
@@ -36,9 +39,12 @@ export interface BaseState {
     workersarray: worker[],
     goodsPerHour: number,
     productionArray: number[],
+    inventory: { name: string, count: number }[]
 }
 
 const initialState: BaseState = {
+    day: 0,
+
     name: '',
     professionformulation: '',
     money: -1,
@@ -46,15 +52,21 @@ const initialState: BaseState = {
     messengerrange: 1,
     rumorsstatus: 0,
     goodsPerHour: 1,
-    productionArray: [2, 4, 6, 10, 3, 12, 4, 5, 6], //все переменные, что хранятся в слайсе
+    productionArray: [], //все переменные, что хранятся в слайсе
 
-    workersarray: [] //уже имеющееся работники
+    workersarray: [], //уже имеющееся работники
+
+    inventory: []
 }
 
 export const BaseSlice = createSlice({
     name: 'base',
     initialState,
     reducers: {
+        
+        newday: (state) => {
+            state.day ++
+        },
         setprofessionformulation: (state, action) => { //формулировка профессии
             state.professionformulation = action.payload
         },
@@ -67,11 +79,7 @@ export const BaseSlice = createSlice({
         },
         addnewnote: (state, action) => {
             state.notes.push(action.payload)
-            axios.post('http://localhost:3001/addnewnote', { note: action.payload })
 
-        },
-        addproductionArray: (state, action) => {
-            state.productionArray[action.payload] = state.productionArray[action.payload] ? state.productionArray[action.payload] + 1 : 1
         },
         deletecurrentnote: (state, action) => {
             state.notes = state.notes.filter(v => v.text !== action.payload.text);
@@ -81,28 +89,40 @@ export const BaseSlice = createSlice({
             state.workersarray.push(action.payload)
         },
         upgradestatistic: (state, action): void => {
-
             const [id, characteristic]: [number, string] = action.payload;
             const workersstatistic = state.workersarray[id].statistic[characteristic as keyof statisticInterface];
-            workersstatistic.maxlevel > workersstatistic.level ? workersstatistic.level += 1 : ''
-            
-            switch (characteristic) {
-                case 'table':
-                case 'drawers':
-                    workersstatistic.value -= workersstatistic.value * 0.05
-                    break;
-                case 'lamp':
-                    workersstatistic.value += 1
-                    break;
-                case 'mug':
-                    workersstatistic.value -= 1
-                    break;
+            if (workersstatistic.maxlevel > workersstatistic.level) {
+                workersstatistic.maxlevel > workersstatistic.level ? workersstatistic.level += 1 : ''
+
+                switch (characteristic) {
+                    case 'table':
+                    case 'drawers':
+                        workersstatistic.value -= workersstatistic.value * 0.05
+                        break;
+                    case 'lamp':
+                        workersstatistic.value += 1
+                        break;
+                    case 'mug':
+                        workersstatistic.value -= 1
+                        break;
+                }
+                axios.post('http://localhost:3001/updateworkerstat', { index: id, worker: state.workersarray[id] })
             }
         },
+
+        setproduction: (state, action): void => {
+            const [id, production]: [number, string] = action.payload;
+            state.workersarray[id].production = production
+        },
+        addtoinventory: (state, action): void => {
+            state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
+            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1
+        },
+
     },
 })
 
-export const { setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addproductionArray, addworker, upgradestatistic } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

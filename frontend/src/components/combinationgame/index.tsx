@@ -1,14 +1,14 @@
 import styles from './style.module.scss';
 import getRandom from '../_modules/getRandom';
 import { useDispatch } from 'react-redux';
-import { addproductionArray } from '../_slices/baseslice';
+import { addtoinventory } from '../_slices/baseslice';
 
 import { Ref, useMemo, useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 
 
 
 
-export default function CombinationGame({ steps, setstepscurrent }: { steps: string[], setstepscurrent: any }) {
+export default function CombinationGame({ steps, setstepscurrent, title }: { steps: string[], setstepscurrent: any, title: string }) {
     const dispatch = useDispatch()
     const parentRef = useRef<HTMLDivElement>(null)
 
@@ -41,7 +41,7 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
     }, [steps])
 
     useEffect(() => {
-        
+
         fillstate.every(v => v >= 100) ? setisworkdone(true) : setisworkdone(false)
     }, [fillstate])
 
@@ -79,7 +79,7 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
                                 setintervalState(false)
                                 setismistake(true)
                                 setstepnumber(0)
-                                componentsarray.map((v, i) => unfilling(i))
+                                componentsarray.map((v, i) => fs[i] > 0 && unfilling(i))
                             }; return stepnumber
                         }); clearInterval(fillinterval)
                     }
@@ -93,17 +93,21 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
     const unfilling = useCallback((index: number) => {
         setintervalState(false)
         const unfillinterval = setInterval(() => {
-            setintervalState(intervalState => { if (intervalState == true || fillstate[index] == 1) clearInterval(unfillinterval);
-             return intervalState })
+            setintervalState(intervalState => {
+                if (intervalState == true || fillstate[index] == 1) clearInterval(unfillinterval);
+                return intervalState
+            })
             setfillstate(fs => fs.map((v, i) => i == index ? v - 1 : v))
-            setfillstate(fs => { fs.forEach((v, i) => { i == index && v < 1 && ( v = 0, clearInterval(unfillinterval))}); 
-             return fs })
+            setfillstate(fs => {
+                fs.forEach((v, i) => { i == index && v < 3 && (clearInterval(unfillinterval), v = 0) });
+                return fs
+            })
         }, 32)
     }, [fillstate, intervalState])
 
 
     const grabbing = (e: unknown, i: number) => {
-        if (!componentsRef.current[i] || !parentRef.current) return 
+        if (!componentsRef.current[i] || !parentRef.current) return
         const trueE = e as MouseEvent;
         setisdragging(true)
         setnewX(trueE.clientX - parentRef.current?.getBoundingClientRect().left - (componentsRef.current[i].getBoundingClientRect().left - parentRef.current?.getBoundingClientRect().left))
@@ -127,7 +131,7 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
 
     return (
         <div ref={parentRef} className={styles.parent}>
-            <h1 style={{top: ismistake ? '10px' : '-60px'}}>Надо строго следовать инструкции..</h1>
+            <h1 style={{ top: ismistake ? '10px' : '-60px' }}>Надо строго следовать инструкции..</h1>
             {componentsarray.map((v, i) => (
                 <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i) }}
                     onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false) }}
@@ -144,7 +148,7 @@ export default function CombinationGame({ steps, setstepscurrent }: { steps: str
                     {v.text} {fillstate[i]}%
                 </div>
             ))}
-            {isworkdone && (<button onClick={() => {dispatch(addproductionArray(0)); setstepscurrent([])}}> Закончить работу </button>)}
+            {isworkdone && (<button onClick={() => { dispatch(addtoinventory(title)); setstepscurrent([]) }}> Закончить работу </button>)}
         </div >
     );
 }

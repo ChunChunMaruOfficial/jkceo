@@ -65,23 +65,45 @@ main {
                             height: 12px;
                         }
                     }
+
+                    >span {
+                        position: absolute;
+                        right: -200px;
+                        top: -50px;
+
+                        >img {
+                            height: 12em;
+                        }
+
+                        >p {
+                            font-size: 20px;
+                            transform: translate(55px, -118px);
+                        }
+                    }
                 }
 
                 >img {
                     height: 25em;
                 }
+
+
             }
 
             >.workers {
                 display: flex;
                 flex-direction: column;
                 flex-wrap: nowrap;
+                gap: 20px;
+                position: relative;
 
                 >div {
+                    display: flex;
+                    flex-direction: column;
 
                     >.worker {
                         display: flex;
-                        flex-direction: row;
+                        flex-direction: column;
+                        align-items: center;
 
                         >span {
                             background-color: #CB997E;
@@ -89,11 +111,64 @@ main {
                             padding: 5px;
                             aspect-ratio: 1/1;
                             height: -webkit-fill-available;
+                            position: relative;
+
                             >img {
                                 height: 4em;
                                 border-radius: 100%;
                                 background-color: #30343F;
                                 aspect-ratio: 1/1;
+                            }
+
+                            >.tea {
+                                z-index: inherit;
+                                position: absolute;
+                                bottom: 0;
+                                right: -20px;
+                                height: 2.2em;
+                                background-color: rgba(255, 0, 0, 0);
+                            }
+                        }
+
+                        >p {
+                            opacity: 0;
+                            transition: .3s ease-in-out;
+                        }
+
+                        >.productionitem {
+                            transform: translateY(20px);
+                        }
+
+                        >.productionpercent {
+                            transform: translateY(-20px);
+                        }
+                    }
+
+                    >.worker:hover p {
+                        transform: none;
+                        opacity: 1;
+                    }
+
+
+
+                    >.productionselect {
+                        position: absolute;
+                        top: 10%;
+                        left: 105%;
+                        background-color: #F0EFEB;
+                        padding: 15px;
+                        border-radius: 10px;
+                        z-index: 2;
+
+                        >p {
+                            text-wrap: nowrap;
+                            color: #A5A58D;
+                            cursor: pointer;
+                            font-size: 20px;
+                            transition: .2s ease-in-out;
+
+                            &:hover {
+                                text-decoration: underline;
                             }
                         }
                     }
@@ -196,6 +271,7 @@ main {
                     padding-inline: 20px;
                     border-radius: 5px;
                     border: 1px solid black;
+
                 }
             }
         }
@@ -210,6 +286,18 @@ main {
             position: relative;
             animation: showgameplace .3s ease-in-out forwards;
             opacity: 0;
+        }
+
+        .logcabin {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: min-content;
+            cursor: pointer;
+
+            >img {
+                height: 10em;
+            }
         }
     }
 
@@ -417,6 +505,68 @@ main {
         }
 
     }
+
+    >.popupwrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 4;
+        animation: showpopup .3s ease-in-out forwards;
+        opacity: 0;
+
+        .popup {
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #A5A58D;
+            border-radius: 15px;
+            padding: 30px;
+            padding-left: 20px;
+            gap: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+            .dottedlist {
+                list-style: none;
+                padding: 0;
+                font-family: Arial, sans-serif;
+
+                li {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                    padding: 6px 0;
+                    font-size: 26px;
+                }
+
+                .number {
+                    flex-shrink: 0;
+                    font-weight: bold;
+                }
+
+                .dots {
+                    flex-grow: 1;
+                    border-bottom: 2px dotted #F0EFEB;
+                    height: 1em;
+                    margin: 0 4px;
+                    transform: translateY(-2px);
+                    /* вертикальное выравнивание точек */
+                }
+
+                .text {
+                    flex-shrink: 0;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
 }
 
 @keyframes hidesidemenu {
@@ -466,5 +616,15 @@ main {
 
     to {
         opacity: 100;
+    }
+}
+
+@keyframes showpopup {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
     }
 }
