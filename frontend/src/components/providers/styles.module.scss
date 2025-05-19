@@ -10,7 +10,7 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 40px;
         height: 100%;
         overflow: auto;
 
@@ -55,6 +55,7 @@
             border: 2px solid #A5A58D;
             border-radius: 20px;
             justify-content: space-between;
+            position: relative;
 
             >div {
                 display: flex;
@@ -74,6 +75,28 @@
                 }
             }
 
+            >.notavaible {
+                border-radius: 20px;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                background-color: rgba(0, 0, 0, 0.65);
+                left: 0;
+                top: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 3;
+
+                >img {
+                    height: 12em;
+                }
+
+                >p {
+                    font-size: 36px;
+                }
+            }
 
         }
     }
@@ -148,7 +171,7 @@
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                
+
                 &:hover {
                     transform: translateX(-15px);
                 }

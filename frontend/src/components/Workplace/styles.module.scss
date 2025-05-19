@@ -85,8 +85,6 @@ main {
                 >img {
                     height: 25em;
                 }
-
-
             }
 
             >.workers {
@@ -95,6 +93,7 @@ main {
                 flex-wrap: nowrap;
                 gap: 20px;
                 position: relative;
+                height: max-content;
 
                 >div {
                     display: flex;
@@ -297,6 +296,32 @@ main {
 
             >img {
                 height: 10em;
+            }
+        }
+
+        .client {
+            overflow: hidden;
+            position: relative;
+
+            >.clientimg {
+                height: 20em;
+            }
+
+            >.likeatable {
+                position: absolute;
+                width: 29em;
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: -87%;
+                z-index: 0;
+            }
+            >p{      position: absolute;
+                padding: 30px;
+                max-width: 150px;
+                text-wrap: wrap;
+                background-image: url('../src/assets/svg/maininterface/message.svg');
+                background-size: 100% ;
+                background-position: 0;
             }
         }
     }

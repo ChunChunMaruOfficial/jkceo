@@ -116,7 +116,7 @@ export const BaseSlice = createSlice({
         },
         addtoinventory: (state, action): void => {
             state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
-            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1
+            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1            
         },
 
     },

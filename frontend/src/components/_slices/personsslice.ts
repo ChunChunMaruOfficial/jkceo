@@ -29,18 +29,23 @@ export const PersonsState = createSlice({
             state.workers.push(action.payload)
         },
         addannouncements: (state, action) => {
-            state.announcements.push(action.payload)
+            console.log(action.payload);
+            
+            state.announcements = [...state.announcements, action.payload]
         },
 
         deleteworker: (state, action) => {
             state.workers = state.workers.filter(v => v.name != action.payload.name)
         },
-        doubleprice: (state, action) => {
-            state.announcements.map((v,i) => i == action.payload ? v.price *= 2 : v.price)
+        setnewprice: (state, action) => {
+             const [id, newprice]: [number, number] = action.payload;
+            state.announcements = state.announcements.map((v, i) =>
+                i === id ? { ...v, price: newprice } : v
+            );
         },
     },
 })
 
-export const { setworkers, deleteworker, addannouncements,doubleprice } = PersonsState.actions //все методы сюда импортировать:3
+export const { setworkers, deleteworker, addannouncements, setnewprice } = PersonsState.actions //все методы сюда импортировать:3
 
 export default PersonsState.reducer

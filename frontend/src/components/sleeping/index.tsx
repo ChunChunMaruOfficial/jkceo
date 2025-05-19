@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { newday } from '../_slices/baseslice'
-
+import { useDispatch, useSelector } from 'react-redux'
+import renderCoins from '../_modules/renderCoins'
 import styles from './style.module.scss'
 import sleeping from '../../assets/svg/sleeping/sleeping.svg'
 import moon from '../../assets/svg/sleeping/moon.svg'
 import sun from '../../assets/svg/sleeping/sun.svg'
 
+import { worker, setmoney,newday } from '../_slices/baseslice'
+import { RootState } from '../mainstore'
+
 export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: any, setsleeping: any }) {
     const dispatch = useDispatch()
+    const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
+    const money: number = useSelector((state: RootState) => state.base.money);
+
+    let sum = 0
+    workers.map((v) => sum += v.income)
 
     const cooldown = (7 / (30 - hour)) * 1000
     useEffect(() => {
@@ -21,6 +28,8 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
             })
         }, cooldown)
         dispatch(newday())
+        dispatch(setmoney(money - sum))
+        
     }, [])
 
 
@@ -31,6 +40,7 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
             <img className={styles.sleeping} src={sleeping} alt="" />
             <img className={styles.moon} src={moon} alt="" />
             <img className={styles.sun} src={sun} alt="" />
+            <h1 className={styles.paycheck}>Рабочим выплачена зарплата в размере {renderCoins(sum)}</h1>
         </div>
     )
 }

@@ -37,7 +37,7 @@ export default function Mainscreen() {
     const money: number = useSelector((state: RootState) => state.base.money)
 
     const [showsidemenu, setshowsidemenu] = useState<number>(2)
-    const [seconds, setseconds] = useState<number>(660)  //360
+    const [seconds, setseconds] = useState<number>(360)  //360
     const [mainbutton, setmainbutton] = useState<boolean>(false)
     const [sleeping, setsleeping] = useState<boolean>(false)
 
@@ -48,7 +48,7 @@ export default function Mainscreen() {
             });
         setInterval(() => {
             setseconds(sec => sec + 10)
-        }, 15000)
+        }, 15000) // 150000
     }, [])
 
 

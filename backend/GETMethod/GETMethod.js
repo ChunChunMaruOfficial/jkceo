@@ -12,6 +12,7 @@ const offers = require('../data/offers.json')
 const deal = require('../data/deal.json')
 const breakdeal = require('../data/breakdeal.json')
 const concessions = require('../data/concessions.json')
+const notenoughmoney = require('../data/notenoughmoney.json')
 
 function GETmethod(req, res) {
   switch (req.path) {
@@ -49,9 +50,8 @@ function GETmethod(req, res) {
 
     /*---------------- JSON ----------------*/
     case '/getmessages':
-      res.json({ refusal: refusal, agreement: agreement, offers: offers, deal: deal, breakdeal: breakdeal, concessions: concessions })
+      res.json({ refusal: refusal, agreement: agreement, offers: offers, deal: deal, breakdeal: breakdeal, concessions: concessions, notenoughmoney: notenoughmoney })
       break;
-
     case '/getmotivation':
       res.json({ answer: motivation })
       break;

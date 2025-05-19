@@ -5,7 +5,7 @@ import { addtoinventory } from '../_slices/baseslice';
 
 import { Ref, useMemo, useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 
-
+import close from '../../assets/svg/system/cancel.svg'
 
 
 export default function CombinationGame({ steps, setstepscurrent, title }: { steps: string[], setstepscurrent: any, title: string }) {
@@ -132,9 +132,10 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
     return (
         <div ref={parentRef} className={styles.parent}>
             <h1 style={{ top: ismistake ? '10px' : '-60px' }}>Надо строго следовать инструкции..</h1>
+            <img src={close} onClick={() => { setstepscurrent([]) }} className={styles.close} alt="" />
             {componentsarray.map((v, i) => (
-                <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i) }}
-                    onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false) }}
+                <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i);if (componentsRef.current[i]) componentsRef.current[i].style.zIndex = '2'  }}
+                    onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false); if (componentsRef.current[i]) componentsRef.current[i].style.zIndex = '1' }}
                     onMouseOut={(e) => { fillstate[i] != 100 && fillstate[i] > 0 && unfilling(i); setisdragging(false) }}
                     onMouseMove={(e) => moving(e, i)}
                     ref={el => { componentsRef.current[i] = el; }}

@@ -5,8 +5,9 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import approval from '../../assets/svg/system/approval.svg'
 import Questioning from '../../assets/svg/system/Questioning.svg'
-import bronze from '../../assets/svg/coins/bronze.svg'
-import silver from '../../assets/svg/coins/silver.svg'
+
+import renderCoins from '../_modules/renderCoins'
+
 import deal from '../../assets/svg/workers/deal.svg'
 import { RootState } from '../mainstore';
 import { useSelector } from 'react-redux';
@@ -116,7 +117,7 @@ export default function Workers() {
                     (<div key={i} onClick={() => { setnewworker(false); setcurrentworker(v), getcurrent(Object.values(v)) }}>
                         <img alt='' src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} />
                         <span><h2>{v.name} {v.surname}</h2><p>{v.age} лет • {v.sex} • {v.prof}</p></span>
-                        <h2>Желаемый заработок: {Math.floor(v.income / 100) > 0 && (<>{Math.floor(v.income / 100)} <img alt='' src={silver} /></>)}   {v.income % 100} <img src={bronze} alt="" /></h2>
+                        <h2>Желаемый заработок: {renderCoins(v.income)}</h2>
                     </div>)) : (<span className={styles.loading}><img src={approval} alt="" /><p>Смотрим на доску объявлений..</p></span>)}
                     {workersarray.length > 0 && (<button onClick={() => getworkers()}>{getmoretext}</button>)}
                 </div>
@@ -126,7 +127,7 @@ export default function Workers() {
                         <h1>{currentworker?.name} {currentworker?.surname}</h1>
                         <div><h2><span>Возраст:</span> {currentworker?.age}</h2><h2><span>Пол:</span> {currentworker?.sex}</h2><h2><span>Специальность:</span>{currentworker?.prof}</h2><h2><span>Мастерство:</span> {currentworker?.efficiency}</h2> </div>
                         <h3>{storycurrent}</h3>
-                        <h2>Желаемый заработок: {Math.floor(currentworker?.income / 100) > 0 && (<>{Math.floor(currentworker?.income / 100)} <img alt='' src={silver} /></>)}   {currentworker?.income % 100} <img src={bronze} alt="" /></h2>
+                        <h2>Желаемый заработок: {renderCoins(currentworker.income)}</h2>
                         <div><button onClick={() => setcurrentworker(null)}>Пропуск</button><button onClick={() => addworkerfunc(currentworker)}>Нанять</button></div>
                     </div>
                 </div>) : (<span className={styles.loading}><img src={Questioning} alt="" /><p>Пытаемся разобрать подчерк..</p></span>))}
@@ -135,7 +136,7 @@ export default function Workers() {
                     <div key={i}>
                         <img alt='' src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} />
                         <span><h2>{v.name} {v.surname}</h2><p>{v.age} лет • {v.sex} • {v.prof}</p></span>
-                        <h2>Заработок: {Math.floor(v.income / 100) > 0 && (<>{Math.floor(v.income / 100)} <img alt='' src={silver} /></>)}   {v.income % 100} <img src={bronze} alt="" /></h2>
+                        <h2>Заработок: {renderCoins(v.income)}</h2>
                     </div>
                 ))}</div>)}
             </main>

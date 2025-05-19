@@ -17,7 +17,8 @@ import tea from '../../assets/svg/workers/tea.svg'
 import noproduction from '../../assets/svg/maininterface/noproduction.svg'
 import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 import message from '../../assets/svg/maininterface/message.svg'
-
+import hammock from '../../assets/svg/maininterface/hammock.svg'
+import likeatable from '../../assets/svg/maininterface/likeatable.svg'
 
 export default function Workplace({ showsidemenu, setshowsidemenu, seconds, setsleeping }: { showsidemenu: number, setshowsidemenu: any, seconds: number, setsleeping: any }) {
 
@@ -38,12 +39,12 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [stepscurrent, setstepscurrent] = useState<string[]>([])
     const [productiontitle, setproductiontitle] = useState<string>('')
     const [workerprogress, setworkerprogress] = useState<number[]>(new Array(workers.length).fill(0))
+    const [workerstatus, setworkerstatus] = useState<boolean[]>(new Array(workers.length).fill(true))
     const [thinking, setthinking] = useState<boolean>(false)
-    const [currentworker, setcurrentworker] = useState<number>(-1)
+    const [currentworker, setcurrentworker] = useState<number>(-200)
     const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
-    const [isRunning, setIsRunning] = useState(true);
-    const [count, setcount] = useState<number>(0)
     const [ispopupopen, setispopupopen] = useState<boolean>(false)
+
 
 
     const deletenote = (note: NoteInterface) => {
@@ -65,15 +66,22 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             })
     }
 
+    useEffect(() => {
+        Math.floor((seconds / 60) % 24) == 2 && setsleeping(true)
+        setworkerprogress(wp =>
+            wp.map((v, i) =>
+                (workers[i].statistic.lamp.value <= Math.floor((seconds / 60) % 24) || Math.floor((seconds / 60) % 24) <= (workers[i].statistic.mug.value - 1) ? -200 : (v < 0 ? 0 : v))
+            )
+        )
+    }, [seconds])
+
 
     useEffect(() => {
-        if (!isRunning) return;
-
         workers.forEach((worker, i) => {
-            if (intervalsRef.current[i] || worker.production == '') return;
-
+            if (intervalsRef.current[i] || !workerstatus[i] || worker.production == '' || workerprogress[i] < 0) return;
             intervalsRef.current[i] = setInterval(() => {
                 setworkerprogress(wp => {
+                    if (workerprogress[i] < 0) clearInterval(intervalsRef.current[i])
 
                     const newWp = [...wp];
                     if (typeof newWp[i] !== 'number') {
@@ -84,7 +92,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                         clearInterval(intervalsRef.current[i]);
                         delete intervalsRef.current[i];
                         dispatch(addtoinventory(worker.production))
-                        handleRestart(worker.statistic.drawers.value);
+                        handleRestart(i, worker.statistic.drawers.value);
                         newWp[i] = 0;
                     } else {
                         newWp[i] += 1;
@@ -93,18 +101,12 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                     return newWp;
                 });
             }, worker.statistic.table.value);
-        });
-        return () => {
-            if (!isRunning) {
-                Object.values(intervalsRef.current).forEach(clearInterval);
-                intervalsRef.current = {};
-            }
-        };
-    }, [workers, isRunning]);
+        })
+    }, [workers, workerprogress, seconds]);
 
-    const handleRestart = (coldown: number) => {
-        setIsRunning(false);
-        setTimeout(() => setIsRunning(true), coldown);
+    const handleRestart = (id: number, coldown: number) => {
+        setworkerstatus(ws => ws.map((v, i) => (i == id ? false : v)))
+        setTimeout(() => setworkerstatus(ws => ws.map((v, i) => (i == id ? true : v))), coldown);
     };
 
 
@@ -112,7 +114,8 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
         if (workers.length == 0) {
             axios.get('http://localhost:3001/getmyworkers').then((res) => {
                 res.data.workers.map((v: worker) => dispatch(addworker(v)))
-                setworkerprogress(new Array(workers.length).fill(0))
+                setworkerprogress(new Array(res.data.workers.length).fill(0))
+                setworkerstatus(new Array(res.data.workers.length).fill(true))
             })
         }
 
@@ -163,10 +166,10 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                     <div onClick={() => setsleeping(true)} className={styles.button}></div>
                     <div className={styles.clockdisplay}>
                         <p>{Math.floor((seconds / 60) % 24) < 12 ? 'AM' : 'PM'}</p>
-                        <h1>{Math.floor(seconds / 60) < 10 ? '0' : ''}{Math.floor((seconds / 60) % 24)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}</h1>
+                        <h1>{Math.floor((seconds / 60) % 12) < 10 ? '0' : ''}{Math.floor((seconds / 60) % 12)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}</h1>
                         <p>{day}</p>
                     </div>
-                    {Math.floor((seconds / 60) % 24) > 24 && (<span>
+                    {Math.floor((seconds / 60) % 24) < 2 && (<span>
                         <img src={message} alt="" />
                         <p>идти спать</p>
                     </span>)}
@@ -178,12 +181,12 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             {workers.length > 0 && (<div className={styles.workers}>
                 <h2>Ваши работники:</h2>
                 <div>
-                    {workers.map((v, i) => (<div key={i} className={styles.worker}>
-                        <p className={styles.productionitem}>{v.production ? v.production : 'выберите продукт'}</p>
-                        <span onClick={() => setcurrentworker(i)} style={{ background: workerprogress[i] && workerprogress[i] != 0 ? `linear-gradient(to top, #CB997E ${workerprogress[i]}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}><img src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} alt="" />{(!intervalsRef.current[i] || v.production == '') && (<img className={styles.tea} src={v.production == '' ? noproduction : tea} />)}</span>
-                        <p className={styles.productionpercent}>{workerprogress[i]} {v.production && '%'}</p>
-                    </div>))}
-                    {currentworker != -1 && (<div ref={productionselect} className={styles.productionselect}>
+                    { workers.length > 0 &&  workers.map((v, i) => ( v &&(<div key={i} className={styles.worker}>
+                        <p className={styles.productionitem}>{workerprogress[i] < 0 ? 'работник отдыхает' : (v.production != '' ? v.production : 'выберите продукт')}</p>
+                        <span onClick={() => setcurrentworker(i)} style={{ background: workerprogress[i] && workerprogress[i] > 0 ? `linear-gradient(to top, #CB997E ${workerprogress[i]}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}><img src={workerprogress[i] < 0 ? hammock : ('../src/assets/svg/workers/' + v.imgsrc + '.svg')} alt="" />{(!intervalsRef.current[i] || v.production == '') && (<img className={styles.tea} src={v.production == '' ? noproduction : tea} />)}</span>
+                        <p className={styles.productionpercent}>{workerprogress[i] < 0 ? 'просьба не беспокоить' : (workerprogress[i] + (v.production && '%'))}</p>
+                    </div>)))}
+                    {currentworker >=0 && notes.length > 0 && (<div ref={productionselect} className={styles.productionselect}>
                         {notes.map((v) => (<p onClick={() => { dispatch(setproduction([currentworker, v.title])); setcurrentworker(-1) }}>• {v.title}</p>))}
                     </div>)}
                 </div>
@@ -217,6 +220,11 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 </span>
                 {productionArray.map((v, i) => (<p key={i} style={{ height: `${v / productionmax * 100}%`, background: v / productionmax > .7 ? '#b2f2bb' : v / productionmax > .4 ? '#ffec99' : '#ffc9c9', borderColor: v / productionmax > .7 ? '#2f9e44' : v / productionmax > .4 ? '#f08c00' : '#e03131' }}>{i}</p>))}
             </div>)}
+            <div className={styles.client}>
+                <img className={styles.clientimg} src={'../src/assets/svg/workers/m/10.svg'} alt="" />
+                <img className={styles.likeatable} src={likeatable} alt="" />
+                <p>dfjgknhdfkgdfhkjdfjkghdfghdfkghdkfhdfgjldfjgl</p>
+            </div>
         </div>
         {stepscurrent.length != 0 && (<div className={styles.gameplace}>
             <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} title={productiontitle} />
@@ -225,7 +233,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
         {ispopupopen && (<div onClick={() => setispopupopen(false)} className={styles.popupwrapper}>
             <div className={styles.popup}>
-                <h1>Вещи на вашем складе</h1>
+                <h1>{inventory.length > 0 ? 'Вещи на вашем складе' : 'Ваш склад пуст..'}</h1>
                 {inventory.map((v) => (<ul className={styles.dottedlist}>
                     <li>
                         <span className={styles.text}>{v.name}</span>

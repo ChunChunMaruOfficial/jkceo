@@ -2,7 +2,7 @@ const User = {
     name: 'КровьЖонглерШоу',
     professionformulation: 'Я продаю представления жонглеров старикам за анализ их крови.',
     notes: [],
-    money: 0,
+    money: 2000,
     workers: [],
 
     setmoney(money) {

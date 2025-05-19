@@ -38,4 +38,12 @@
         transform: translateX(-50%);
         bottom: 10%;
     }
+
+    >.close{
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        height: 5em;
+        cursor: pointer;
+    }
 }
