@@ -19,6 +19,7 @@ import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 import message from '../../assets/svg/maininterface/message.svg'
 import hammock from '../../assets/svg/maininterface/hammock.svg'
 import likeatable from '../../assets/svg/maininterface/likeatable.svg'
+import getRandom from '../_modules/getRandom';
 
 export default function Workplace({ showsidemenu, setshowsidemenu, seconds, setsleeping }: { showsidemenu: number, setshowsidemenu: any, seconds: number, setsleeping: any }) {
 
@@ -27,6 +28,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const sidemenuRef = useRef<HTMLDivElement>(null)
     const inputHeadRef = useRef<HTMLInputElement>(null)
     const inputtextRef = useRef<HTMLInputElement>(null)
+    const daysorder = useRef<{ time: number, text: string, done: boolean }[]>(null)
 
     const dispatch = useDispatch()
     const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
@@ -44,19 +46,40 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [currentworker, setcurrentworker] = useState<number>(-200)
     const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
     const [ispopupopen, setispopupopen] = useState<boolean>(false)
+    const [buyerword, setbuyerword] = useState<string>('')
+    const [buyerstatus, setbuyerstatus] = useState<boolean | null>(null)
 
-
+    const [buyerrefusal, setbuyerrefusal] = useState<string[]>([])
+    const [buyerlucky, setbuyerlucky] = useState<string[]>([])
 
     const deletenote = (note: NoteInterface) => {
         dispatch(deletecurrentnote(note))
     }
+
+    const generatebuyerword = (text: string, id?: number) => {
+        let i = 0
+        const words = text
+        setbuyerword(' ')
+        setbuyerword(bw => {
+            bw == ' ' &&
+                setTimeout(() => {
+                    const generateinterval = setInterval(() => {
+                        setbuyerword((bw: string) => bw += words[i])
+                        i++
+                        i + 1 == words.length && clearInterval(generateinterval)
+                    }, 50)
+                    daysorder.current![id ?? 0].done = true
+                }, id != null ? 1000 : 27); return bw
+        })
+
+    }
+
 
     const thinkingfunc = () => {
         setthinking(true)
         axios.get('http://localhost:3001/getsteps')
             .then((res) => {
                 setthinking(false)
-                console.log(res.data.answer)
                 const newnote = {
                     title: res.data.answer.split(',')[0],
                     text: res.data.answer.split(',').slice(1).join(',')
@@ -73,6 +96,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 (workers[i].statistic.lamp.value <= Math.floor((seconds / 60) % 24) || Math.floor((seconds / 60) % 24) <= (workers[i].statistic.mug.value - 1) ? -200 : (v < 0 ? 0 : v))
             )
         )
+        daysorder.current?.map((v, i) => v.time < seconds && buyerword == '' && !v.done && (generatebuyerword(v.text, i)))
     }, [seconds])
 
 
@@ -119,6 +143,11 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             })
         }
 
+        axios.get('http://localhost:3001/getselleranswers').then((res) => {
+            setbuyerlucky(res.data.lucky)
+            setbuyerrefusal(res.data.refuse)
+        })
+
         notes.length == 0 && axios.get('http://localhost:3001/getnotes')
             .then((res) => {
                 res.data.notes.map((v: NoteInterface) => {
@@ -128,25 +157,57 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                     }));
                 })
             })
+
+
+        axios.post('http://localhost:3001/getorder', { count: getRandom(1, 5) * Math.round(rumorsstatus) }).then((res) => {
+            const answer = res.data.answer.split('?').join('?.').split('.')
+            daysorder.current = Array.from({ length: answer.length - 1 }, (_, i) => ({
+                time: getRandom(360 * 1.2, 1320),
+                text: answer[i],
+                done: false
+            }))
+            console.log(daysorder);
+
+        })
     }, [])
 
     const getRumorsText = (): string => {
         switch (Math.round(rumorsstatus)) {
             case 1:
-                return 'Most wretched'
+                return 'Преникчемные'
             case 2:
-                return 'Wretched'
+                return 'Убогие'
             case 3:
-                return 'Not ignoble'
+                return 'Сносные'
             case 4:
-                return 'Virtuous'
+                return 'Ладные'
             case 5:
-                return ' Divine favor'
+                return 'Преславные'
         }
         return ''
     }
     let productionmax: number = 0
     productionArray.map(v => v > productionmax ? productionmax = v : 0)
+
+    const clientissatisfied = (status: boolean) => {
+        let lastwords: string
+        if (status) {
+            lastwords = buyerlucky[getRandom(0, buyerlucky.length - 1)]
+        } else {
+            lastwords = buyerrefusal[getRandom(0, buyerrefusal.length - 1)]
+        }
+        console.log(lastwords);
+
+        generatebuyerword(lastwords)
+        setTimeout(() => {
+            setbuyerstatus(status)
+            setbuyerword(' ')
+            setTimeout(() => {
+                setbuyerstatus(null)
+                setbuyerword('')
+            }, 350)
+        }, (lastwords.length * 55 + 450))
+    }
 
     return (<main onClick={(e) => {
         if (sidemenuRef.current && !sidemenuRef.current.contains(e.target as Node)) {
@@ -181,12 +242,12 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             {workers.length > 0 && (<div className={styles.workers}>
                 <h2>Ваши работники:</h2>
                 <div>
-                    { workers.length > 0 &&  workers.map((v, i) => ( v &&(<div key={i} className={styles.worker}>
+                    {workers.length > 0 && workers.map((v, i) => (v && (<div key={i} className={styles.worker}>
                         <p className={styles.productionitem}>{workerprogress[i] < 0 ? 'работник отдыхает' : (v.production != '' ? v.production : 'выберите продукт')}</p>
                         <span onClick={() => setcurrentworker(i)} style={{ background: workerprogress[i] && workerprogress[i] > 0 ? `linear-gradient(to top, #CB997E ${workerprogress[i]}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}><img src={workerprogress[i] < 0 ? hammock : ('../src/assets/svg/workers/' + v.imgsrc + '.svg')} alt="" />{(!intervalsRef.current[i] || v.production == '') && (<img className={styles.tea} src={v.production == '' ? noproduction : tea} />)}</span>
                         <p className={styles.productionpercent}>{workerprogress[i] < 0 ? 'просьба не беспокоить' : (workerprogress[i] + (v.production && '%'))}</p>
                     </div>)))}
-                    {currentworker >=0 && notes.length > 0 && (<div ref={productionselect} className={styles.productionselect}>
+                    {currentworker >= 0 && notes.length > 0 && (<div ref={productionselect} className={styles.productionselect}>
                         {notes.map((v) => (<p onClick={() => { dispatch(setproduction([currentworker, v.title])); setcurrentworker(-1) }}>• {v.title}</p>))}
                     </div>)}
                 </div>
@@ -195,15 +256,17 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 <img src={logcabin} alt="" />
                 <h2>Зайти на склад</h2>
             </div>
+            <div className={styles.rumors}>
+                <h2>Слухи о вас</h2>
+                <img alt='' src={'../src/assets/svg/rumors/' + Math.round(rumorsstatus) + '.svg'} />
+                <h1>{getRumorsText()}</h1>
+            </div>
             {/* <div className={styles.messenger}>
                 <h2>Every day the messenger brings</h2>
                 <h1>{messengerrange}</h1>
                 <h3>raw materials</h3>
             </div>
-            <div className={styles.rumors}>
-                <h2>Rumors about you</h2>
-                <h1> {rumorsstatus == 0 ? 'should appear soon' : (<><img alt='' src={'../src/assets/svg/rumors/' + rumorsstatus + '.svg'} /> {getRumorsText()} </>)}</h1>
-            </div>
+            
             <div className={styles.masters}>
                 <h2>Your masters (number)</h2>
                 <span>{[...new Array(workers)].map(() => (<img alt='' src={'../src/assets/svg/workers/' + getRandom(1, 18) + '.svg'} />))}</span>
@@ -220,10 +283,18 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 </span>
                 {productionArray.map((v, i) => (<p key={i} style={{ height: `${v / productionmax * 100}%`, background: v / productionmax > .7 ? '#b2f2bb' : v / productionmax > .4 ? '#ffec99' : '#ffc9c9', borderColor: v / productionmax > .7 ? '#2f9e44' : v / productionmax > .4 ? '#f08c00' : '#e03131' }}>{i}</p>))}
             </div>)}
-            <div className={styles.client}>
-                <img className={styles.clientimg} src={'../src/assets/svg/workers/m/10.svg'} alt="" />
-                <img className={styles.likeatable} src={likeatable} alt="" />
-                <p>dfjgknhdfkgdfhkjdfjkghdfghdfkghdkfhdfgjldfjgl</p>
+            <div>
+                <div className={styles.client}>
+                    <p>{buyerword}</p>
+                    <div>
+                        {buyerword && (<img className={buyerstatus == null ? (styles.clientimg + ' ' + styles.clientscomming) : (buyerstatus == true ? (styles.clientimg + ' ' + styles.clientsatisfied) : (styles.clientimg + ' ' + styles.clientdissatisfied))} src={'../src/assets/svg/workers/m/10.svg'} alt="" />)}
+                        <img className={styles.likeatable} src={likeatable} alt="" />
+                    </div>
+                </div>
+{ buyerword && (                <span className={styles.bottompanel}>
+                    <button onClick={() => clientissatisfied(false)}>Простите. не могу вам помочь..</button>
+                    <button onClick={() => clientissatisfied(true)}>Конечно!</button>
+                </span>)}
             </div>
         </div>
         {stepscurrent.length != 0 && (<div className={styles.gameplace}>

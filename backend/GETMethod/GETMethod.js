@@ -13,6 +13,8 @@ const deal = require('../data/deal.json')
 const breakdeal = require('../data/breakdeal.json')
 const concessions = require('../data/concessions.json')
 const notenoughmoney = require('../data/notenoughmoney.json')
+const sellerrefusal = require('../data/sellerrefusal.json')
+const sellerlucky = require('../data/sellerlucky.json')
 
 function GETmethod(req, res) {
   switch (req.path) {
@@ -33,6 +35,8 @@ function GETmethod(req, res) {
     case '/getmaterialannouncement':
       getMistral('getmaterialannouncement', '', res)
       break;
+
+
 
     /*---------------- User ----------------*/
     case '/getnotes':
@@ -57,6 +61,9 @@ function GETmethod(req, res) {
       break;
     case '/getdemotivation':
       res.json({ answer: demotivation })
+      break;
+    case '/getselleranswers':
+      res.json({ refuse: sellerrefusal, lucky: sellerlucky })
       break;
 
 

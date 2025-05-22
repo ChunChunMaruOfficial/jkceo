@@ -84,8 +84,8 @@ export default function Provider() {
             case rndm < userpricepercent:
                 dealing(materials, price, concessions[answers[5]])
                 return 0
-            case rndm >= userpricepercent:
-                dispatch(setnewprice([currentannouncement, price * 2]))
+            case rndm >= userpricepercent:                
+                dispatch(setnewprice([currentannouncement, maxprice * 2]))
                 setdealeranswer(breakdeal[answers[4]])
                 break;
         }

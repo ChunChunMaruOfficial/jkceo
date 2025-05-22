@@ -50,7 +50,7 @@ const initialState: BaseState = {
     money: -1,
     notes: [],
     messengerrange: 1,
-    rumorsstatus: 0,
+    rumorsstatus: 2.5,
     goodsPerHour: 1,
     productionArray: [], //все переменные, что хранятся в слайсе
 
@@ -63,9 +63,9 @@ export const BaseSlice = createSlice({
     name: 'base',
     initialState,
     reducers: {
-        
+
         newday: (state) => {
-            state.day ++
+            state.day++
         },
         setprofessionformulation: (state, action) => { //формулировка профессии
             state.professionformulation = action.payload
@@ -116,13 +116,15 @@ export const BaseSlice = createSlice({
         },
         addtoinventory: (state, action): void => {
             state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
-            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1            
+            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1
         },
-
+        updaterumorsstatus: (state, action): void => {
+            state.rumorsstatus += action.payload
+        }
     },
 })
 
-export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

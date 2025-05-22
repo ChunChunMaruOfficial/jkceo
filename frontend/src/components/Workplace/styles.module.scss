@@ -210,17 +210,15 @@ main {
             }
 
             >.rumors {
-                >h1 {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    gap: 15px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
 
-                    img {
-                        height: 1.5em;
-                    }
+                img {
+                    height: 10em;
                 }
 
+                gap: 15px;
             }
 
 
@@ -302,26 +300,78 @@ main {
         .client {
             overflow: hidden;
             position: relative;
+            min-height: 264px;
+            width: -webkit-fill-available;
 
-            >.clientimg {
-                height: 20em;
-            }
-
-            >.likeatable {
-                position: absolute;
-                width: 29em;
-                left: 50%;
-                transform: translateX(-50%);
-                bottom: -87%;
-                z-index: 0;
-            }
-            >p{      position: absolute;
-                padding: 30px;
-                max-width: 150px;
+            >p {
+                text-align: center;
+                max-width: 315px;
                 text-wrap: wrap;
-                background-image: url('../src/assets/svg/maininterface/message.svg');
-                background-size: 100% ;
-                background-position: 0;
+                font-size: 20px;
+            }
+
+            >div {
+                display: flex;
+                flex-direction: column;
+                width: min-content;
+
+                >.clientimg {
+                    height: 20em;
+                }
+
+                >.likeatable {
+                    position: absolute;
+                    width: 29em;
+                    left: 50%;
+                    transform: translate(-50%, 66%);
+                    bottom: 0;
+                    z-index: 0;
+                }
+            }
+        }
+
+        .clientscomming {
+            animation: clientscomming .3s ease-in-out forwards;
+        }
+
+        .clientsatisfied {
+            animation: clientsatisfied .3s ease-in-out forwards;
+        }
+
+        .clientdissatisfied {
+            animation: clientdissatisfied .3s ease-in-out forwards;
+        }
+
+        .bottompanel {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: -webkit-fill-available;
+            gap: 20px;
+            padding-top: 15px;
+
+            >button {
+                border-radius: 4px;
+                padding: 10px;
+                font-size: 18px;
+                font-weight: 900;
+                background-color: #30343F;
+                color: #AC5045;
+                align-self: flex-end;
+
+                &:hover {
+                    color: #30343F;
+                    background-color: #AC5045;
+                }
+
+                &:nth-of-type(2) {
+                    color: #658761;
+
+                    &:hover {
+                        color: #30343F;
+                        background-color: #658761;
+                    }
+                }
             }
         }
     }
@@ -651,5 +701,35 @@ main {
 
     to {
         opacity: 1;
+    }
+}
+
+@keyframes clientscomming {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes clientsatisfied {
+    from {
+        transform: translateX(0%);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes clientdissatisfied {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(100%);
     }
 }

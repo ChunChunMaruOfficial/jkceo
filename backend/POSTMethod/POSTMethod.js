@@ -10,6 +10,11 @@ function POSTmethod(req, res) {
         case '/getstory':
             getMistral('getstory', req.body.worker, res)
             break;
+        case '/getorder':
+            getMistral('getorder', req.body.count + ' таких фраз в одно предлохение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
+            break;
+
+        /*---------------- User ----------------*/
         case '/setname':
             User.setname(req.body.name)
             break;
