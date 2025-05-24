@@ -118,13 +118,18 @@ export const BaseSlice = createSlice({
             state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
             state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1
         },
+        removefrominventory: (state, action): void => {
+            console.log('sdf');
+            
+            state.inventory.find(v => v.name == action.payload)!.count > 1 ? state.inventory.map(v => (v.name == action.payload ? v.count -= 1 : v.count)) : state.inventory = state.inventory.filter((v) => v.name != action.payload)
+        },
         updaterumorsstatus: (state, action): void => {
             state.rumorsstatus += action.payload
         }
     },
 })
 
-export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus,removefrominventory } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

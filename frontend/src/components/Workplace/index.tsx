@@ -2,10 +2,12 @@ import axios from 'axios';
 import styles from './styles.module.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
-import { addnewnote, deletecurrentnote, NoteInterface, worker, addworker, setproduction, addtoinventory } from '../_slices/baseslice';
+import { addnewnote, deletecurrentnote, NoteInterface, worker, addworker, setproduction, addtoinventory, removefrominventory } from '../_slices/baseslice';
 import { RootState } from '../mainstore';
 
 import CombinationGame from '../combinationgame';
+
+import getRandom from '../_modules/getRandom';
 
 import newnote from '../../assets/svg/maininterface/newnote.svg'
 import back from '../../assets/svg/system/back.svg'
@@ -19,13 +21,17 @@ import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 import message from '../../assets/svg/maininterface/message.svg'
 import hammock from '../../assets/svg/maininterface/hammock.svg'
 import likeatable from '../../assets/svg/maininterface/likeatable.svg'
-import getRandom from '../_modules/getRandom';
+
+import dis from '../../assets/svg/maininterface/buyerreaction/dis.svg'
+import ok from '../../assets/svg/maininterface/buyerreaction/ok.svg'
 
 export default function Workplace({ showsidemenu, setshowsidemenu, seconds, setsleeping }: { showsidemenu: number, setshowsidemenu: any, seconds: number, setsleeping: any }) {
 
     const intervalsRef = useRef<{ [key: number]: NodeJS.Timeout }>({});
     const productionselect = useRef<HTMLDivElement>(null)
     const sidemenuRef = useRef<HTMLDivElement>(null)
+    const popupRef = useRef<HTMLDivElement>(null)
+    const CombinationGameRef = useRef<HTMLDivElement>(null)
     const inputHeadRef = useRef<HTMLInputElement>(null)
     const inputtextRef = useRef<HTMLInputElement>(null)
     const daysorder = useRef<{ time: number, text: string, done: boolean }[]>(null)
@@ -46,14 +52,32 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [currentworker, setcurrentworker] = useState<number>(-200)
     const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
     const [ispopupopen, setispopupopen] = useState<boolean>(false)
+
     const [buyerword, setbuyerword] = useState<string>('')
     const [buyerstatus, setbuyerstatus] = useState<boolean | null>(null)
+    const [buyerpfp, setbuyerpfp] = useState<string>('')
+    const [buyertime, setbuyertime] = useState<number>(0)
+    const [buyerarray, setbuyerarray] = useState<string[]>(['1', '2', '3', '4'])
 
     const [buyerrefusal, setbuyerrefusal] = useState<string[]>([])
     const [buyerlucky, setbuyerlucky] = useState<string[]>([])
 
     const deletenote = (note: NoteInterface) => {
         dispatch(deletecurrentnote(note))
+    }
+
+    const startbuyertimer = () => {
+        const buyertimeInterval = setInterval(() => {
+            setbuyertime(bt => {
+                bt == 0 && clearInterval(buyertimeInterval);
+                if (bt < 1.5 && bt != 0) {
+                    clearInterval(buyertimeInterval);
+                    clientissatisfied(false);
+                    return 0
+                }
+                else return bt - .3
+            })
+        }, 50)
     }
 
     const generatebuyerword = (text: string, id?: number) => {
@@ -63,17 +87,16 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
         setbuyerword(bw => {
             bw == ' ' &&
                 setTimeout(() => {
+                    setbuyerword(words[0])
                     const generateinterval = setInterval(() => {
-                        setbuyerword((bw: string) => bw += words[i])
+                        setbuyerword((bw: string) => { return bw + words[i] })
                         i++
                         i + 1 == words.length && clearInterval(generateinterval)
                     }, 50)
                     daysorder.current![id ?? 0].done = true
                 }, id != null ? 1000 : 27); return bw
         })
-
     }
-
 
     const thinkingfunc = () => {
         setthinking(true)
@@ -96,7 +119,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 (workers[i].statistic.lamp.value <= Math.floor((seconds / 60) % 24) || Math.floor((seconds / 60) % 24) <= (workers[i].statistic.mug.value - 1) ? -200 : (v < 0 ? 0 : v))
             )
         )
-        daysorder.current?.map((v, i) => v.time < seconds && buyerword == '' && !v.done && (generatebuyerword(v.text, i)))
+        setbuyerword(bw => { daysorder.current?.map((v, i) => v.time < seconds && bw == '' && !v.done && (bw = ' ', setbuyertime(100), generatebuyerword(v.text, i), startbuyertimer(), setbuyerpfp(getRandom(0, 1) ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`))); return bw })
     }, [seconds])
 
 
@@ -142,6 +165,11 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 setworkerstatus(new Array(res.data.workers.length).fill(true))
             })
         }
+        if (inventory.length == 0) {
+            axios.get('http://localhost:3001/getinventory').then((res) => {
+                res.data.inventory.map((v: { name: string, count: number }) => dispatch(addtoinventory(v)))
+            })
+        }
 
         axios.get('http://localhost:3001/getselleranswers').then((res) => {
             setbuyerlucky(res.data.lucky)
@@ -163,9 +191,10 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             const answer = res.data.answer.split('?').join('?.').split('.')
             daysorder.current = Array.from({ length: answer.length - 1 }, (_, i) => ({
                 time: getRandom(360 * 1.2, 1320),
-                text: answer[i],
+                text: answer[i].trim(),
                 done: false
             }))
+            daysorder.current = daysorder.current.filter((v) => v.text.length > 8)
             console.log(daysorder);
 
         })
@@ -190,6 +219,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     productionArray.map(v => v > productionmax ? productionmax = v : 0)
 
     const clientissatisfied = (status: boolean) => {
+        setbuyertime(0)
         let lastwords: string
         if (status) {
             lastwords = buyerlucky[getRandom(0, buyerlucky.length - 1)]
@@ -210,7 +240,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }
 
     return (<main onClick={(e) => {
-        if (sidemenuRef.current && !sidemenuRef.current.contains(e.target as Node)) {
+        if (sidemenuRef.current && CombinationGameRef.current && !sidemenuRef.current.contains(e.target as Node) && !CombinationGameRef.current.contains(e.target as Node)) {
             setshowsidemenu((ssm: number) => {
                 if (ssm != 2) return 0
                 else return 2
@@ -222,6 +252,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }}>
 
         <div>
+            {/* ------------------------------ CLOCK ------------------------------ */}
             <div className={styles.clockplace}>
                 <div className={styles.clock}>
                     <div onClick={() => setsleeping(true)} className={styles.button}></div>
@@ -236,9 +267,10 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                     </span>)}
                 </div>
                 <img src={table} alt="" />
-
-
             </div>
+
+            {/* ------------------------------ WORKERS ------------------------------ */}
+
             {workers.length > 0 && (<div className={styles.workers}>
                 <h2>Ваши работники:</h2>
                 <div>
@@ -252,6 +284,9 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                     </div>)}
                 </div>
             </div>)}
+
+            {/* ------------------------------ SCREEN BUTTONS ------------------------------ */}
+
             <div onClick={() => setispopupopen(true)} className={styles.logcabin}>
                 <img src={logcabin} alt="" />
                 <h2>Зайти на склад</h2>
@@ -266,15 +301,10 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 <h1>{messengerrange}</h1>
                 <h3>raw materials</h3>
             </div>
-            
-            <div className={styles.masters}>
-                <h2>Your masters (number)</h2>
-                <span>{[...new Array(workers)].map(() => (<img alt='' src={'../src/assets/svg/workers/' + getRandom(1, 18) + '.svg'} />))}</span>
-            </div>
-            <div className={styles.produces}>
-                <h2>your business produces</h2>
-                <h1>{goodsPerHour}</h1>
-            </div>*/}
+            */}
+
+            {/* ------------------------------ STATISTIC ------------------------------ */}
+
             {productionArray.length > 0 && (<div className={styles.production}>
                 <span>
                     <p>{productionmax}</p>
@@ -283,38 +313,62 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 </span>
                 {productionArray.map((v, i) => (<p key={i} style={{ height: `${v / productionmax * 100}%`, background: v / productionmax > .7 ? '#b2f2bb' : v / productionmax > .4 ? '#ffec99' : '#ffc9c9', borderColor: v / productionmax > .7 ? '#2f9e44' : v / productionmax > .4 ? '#f08c00' : '#e03131' }}>{i}</p>))}
             </div>)}
-            <div>
+            <div className={styles.clientwrapper}>
+                <div className={styles.time} style={{ background: buyertime > 0 ? `linear-gradient(to right, #CB997E ${buyertime}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}></div>
+
+                {/* ------------------------------ CLIENT ------------------------------ */}
+
                 <div className={styles.client}>
                     <p>{buyerword}</p>
                     <div>
-                        {buyerword && (<img className={buyerstatus == null ? (styles.clientimg + ' ' + styles.clientscomming) : (buyerstatus == true ? (styles.clientimg + ' ' + styles.clientsatisfied) : (styles.clientimg + ' ' + styles.clientdissatisfied))} src={'../src/assets/svg/workers/m/10.svg'} alt="" />)}
+                        {buyerword && (<img className={buyerstatus == null ? (styles.clientimg + ' ' + styles.clientscomming) : (buyerstatus == true ? (styles.clientimg + ' ' + styles.clientsatisfied) : (styles.clientimg + ' ' + styles.clientdissatisfied))} src={`../src/assets/svg/workers${buyerpfp}.svg`} alt="" />)}
                         <img className={styles.likeatable} src={likeatable} alt="" />
                     </div>
                 </div>
-{ buyerword && (                <span className={styles.bottompanel}>
-                    <button onClick={() => clientissatisfied(false)}>Простите. не могу вам помочь..</button>
-                    <button onClick={() => clientissatisfied(true)}>Конечно!</button>
+                {buyerword && (<span className={styles.bottompanel}>
+                    <button onClick={() => clientissatisfied(false)}><img src={dis} /></button>
+                    <button onClick={() => clientissatisfied(true)}><img src={ok} /></button>
                 </span>)}
             </div>
         </div>
-        {stepscurrent.length != 0 && (<div className={styles.gameplace}>
+
+        {/* ------------------------------ CombinationGame ------------------------------ */}
+
+        {stepscurrent.length != 0 && (<div ref={CombinationGameRef} className={styles.gameplace}>
             <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} title={productiontitle} />
 
         </div>)}
 
-        {ispopupopen && (<div onClick={() => setispopupopen(false)} className={styles.popupwrapper}>
-            <div className={styles.popup}>
-                <h1>{inventory.length > 0 ? 'Вещи на вашем складе' : 'Ваш склад пуст..'}</h1>
-                {inventory.map((v) => (<ul className={styles.dottedlist}>
-                    <li>
-                        <span className={styles.text}>{v.name}</span>
-                        <span className={styles.dots}></span>
-                        <span className={styles.number}>{v.count}</span>
-                    </li>
-                </ul>
-                ))}
+        {/* ------------------------------ INVENTORY ------------------------------ */}
+
+        {ispopupopen && (<div onClick={(e) => {
+            if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+                setispopupopen(false)
+            }
+        }} className={styles.popupwrapper}>
+            <div ref={popupRef} className={styles.popup}>
+                <div>
+                    <h1>{inventory.length > 0 ? 'Вещи на вашем складе' : 'Ваш склад пуст..'}</h1>
+                    <hr />
+                    {inventory.map((v) => (<ul onClick={() => (setbuyerarray(ba => [...ba, v.name]), removefrominventory(v.name))} className={styles.dottedlist}>
+                        <li>
+                            <span className={styles.text}>{v.name}</span>
+                            <span className={styles.dots}></span>
+                            <span className={styles.number}>{v.count}</span>
+                        </li>
+                    </ul>
+                    ))}
+                </div>
+                <div className={styles.sending}>
+                    {buyerarray.length == 0 && (<h2>выберите товар для покупателя</h2>)}
+                    {buyerarray.map((v, i) => (<div>{v} <img onClick={() => setbuyerarray(ba => ba.filter((_, i1) => i1 != i))} src={cancel} alt="" /></div>))}
+                </div>
             </div>
+
         </div>)}
+
+
+        {/* ------------------------------ SIDEMENU ------------------------------ */}
 
         <div ref={sidemenuRef} className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}>
             <span><img onClick={() => setshowsidemenu(0)} src={back} alt="" /><h1>Ваши записи</h1><img onClick={() => { setnewnoteisopen(newnoteisopen == 1 ? 0 : 1) }} src={newnote} alt="" /></span>

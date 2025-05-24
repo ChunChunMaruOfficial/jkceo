@@ -8,7 +8,7 @@ import loading from '../../assets/svg/providers/loading.svg'
 import { addannouncements, setnewprice } from '../_slices/personsslice'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../mainstore';
-import { addtoinventory, setmoney } from '../_slices/baseslice'
+import { addtoinventory, setmoney, updaterumorsstatus } from '../_slices/baseslice'
 import renderCoins from '../_modules/renderCoins'
 
 import shrug from '../../assets/svg/providers/shrug.svg'
@@ -19,6 +19,7 @@ export default function Provider() {
 
     const announcementsslice: announcements[] = useSelector((state: RootState) => state.persons.announcements);
     const money: number = useSelector((state: RootState) => state.base.money);
+    const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
 
     const getRandoms = () => {
         return [getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29)]
@@ -49,7 +50,6 @@ export default function Provider() {
 
 
     const dealing = (materials: string[], price: number, answer: string) => {
-
         if ((money - price) > 0) {
             dispatch(setmoney(money - price))
             setdealeranswer(answer)
@@ -68,7 +68,7 @@ export default function Provider() {
         setTimeout(() => {
             setispopupopen(false)
             setdealeranswer('')
-            dispatch(setnewprice([currentannouncement, 0]))
+            answer && (money - price) > 0 && dispatch(setnewprice([currentannouncement, 0]))
             return 0
         }, 2000)
     }
@@ -79,14 +79,18 @@ export default function Provider() {
         const userpricepercent = Math.floor((inputvalue / maxprice) * 100)
         switch (true) {
             case inputvalue >= maxprice:
+                dispatch(updaterumorsstatus(rumorsstatus + .1))
                 dealing(materials, price, deal[answers[3]])
                 break;
             case rndm < userpricepercent:
                 dealing(materials, price, concessions[answers[5]])
                 return 0
-            case rndm >= userpricepercent:                
-                dispatch(setnewprice([currentannouncement, maxprice * 2]))
+            case rndm >= userpricepercent:
                 setdealeranswer(breakdeal[answers[4]])
+                dispatch(updaterumorsstatus(rumorsstatus - .1))
+                setTimeout(() => {
+                    dispatch(setnewprice([currentannouncement, maxprice * 2]))
+                }, 2000)
                 break;
         }
         setTimeout(() => {
@@ -113,10 +117,7 @@ export default function Provider() {
             .then((res) => {
                 res.data.answer = res.data.answer.endsWith('.') || res.data.answer.endsWith(';') ? res.data.answer.slice(0, -1) : res.data.answer
                 res.data.answer.split(';').map((v: string) => {
-                    console.log(v)
-
                     const middleraw = v.split('.')
-                    console.log(middleraw)
                     const obj = {
                         name: middleraw[middleraw.length - 2],
                         materials: middleraw[middleraw.length - 3].split(','),

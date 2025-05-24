@@ -45,6 +45,9 @@ function GETmethod(req, res) {
     case '/getmoney':
       res.json({ money: User.money })
       break;
+    case '/getinventory':
+      res.json({ inventory: User.inventory })
+      break;
     case '/getprofessionformulation':
       res.json({ answer: User.professionformulation })
       break;

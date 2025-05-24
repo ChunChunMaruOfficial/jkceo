@@ -7,6 +7,7 @@ import decor from '../../assets/svg/slots/decoration.svg'
 import getRandom from '../_modules/getRandom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import mainlogo from '../../assets/svg/system/mainlogo.svg'
 
 import loading from '../../assets/svg/system/loading.svg'
 
@@ -150,9 +151,10 @@ export default function Slots() {
     }
 
     return (
-        <div className={styles.parent}>
-
-            <div>
+        <><img className={styles.mainlogo} src={mainlogo} alt="" />
+              <div className={styles.parent}>
+            
+             <div>
 
                 <span className={styles.bolt}><div></div></span>
                 <span className={styles.bolt}><div></div></span>
@@ -241,13 +243,14 @@ export default function Slots() {
                 </div>
             </div>
 
-            {/*  */}
+      
 
             <div>
 
                 <span className={styles.bolt}><div></div></span>
                 <span className={styles.bolt}><div></div></span>
-            </div>
+            </div> 
         </div>
+        </>
     )
 }

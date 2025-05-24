@@ -15,6 +15,7 @@ export default function AntiqueInvaders() {
     const [newX, setnewX] = useState<number>(0)
     const [newY, setnewY] = useState<number>(0)
     const [invadersArray, setinvadersArray] = useState<{ top: number, left: number }[]>([{ top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth + 100) : 300) }])
+    const [rate, setrate] = useState<number>(0)
 
     const invadersRender = () => {
         setInterval(() => {
@@ -31,7 +32,7 @@ export default function AntiqueInvaders() {
         setInterval(() => {
             if (!planeRef.current || !parentRef.current) return 0
             const newbullet = document.createElement('div')
-            Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.classList.contains(styles.bullet)).map(v => (v.getBoundingClientRect().top == -20) && v.remove())
+            Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.classList.contains(styles.bullet)).map(v => (v.getBoundingClientRect().top == -10) && v.remove())
             newbullet.style.top = planeRef.current!.getBoundingClientRect().top + 'px'
             newbullet.style.left = (planeRef.current!.getBoundingClientRect().left + (planeRef.current!.getBoundingClientRect().width / 2)) + 'px'
             parentRef.current.appendChild(newbullet)
@@ -46,18 +47,18 @@ export default function AntiqueInvaders() {
         setInterval(() => {
             const invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('img'))
             const bullets = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('div'))
-           invaders.map(invader => (bullets.map(bullet => {
-            if (
-                bullet.getBoundingClientRect().right > invader.getBoundingClientRect().left &&
-                bullet.getBoundingClientRect().left < invader.getBoundingClientRect().right &&
-                bullet.getBoundingClientRect().bottom > invader.getBoundingClientRect().top &&
-                bullet.getBoundingClientRect().top < invader.getBoundingClientRect().bottom
-              ) {
-             bullet.remove()
-             invader.remove()
-              
-              }
-           })))
+            invaders.map(invader => (bullets.map(bullet => {
+                if (
+                    bullet.getBoundingClientRect().right > invader.getBoundingClientRect().left &&
+                    bullet.getBoundingClientRect().left < invader.getBoundingClientRect().right &&
+                    bullet.getBoundingClientRect().bottom > invader.getBoundingClientRect().top &&
+                    bullet.getBoundingClientRect().top < invader.getBoundingClientRect().bottom
+                ) {
+                    bullet.remove()
+                    invader.remove()
+                    setrate(r => r + 1)
+                }
+            })))
         }, 16)
     }
 
@@ -92,6 +93,7 @@ export default function AntiqueInvaders() {
 
     return (
         <div ref={parentRef} className={styles.parent}>
+            <h1>{rate}</h1>
             <main ref={planeRef} className={styles.plane} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
                 <img src={plane} alt="" />
             </main>

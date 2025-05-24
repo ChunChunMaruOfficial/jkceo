@@ -37,7 +37,7 @@ export default function Mainscreen() {
     const money: number = useSelector((state: RootState) => state.base.money)
 
     const [showsidemenu, setshowsidemenu] = useState<number>(2)
-    const [seconds, setseconds] = useState<number>(360)  //360 - 6 утра 
+    const [seconds, setseconds] = useState<number>(720)  //360 - 6 утра 
     const [mainbutton, setmainbutton] = useState<boolean>(false)
     const [sleeping, setsleeping] = useState<boolean>(false)
 

@@ -4,6 +4,7 @@ const User = {
     notes: [],
     money: 2000,
     workers: [],
+    inventory: [],
 
     setmoney(money) {
         this.money = money
@@ -31,6 +32,9 @@ const User = {
     updateworkerstat(index, worker) { //потом можно оптимизировать на обновление определенной характеристики для экономии траффика
         this.workers[index] = worker
     },
+    addtoinventory(item) {
+        this.inventory.push(item)
+    }
 }
 
 module.exports = User

@@ -131,7 +131,7 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
 
     return (
         <div ref={parentRef} className={styles.parent}>
-            <h1 style={{ top: ismistake ? '10px' : '-60px' }}>Надо строго следовать инструкции..</h1>
+            <h2 style={{ top: ismistake ? '10px' : '-60px' }}>Надо строго следовать инструкции..</h2>
             <img src={close} onClick={() => { setstepscurrent([]) }} className={styles.close} alt="" />
             {componentsarray.map((v, i) => (
                 <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i);if (componentsRef.current[i]) componentsRef.current[i].style.zIndex = '2'  }}

@@ -18,6 +18,7 @@ body {
         align-items: center;
         width: 100%;
         height: min-content;
+        animation: topshowing .5s ease-in-out forwards;
 
         >img:first-of-type {
             scale: .8;
@@ -163,5 +164,16 @@ body {
 
     to {
         transform: rotate(0deg) translateY(0);
+    }
+}
+
+@keyframes topshowing {
+    from {
+        transform: translateY(-100%);
+
+    }
+
+    to {
+        transform: translateY(0);
     }
 }
