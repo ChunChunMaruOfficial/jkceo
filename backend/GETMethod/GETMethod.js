@@ -15,6 +15,8 @@ const concessions = require('../data/concessions.json')
 const notenoughmoney = require('../data/notenoughmoney.json')
 const sellerrefusal = require('../data/sellerrefusal.json')
 const sellerlucky = require('../data/sellerlucky.json')
+const wrongproduct = require('../data/wrongproduct.json')
+const noanswer = require('../data/noanswer.json')
 
 function GETmethod(req, res) {
   switch (req.path) {
@@ -45,6 +47,9 @@ function GETmethod(req, res) {
     case '/getmoney':
       res.json({ money: User.money })
       break;
+    case '/getinventory':
+      res.json({ inventory: User.inventory })
+      break;
     case '/getprofessionformulation':
       res.json({ answer: User.professionformulation })
       break;
@@ -63,7 +68,7 @@ function GETmethod(req, res) {
       res.json({ answer: demotivation })
       break;
     case '/getselleranswers':
-      res.json({ refuse: sellerrefusal, lucky: sellerlucky })
+      res.json({ refuse: sellerrefusal, lucky: sellerlucky, wrong: wrongproduct, noanswer: noanswer })
       break;
 
 

@@ -28,9 +28,7 @@ export const PersonsState = createSlice({
         setworkers: (state, action) => {
             state.workers.push(action.payload)
         },
-        addannouncements: (state, action) => {
-            console.log(action.payload);
-            
+        addannouncements: (state, action) => {            
             state.announcements = [...state.announcements, action.payload]
         },
 

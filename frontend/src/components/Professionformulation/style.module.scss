@@ -1,3 +1,15 @@
+.hideelement {
+    animation: hideelement 1s ease-in-out forwards;
+}
+
+div.hideelement {
+    animation-delay: .5s
+}
+
+h2.hideelement {
+    animation-delay: .8s
+}
+
 .parent {
     display: flex;
     flex-direction: column;
@@ -7,12 +19,23 @@
     gap: 70px;
     margin: auto;
 
+    >h1:not(.hideelement) {
+        animation: elementshowing 1s ease-in-out forwards;
+    }
+
+
     .maingroup {
         display: flex;
         flex-direction: row;
         width: 50%;
         height: min-content;
         gap: 50px;
+
+        &:not(.hideelement) {
+            transform: translateX(-250%);
+            animation: elementshowing 1s ease-in-out forwards .3s;
+
+        }
 
         .inputgroup {
             position: relative;
@@ -55,7 +78,6 @@
             padding: 0 5px;
         }
 
-        /* Добавляем подсказки к полям */
         .inputgroup::after {
             content: attr(data-hint);
             position: absolute;
@@ -68,7 +90,6 @@
             transition: all 0.2s ease;
         }
 
-        /* Показываем подсказку при фокусе */
         .inputgroup:focus-within::after {
             opacity: 1;
             transform: translateY(0);
@@ -80,7 +101,7 @@
             flex-direction: row;
             gap: 15px;
 
-            .isLoading{
+            .isLoading {
                 animation: loading .5s ease infinite;
             }
 
@@ -97,17 +118,47 @@
             }
         }
     }
-    >h2{
+
+    >h2 {
         width: 75%;
         text-align: center;
+
+
+        &:not(.hideelement) {
+            transform: translateX(-200%);
+            animation: elementshowing 1s ease-in-out forwards .85s;
+
+        }
+
     }
 }
 
 @keyframes loading {
-    from{
+    from {
         transform: rotate(0deg)
     }
-    to{
+
+    to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes elementshowing {
+    from {
+        transform: translateX(-250%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes hideelement {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(250%);
     }
 }

@@ -9,7 +9,7 @@ import sun from '../../assets/svg/sleeping/sun.svg'
 import { worker, setmoney,newday } from '../_slices/baseslice'
 import { RootState } from '../mainstore'
 
-export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: any, setsleeping: any }) {
+export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: React.Dispatch<React.SetStateAction<number>>, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
     const dispatch = useDispatch()
     const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
     const money: number = useSelector((state: RootState) => state.base.money);

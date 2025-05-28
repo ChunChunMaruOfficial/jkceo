@@ -33,6 +33,12 @@ function POSTmethod(req, res) {
         case '/updateworkerstat':
             User.updateworkerstat(req.body.index, req.body.worker)
             break;
+        case '/addtoinventory':
+            User.addtoinventory(req.body.item, req.body.day)
+            break;
+        case '/removefrominventory':
+            User.removefrominventory(req.body.item)
+            break;
 
     }
 }

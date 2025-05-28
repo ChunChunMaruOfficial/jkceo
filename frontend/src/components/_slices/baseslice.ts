@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-
 export interface NoteInterface {
     title: string,
     text: string
@@ -32,6 +31,7 @@ export interface BaseState {
     day: number,
     name: string,
     professionformulation: string,
+    mainproduct: string,
     money: number,
     notes: NoteInterface[],
     messengerrange: number,
@@ -47,6 +47,7 @@ const initialState: BaseState = {
 
     name: '',
     professionformulation: '',
+    mainproduct: '',
     money: -1,
     notes: [],
     messengerrange: 1,
@@ -114,17 +115,34 @@ export const BaseSlice = createSlice({
             const [id, production]: [number, string] = action.payload;
             state.workersarray[id].production = production
         },
+        setmainproduct: (state, action): void => {
+            state.mainproduct = action.payload
+        },
         addtoinventory: (state, action): void => {
             state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
             state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1
+            //axios.post('http://localhost:3001/addtoinventory', { item: action.payload, day: state.day })
+        },
+        removefrominventory: (state, action) => {
+            const itemName = action.payload;
+            const item = state.inventory.find(v => v.name === itemName);
+            if (item) {
+                if (item.count > 1) {
+                    item.count -= 1;
+                } else {
+                    state.inventory = state.inventory.filter(v => v.name !== itemName);
+                }
+            }
+            axios.post('http://localhost:3001/removefrominventory', { item: action.payload })
         },
         updaterumorsstatus: (state, action): void => {
             state.rumorsstatus += action.payload
-        }
+        },
+
     },
 })
 
-export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 
