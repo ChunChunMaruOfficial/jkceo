@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import styles from './style.module.scss';
 import sword from '../../assets/svg/slots/sword.svg'
 import scales from '../../assets/svg/slots/scales.svg'
@@ -8,8 +8,6 @@ import getRandom from '../_modules/getRandom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import mainlogo from '../../assets/svg/system/mainlogo.svg'
-
-import loading from '../../assets/svg/system/loading.svg'
 
 import { setmoney, setprofessionformulation } from '../_slices/baseslice';
 

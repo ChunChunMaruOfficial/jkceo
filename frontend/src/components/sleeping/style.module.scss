@@ -5,8 +5,8 @@
     top: 0;
     left: 0;
     background-color: #242423;
-    // cursor: none;
-    z-index: 3;
+    cursor: none;
+    z-index: 4;
     animation: show 1s ease-in-out forwards;
     opacity: 0;
 
@@ -47,9 +47,10 @@
 
     .moon,
     .sun {
+        position: absolute;
         opacity: 0;
         top: 35%;
-        left: 26%;
+        left: calc(50% - 510px);
     }
 
     .moon {

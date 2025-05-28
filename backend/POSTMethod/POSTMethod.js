@@ -11,7 +11,7 @@ function POSTmethod(req, res) {
             getMistral('getstory', req.body.worker, res)
             break;
         case '/getorder':
-            getMistral('getorder', req.body.count + ' таких фраз в одно предлохение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
+            getMistral('getorder', req.body.count + ' таких фраз в одно предложение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
             break;
 
         /*---------------- User ----------------*/
@@ -33,8 +33,8 @@ function POSTmethod(req, res) {
         case '/updateworkerstat':
             User.updateworkerstat(req.body.index, req.body.worker)
             break;
-        case '/addtoinventory':
-            User.addtoinventory(req.body.item, req.body.day)
+        case '/updateinventory':
+            User.updateinventory(req.body.inventory)
             break;
         case '/removefrominventory':
             User.removefrominventory(req.body.item)

@@ -47,7 +47,7 @@ body {
                 }
 
                 >p {
-                    color: #F0EFEB;
+                    color: var(--system-white);
                     transform: translateY(-100%);
                     transition: .1s ease-in-out;
                     opacity: 0;

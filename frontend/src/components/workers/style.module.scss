@@ -14,7 +14,7 @@
 
         >h1 {
             >span {
-                color: #FFF1E6;
+                color: var(--soft-yellow);
             }
         }
     }
@@ -48,12 +48,12 @@
             }
 
             &::-webkit-scrollbar-thumb {
-                background: #CB997E;
+                background: var(--strong-orange);
                 border-radius: 6px;
             }
 
             &::-webkit-scrollbar-thumb:hover {
-                background: #CB997E;
+                background: var(--strong-orange);
             }
 
 
@@ -128,17 +128,17 @@
             }
 
             &::-webkit-scrollbar-thumb {
-                background: #CB997E;
+                background: var(--strong-orange);
                 border-radius: 6px;
             }
 
             &::-webkit-scrollbar-thumb:hover {
-                background: #CB997E;
+                background: var(--strong-orange);
             }
 
 
             span {
-                color: #DDBEA9;
+                color: var(--soft-orange);
             }
 
             >img {
@@ -201,17 +201,17 @@
             border-radius: 10px;
             padding: 10px;
             font-size: 26px;
-            border: 3px solid #CB997E;
+            border: 3px solid var(--strong-orange);
             transition: .1s ease-in-out;
-            background-color: #30343F;
-            color: #CB997E;
+            background-color: var(--body-color);
+            color: var(--strong-orange);
             width: min-content;
             align-self: flex-end;
             text-wrap: nowrap;
 
             &:hover {
-                background-color: #CB997E;
-                color: #30343F;
+                background-color: var(--strong-orange);
+                color: var(--body-color);
             }
         }
 

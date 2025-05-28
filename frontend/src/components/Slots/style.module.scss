@@ -8,7 +8,7 @@
 }
 
 .parent {
-  background-color: #F0EFEB;
+  background-color: var(--system-white);
   width: 1000px;
   display: flex;
   flex-direction: row;
@@ -38,7 +38,7 @@
 
     .microbolt {
       border-radius: 100%;
-      background-color: #B7B7A4;
+      background-color: var(--soft-green);
       height: 6.5px;
       width: 6.5px;
       border: 2px solid #242423;
@@ -51,7 +51,7 @@
       border: 4px solid #242423;
       position: relative;
       border-radius: 100%;
-      background-color: #A5A58D;
+      background-color: var(--strong-green);
       display: block;
 
       >div {
@@ -69,14 +69,14 @@
     >div {
       border: 4px solid #242423;
       border-radius: 25px;
-      background-color: #FFF1E6;
+      background-color: var(--soft-yellow);
       display: flex;
       flex-direction: row;
       padding: 15px;
       justify-content: space-between;
 
       &:nth-of-type(2) {
-        background-color: #DDBEA9;
+        background-color: var(--soft-orange);
         padding-bottom: 30px;
       }
 
@@ -119,7 +119,7 @@
 
         .point {
           border-radius: 100%;
-          background-color: #EDDCD2;
+          background-color: var(--soft-pink);
           height: 5px;
           width: 5px;
           border: 1px solid #242423;
@@ -147,7 +147,7 @@
           gap: 30px;
 
           >div:first-of-type {
-            background-color: #EDDCD2;
+            background-color: var(--soft-pink);
             width: -webkit-fill-available;
             border: 4px solid #242423;
             padding: 15px;
@@ -164,7 +164,7 @@
 
               >span {
                 width: 15px;
-                background-color: #CB997E;
+                background-color: var(--strong-orange);
                 height: inherit;
                 border: 3px solid #242423;
 
@@ -303,7 +303,7 @@
               flex-wrap: nowrap;
 
               >.microbolt {
-                background-color: #F0EFEB;
+                background-color: var(--system-white);
               }
             }
 
@@ -311,7 +311,7 @@
               border: 3px solid #242423;
               padding: 15px;
               border-radius: 15px;
-              background-color: #EDDCD2;
+              background-color: var(--soft-pink);
               height: 78%;
               color: #242423;
               font-size: x-large;
@@ -373,7 +373,7 @@
 
                 >a {
                   >button {
-                    background-color: #A5A58D;
+                    background-color: var(--strong-green);
                     border: 3px solid #242423;
                     padding: 15px;
                     border-radius: 15px;
@@ -410,14 +410,14 @@
                 padding: 15px;
                 border-radius: 15px;
                 text-align: center;
-                background-color: #CB997E;
+                background-color: var(--strong-orange);
                 font-size: x-large;
                 color: #242423;
                 font-weight: 700;
                 text-wrap: nowrap;
 
                 &:nth-of-type(2) {
-                  background-color: #A5A58D;
+                  background-color: var(--strong-green);
                 }
               }
             }
@@ -430,14 +430,14 @@
           width: max-content;
           border: 4px solid #242423;
           border-radius: 15px;
-          background-color: #EDDCD2;
+          background-color: var(--soft-pink);
 
           >div {
             height: -webkit-fill-available;
 
             &:nth-of-type(2) {
               width: 36px;
-              background-color: #F0EFEB;
+              background-color: var(--system-white);
               border: 3px solid #242423;
               border-radius: 50px;
               padding: 7px;
@@ -451,7 +451,7 @@
                 border-radius: 50px;
                 height: -webkit-fill-available;
                 width: 30px;
-                background-color: #CB997E;
+                background-color: var(--strong-orange);
 
                 >.circle {
                   left: 50%;
@@ -459,7 +459,7 @@
                   position: absolute;
                   width: 80px;
                   height: 80px;
-                  background-color: #A5A58D;
+                  background-color: var(--strong-green);
                   border-radius: 100%;
                   border: 3px solid #242423;
                   cursor: grab;
@@ -471,7 +471,7 @@
                     right: 15px;
                     width: 10px;
                     height: 10px;
-                    background-color: #F0EFEB;
+                    background-color: var(--system-white);
                     border: 2px solid #242423;
                     border-radius: 100%;
                   }

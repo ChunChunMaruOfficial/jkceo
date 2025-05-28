@@ -20,12 +20,12 @@
                 }
 
                 &::-webkit-scrollbar-thumb {
-                    background: #CB997E;
+                    background: var(--strong-orange);
                     border-radius: 6px;
                 }
 
                 &::-webkit-scrollbar-thumb:hover {
-                    background: #CB997E;
+                    background: var(--strong-orange);
                 }
 
                 >span {

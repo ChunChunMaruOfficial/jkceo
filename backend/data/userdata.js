@@ -35,11 +35,8 @@ const User = {
     updateworkerstat(index, worker) { //потом можно оптимизировать на обновление определенной характеристики для экономии траффика
         this.workers[index] = worker
     },
-    addtoinventory(item, day) {
-        this.inventory.some(v => v.name == item) ? this.inventory.map(v => (v.name == item ? v.count += 1 : v.count)) : this.inventory.push({ name: item, count: 1 })
-        this.productionArray[day] = this.productionArray[day] ? this.productionArray[day] + 1 : 1
-        console.log(this.inventory);
-        
+    updateinventory(inventory) {
+        this.inventory = inventory
     },
     removefrominventory(itemName) {
         const item = this.inventory.find(v => v.name === itemName);

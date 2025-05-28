@@ -1,31 +1,33 @@
 import axios from 'axios';
 import styles from './styles.module.scss'
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { addnewnote, deletecurrentnote, NoteInterface, worker, addworker, setproduction, addtoinventory, removefrominventory, setmainproduct } from '../_slices/baseslice';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { addnewnote, deletecurrentnote, NoteInterface, addtoinventory, removefrominventory, setmainproduct, setinventory } from '../_slices/baseslice';
 import { RootState } from '../mainstore';
+
+import getRandom from '../_modules/getRandom';
+import generatebuyerword from '../_modules/generatebuyerword';
 
 import CombinationGame from '../combinationgame';
 import Statistic from './Statistic';
 import Client from './Client/index';
 import clientissatisfied from '../_modules/clientissatisfied';
+import Clock from './Clock';
+import Workers from './Workers';
+
 
 import newnote from '../../assets/svg/maininterface/newnote.svg'
 import back from '../../assets/svg/system/back.svg'
 import thinkingimg from '../../assets/svg/maininterface/thinking.svg'
 import thinkingprocess from '../../assets/svg/maininterface/thinkingprocess.svg'
 import cancel from '../../assets/svg/system/cancel.svg'
-import table from '../../assets/svg/maininterface/table.svg'
-import tea from '../../assets/svg/workers/tea.svg'
-import noproduction from '../../assets/svg/maininterface/noproduction.svg'
 import logcabin from '../../assets/svg/maininterface/logcabin.svg'
-import message from '../../assets/svg/maininterface/message.svg'
-import hammock from '../../assets/svg/maininterface/hammock.svg'
+
 
 export default function Workplace({ showsidemenu, setshowsidemenu, seconds, setsleeping }: { showsidemenu: number, setshowsidemenu: React.Dispatch<React.SetStateAction<number>>, seconds: number, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const daysorder = useRef<{ time: number, text: string, done: boolean }[]>(null)
-    const intervalsRef = useRef<{ [key: number]: NodeJS.Timeout }>({});
+
     const productionselect = useRef<HTMLDivElement>(null)
     const sidemenuRef = useRef<HTMLDivElement>(null)
     const popupRef = useRef<HTMLDivElement>(null)
@@ -34,31 +36,34 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const inputtextRef = useRef<HTMLInputElement>(null)
 
     const dispatch = useDispatch()
-    const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
+
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
 
+    const mainproduct: string[] = useSelector((state: RootState) => state.base.mainproduct);
     const buyerlucky: string[] = useSelector((state: RootState) => state.phrase.lucky);
     const buyerrefusal: string[] = useSelector((state: RootState) => state.phrase.refusal);
     const noanswer: string[] = useSelector((state: RootState) => state.phrase.noanswer);
+    const wrong: string[] = useSelector((state: RootState) => state.phrase.wrong);
 
-    const day: number = useSelector((state: RootState) => state.base.day);
+
     const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
 
     const [stepscurrent, setstepscurrent] = useState<string[]>([])
     const [productiontitle, setproductiontitle] = useState<string>('')
-    const [workerprogress, setworkerprogress] = useState<number[]>(new Array(workers.length).fill(0))
-    const [workerstatus, setworkerstatus] = useState<boolean[]>(new Array(workers.length).fill(true))
-    const [thinking, setthinking] = useState<boolean>(false)
     const [currentworker, setcurrentworker] = useState<number>(-200)
+    const [thinking, setthinking] = useState<boolean>(false)
     const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
     const [ispopupopen, setispopupopen] = useState<number>(0)
 
+    const [wrongitem, setwrongitem] = useState<string>('')
     const [buyerword, setbuyerword] = useState<string>('')
     const [buyerstatus, setbuyerstatus] = useState<boolean | null>(null)
     const [buyertime, setbuyertime] = useState<number>(0)
+    const [newmoney, setnewmoney] = useState<number>(0)
 
     const [buyerarray, setbuyerarray] = useState<{ name: string, count: number }[]>([])
+    const [becomemoney, setbecomemoney] = useState<boolean>(false)
 
     const deletenote = (note: NoteInterface) => {
         dispatch(deletecurrentnote(note))
@@ -71,86 +76,37 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
         axios.get('http://localhost:3001/getsteps')
             .then((res) => {
                 setthinking(false)
-                const newnote = {
-                    title: res.data.answer.split(',')[0],
-                    text: res.data.answer.split(',').slice(1).join(',')
-                }
 
+                const newnote = res.data.answer
                 dispatch(addnewnote(newnote));
                 dispatch(setmainproduct(newnote.title));
-                axios.post('http://localhost:3001/addnewnote', { note: newnote })
             })
     }
 
-useEffect(() => {
-    workers.forEach((worker, i) => {
-        if (intervalsRef.current[i] || !workerstatus[i] || worker.production === '') return;
-        
-        intervalsRef.current[i] = setInterval(() => {
-            setworkerprogress(prev => {
-                const newProgress = [...prev];
-                
-                // Если прогресс не число или меньше 0 - сброс
-                if (typeof newProgress[i] !== 'number' || newProgress[i] < 0) {
-                    newProgress[i] = 0;
-                }
-                
-                // Логика обновления для конкретного воркера
-                if (newProgress[i] >= 100) {
-                    clearInterval(intervalsRef.current[i]);
-                    delete intervalsRef.current[i];
-                    dispatch(addtoinventory(worker.production));
-                    handleRestart(i, worker.statistic.drawers.value);
-                    newProgress[i] = 0;
-                } else {
-                    newProgress[i] += 1;
-                }
-                
-                return newProgress;
-            });
-        }, worker.statistic.table.value);
-    });
-
-    return () => {
-        Object.values(intervalsRef.current).forEach(clearInterval);
-        intervalsRef.current = {};
-    };
-}, [workers, seconds, workerstatus]); // Убрал workerprogress и seconds из зависимостей
-
-    const handleRestart = useCallback((id: number, coldown: number) => {
-        setworkerstatus(ws => ws.map((v, i) => (i == id ? false : v)));
-        setTimeout(() => {
-            setworkerstatus(ws => ws.map((v, i) => (i == id ? true : v)));
-        }, coldown);
-    }, []);
-
-    useEffect(() => {
-        if (workers.length === 0) {
-            axios.get('http://localhost:3001/getmyworkers').then((res) => {
-                res.data.workers.forEach((v: worker) => dispatch(addworker(v)));
-                setworkerprogress(new Array(res.data.workers.length).fill(0));
-                setworkerstatus(new Array(res.data.workers.length).fill(true));
-            });
-        }
-    }, []);
-
-    // Загрузка инвентаря
     useEffect(() => {
         if (inventory.length === 0) {
             axios.get('http://localhost:3001/getinventory').then((res) => {
-                res.data.inventory.forEach((v: { name: string, count: number }) =>
-                    dispatch(addtoinventory(v))
-                );
+                dispatch(setinventory(res.data.inventory))
             });
         }
     }, []);
 
-    // Загрузка заметок
+    useEffect(() => {
+      buyerarray.length > 0 && setbuyerarray(ba => {
+            let sum = 0;
+            ba.map(v => sum += (notes.find(v1 => v1.title == v.name)?.price ?? 1) * v.count);
+             setnewmoney(sum); return ba
+        })
+        
+    }, [buyerarray]);
+
     useEffect(() => {
         if (notes.length === 0) {
             axios.get('http://localhost:3001/getnotes').then((res) => {
-                res.data.notes.forEach((v: NoteInterface) =>
-                    dispatch(addnewnote({ title: v.title, text: v.text }))
+                res.data.notes.forEach((v: NoteInterface) => {
+                    dispatch(addnewnote({ title: v.title, text: v.text, price: v.price }))
+                    dispatch(setmainproduct(v.title))
+                }
                 );
             });
         }
@@ -172,6 +128,12 @@ useEffect(() => {
         return ''
     }
 
+    const clientmidleware = () => {
+        buyerarray.some(item => mainproduct.includes(item.name)) ?
+            (clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime), setbuyerarray([]),setbecomemoney(true))
+            : (generatebuyerword(wrong[getRandom(0, wrong.length - 1)], setwrongitem, daysorder))
+    }
+
     return (<main onClick={(e) => {
         if (sidemenuRef.current && CombinationGameRef.current && !sidemenuRef.current.contains(e.target as Node) && !CombinationGameRef.current.contains(e.target as Node)) {
             setshowsidemenu((ssm: number) => {
@@ -185,38 +147,8 @@ useEffect(() => {
     }}>
 
         <div>
-            {/* ------------------------------ CLOCK ------------------------------ */}
-            <div className={styles.clockplace}>
-                <div className={styles.clock}>
-                    <div onClick={() => setsleeping(true)} className={styles.button}></div>
-                    <div className={styles.clockdisplay}>
-                        <p>{Math.floor((seconds / 60) % 24) < 12 ? 'AM' : 'PM'}</p>
-                        <h1>{Math.floor((seconds / 60) % 12) < 10 ? '0' : ''}{Math.floor((seconds / 60) % 12)}:{seconds % 60 < 10 ? '0' : ''}{seconds % 60}</h1>
-                        <p>{day}</p>
-                    </div>
-                    {Math.floor((seconds / 60) % 24) < 2 && (<span>
-                        <img src={message} alt="" />
-                        <p>идти спать</p>
-                    </span>)}
-                </div>
-                <img src={table} alt="" />
-            </div>
-
-            {/* ------------------------------ WORKERS ------------------------------ */}
-
-            {workers.length > 0 && (<div className={styles.workers}>
-                <h2>Ваши работники:</h2>
-                <div>
-                    {workers.length > 0 && workers.map((v, i) => (v && (<div key={i} className={styles.worker}>
-                        <p className={styles.productionitem}>{workerprogress[i] < 0 ? 'работник отдыхает' : (v.production != '' ? v.production : 'выберите продукт')}</p>
-                        <span onClick={() => setcurrentworker(i)} style={{ background: workerprogress[i] && workerprogress[i] > 0 ? `linear-gradient(to top, #CB997E ${workerprogress[i]}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}><img src={workerprogress[i] < 0 ? hammock : ('../src/assets/svg/workers/' + v.imgsrc + '.svg')} alt="" />{(!intervalsRef.current[i] || v.production == '') && (<img className={styles.tea} src={v.production == '' ? noproduction : tea} />)}</span>
-                        <p className={styles.productionpercent}>{workerprogress[i] < 0 ? 'просьба не беспокоить' : (workerprogress[i] + (v.production && '%'))}</p>
-                    </div>)))}
-                    {currentworker >= 0 && notes.length > 0 && (<div ref={productionselect} className={styles.productionselect}>
-                        {notes.map((v, i) => (<p key={i} onClick={() => { dispatch(setproduction([currentworker, v.title])); setcurrentworker(-1) }}>• {v.title}</p>))}
-                    </div>)}
-                </div>
-            </div>)}
+            <Clock seconds={seconds} setsleeping={setsleeping} />
+            <Workers seconds={seconds} productionselect={productionselect} currentworker={currentworker} setcurrentworker={setcurrentworker} />
 
             {/* ------------------------------ SCREEN BUTTONS ------------------------------ */}
 
@@ -238,12 +170,12 @@ useEffect(() => {
 
             {memoizedStatistic}
 
-            {/* ------------------------------ CLIENT ------------------------------ */}
-            <Client setispopupopen={setispopupopen} seconds={seconds} setbuyerword={setbuyerword} buyerword={buyerword} setbuyerstatus={setbuyerstatus} buyerstatus={buyerstatus} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} />
+
+            <Client setispopupopen={setispopupopen} seconds={seconds} setbuyerword={setbuyerword} buyerword={buyerword} setbuyerstatus={setbuyerstatus} buyerstatus={buyerstatus} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} wrongitem={wrongitem} becomemoney={becomemoney} setbecomemoney={setbecomemoney} newmoney={newmoney} setnewmoney={setnewmoney} />
 
         </div>
 
-        {/* ------------------------------ CombinationGame ------------------------------ */}
+
 
         {stepscurrent.length != 0 && (<div ref={CombinationGameRef} className={styles.gameplace}>
             <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} title={productiontitle} />
@@ -253,6 +185,7 @@ useEffect(() => {
         {/* ------------------------------ INVENTORY ------------------------------ */}
 
         {ispopupopen > 0 && (<div onClick={(e) => {
+            axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
             if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
                 setispopupopen(0)
             }
@@ -283,8 +216,8 @@ useEffect(() => {
                 </div>
                 {ispopupopen == 2 && (<div className={styles.sending}>
                     {buyerarray.length == 0 && (<h2>выберите товар для покупателя</h2>)}
-                    {buyerarray.map((v, i) => (<div key={i}>{v.name} x {v.count} <img onClick={() => { setbuyerarray(ba => ba.filter((_, i1) => i1 != i)); dispatch(addtoinventory(v)) }} src={cancel} alt="" /></div>))}
-                    {buyerarray.length > 0 && (<button onClick={() => {clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer,buyertime); setbuyerarray([])}} className={styles.giving}>отдать</button>)}
+                    {buyerarray.map((v, i) => (<div key={i}>{v.name} x {v.count} <img onClick={() => { setbuyerarray(ba => ba.filter((_, i1) => i1 != i)); dispatch(addtoinventory(v.name)); setwrongitem('') }} src={cancel} alt="" /></div>))}
+                    {buyerarray.length > 0 && (<><button onClick={() => clientmidleware()} className={styles.giving}>отдать</button><p>{newmoney}</p></>)}
                 </div>)}
             </div>
 
@@ -302,6 +235,7 @@ useEffect(() => {
                             setstepscurrent(v.text.split(',')); setshowsidemenu(2); setproductiontitle(v.title)
                         }}>{v.title}</h2> <img onClick={() => deletenote(v)} src={cancel} alt="" /></span>
                     <p>{v.text.split(',').map((v) => (<>• {v} <br /></>))}</p>
+                    <h3>Цена: {v.price}</h3>
                 </div>))}
                 <span onClick={() => thinkingfunc()}>
                     <img src={thinking ? thinkingprocess : thinkingimg} alt="" />

@@ -33,7 +33,6 @@ import axios from 'axios';
 export default function Mainscreen() {
     const location = useLocation();
     const dispatch = useDispatch()
-    //это вроде данные, которые мы получаем из слайса
     const money: number = useSelector((state: RootState) => state.base.money)
 
     const [showsidemenu, setshowsidemenu] = useState<number>(2)

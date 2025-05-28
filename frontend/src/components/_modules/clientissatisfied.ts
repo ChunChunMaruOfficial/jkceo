@@ -25,5 +25,5 @@ export default function clientissatisfied(status: boolean, setbuyerword: React.D
             setbuyerstatus(null)
             setbuyerword('')
         }, 350)
-    }, (lastwords.length * 55 + 450))
+    }, (lastwords.length * 55 + 1000))
 }

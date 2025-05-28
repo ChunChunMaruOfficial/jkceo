@@ -25,12 +25,12 @@
         }
 
         &::-webkit-scrollbar-thumb {
-            background: #A5A58D;
+            background: var(--strong-green);
             border-radius: 6px;
         }
 
         &::-webkit-scrollbar-thumb:hover {
-            background: #A5A58D;
+            background: var(--strong-green);
         }
 
         >span {
@@ -52,7 +52,7 @@
             padding: 15px;
             width: 400px;
             gap: 15px;
-            border: 2px solid #A5A58D;
+            border: 2px solid var(--strong-green);
             border-radius: 20px;
             justify-content: space-between;
             position: relative;
@@ -106,17 +106,17 @@
         padding: 10px;
         font-size: 20px;
         transition: .1s ease-in-out;
-        border: 3px solid #CB997E;
-        background-color: #30343F;
-        color: #CB997E;
+        border: 3px solid var(--strong-orange);
+        background-color: var(--body-color);
+        color: var(--strong-orange);
         width: min-content;
         align-self: flex-end;
         text-wrap: nowrap;
         width: 100%;
 
         &:hover {
-            background-color: #CB997E;
-            color: #30343F;
+            background-color: var(--strong-orange);
+            color: var(--body-color);
         }
     }
 
@@ -140,7 +140,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #A5A58D;
+            background-color: var(--strong-green);
             border-radius: 15px;
             padding: 15px;
             padding-left: 20px;
@@ -161,7 +161,7 @@
             }
 
             >p {
-                background-color: #F0EFEB;
+                background-color: var(--system-white);
                 border-radius: 15px 0 15px 15px;
                 padding: 10px;
                 font-size: 20px;
@@ -177,16 +177,16 @@
                 }
 
                 &:nth-of-type(1) {
-                    color: #8EA604;
+                    color: var(--system-green);
                 }
 
                 &:nth-of-type(2) {
-                    color: #F5BB00;
+                    color: var(--system-yellow);
 
                 }
 
                 &:nth-of-type(3) {
-                    color: #D76A03;
+                    color: var(--system-red);
 
                 }
             }
@@ -206,8 +206,8 @@
                 }
 
                 >p {
-                    background-color: #F0EFEB;
-                    color: #A5A58D;
+                    background-color: var(--system-white);
+                    color: var(--strong-green);
                     border-radius: 0 15px 15px 15px;
                     padding: 10px;
                     font-size: 20px;
@@ -230,7 +230,7 @@
                     -webkit-appearance: none;
                     width: 100%;
                     height: 10px;
-                    background: #F0EFEB;
+                    background: var(--system-white);
                     border-radius: 5px;
                     outline: none;
 

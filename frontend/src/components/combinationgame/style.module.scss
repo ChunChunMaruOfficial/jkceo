@@ -27,12 +27,12 @@
     >button {
         padding: 15px;
         font-size: 16px;
-        border: 3px solid #FFF1E6;
+        border: 3px solid var(--soft-yellow);
         border-radius: 15px;
         outline: none;
-        color: FFF1E6;
-        transition: border-color 0.3s;
-        background-color: #30343F;
+        color: var(--system-white);
+        transition: border-color 0.3s; 
+        background-color: var(--body-color);
         position: absolute;
         left: 50%;
         transform: translateX(-50%);

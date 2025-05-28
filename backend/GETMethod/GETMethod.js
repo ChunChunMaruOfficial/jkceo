@@ -37,9 +37,7 @@ function GETmethod(req, res) {
     case '/getmaterialannouncement':
       getMistral('getmaterialannouncement', '', res)
       break;
-
-
-
+      
     /*---------------- User ----------------*/
     case '/getnotes':
       res.json({ notes: User.notes })
@@ -70,7 +68,6 @@ function GETmethod(req, res) {
     case '/getselleranswers':
       res.json({ refuse: sellerrefusal, lucky: sellerlucky, wrong: wrongproduct, noanswer: noanswer })
       break;
-
 
     case '/getdata':
       res.json({ answer: GetAllEmoji() })

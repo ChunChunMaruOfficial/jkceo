@@ -5,7 +5,7 @@ import axios from 'axios'
 import getRandom from '../../_modules/getRandom'
 import generatebuyerword from '../../_modules/generatebuyerword'
 import { setrefusal, setlucky, setwrong, setnoanswer } from '../../_slices/phraseslice'
-
+import { setmoney } from '../../_slices/baseslice'
 import { RootState } from '../../mainstore'
 
 import clientissatisfied from '../../_modules/clientissatisfied'
@@ -14,12 +14,15 @@ import likeatable from '../../../assets/svg/maininterface/likeatable.svg'
 import dis from '../../../assets/svg/maininterface/buyerreaction/dis.svg'
 import ok from '../../../assets/svg/maininterface/buyerreaction/ok.svg'
 import back from '../../../assets/svg/system/back.svg'
+import money from '../../../assets/svg/buyer/money.svg'
 
-export default function Client({ setispopupopen, seconds, setbuyerword, buyerword, setbuyerstatus, buyerstatus, setbuyertime, buyertime, daysorder }: { setispopupopen: React.Dispatch<React.SetStateAction<number>>, seconds: number, setbuyerword: React.Dispatch<React.SetStateAction<string>>, buyerword: string, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, buyerstatus: boolean | null, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null> }) {
+export default function Client({ setispopupopen, seconds, setbuyerword, buyerword, setbuyerstatus, buyerstatus, setbuyertime, buyertime, daysorder, wrongitem, becomemoney, setbecomemoney, newmoney, setnewmoney }: { setispopupopen: React.Dispatch<React.SetStateAction<number>>, seconds: number, setbuyerword: React.Dispatch<React.SetStateAction<string>>, buyerword: string, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, buyerstatus: boolean | null, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, wrongitem: string, becomemoney: boolean, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>> }) {
 
     const dispatch = useDispatch()
 
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
+    const mymoney: number = useSelector((state: RootState) => state.base.money);
+
     const [buyerpfp, setbuyerpfp] = useState<string>('')
     const [isshield, setisshield] = useState<boolean>(false)
 
@@ -29,7 +32,6 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
 
 
     useEffect(() => {
-
         axios.get('http://localhost:3001/getselleranswers').then((res) => {
             dispatch(setrefusal(res.data.refuse))
             dispatch(setlucky(res.data.lucky))
@@ -45,12 +47,16 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
                 done: false
             }))
             daysorder.current = daysorder.current.filter((v) => v.text.length > 8)
-            console.log(daysorder);
-
         })
     }, [])
 
-
+    useEffect(() => {
+        becomemoney == true && setTimeout(() => {
+            dispatch(setmoney(mymoney + newmoney))
+            setbecomemoney(false)
+            setnewmoney(0)
+        }, 4000)
+    }, [becomemoney])
 
 
     const startbuyertimer = () => {
@@ -59,7 +65,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
                 bt == 0 && clearInterval(buyertimeInterval);
                 if (bt < 1.5 && bt != 0) {
                     clearInterval(buyertimeInterval);
-                    clientissatisfied(false, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal,noanswer,buyertime);
+                    clientissatisfied(false, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime);
                     return 0
                 }
                 else return bt - .3
@@ -85,13 +91,13 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
                 startbuyertimer();
             }, 27);
         }
-    }, [seconds, buyerword,isshield]);
+    }, [seconds, buyerword, isshield]);
 
 
-    return (
+    return (<>
         <div id={styles.clientwrapper}>
             <div onClick={() => isshield == true && setisshield(false)} className={isshield ? (styles.shield + ' ' + styles.active) : styles.shield}>
-                {[...Array(4)].map((_,i) => (<span key={i}></span>))}
+                {[...Array(4)].map((_, i) => (<span key={i}></span>))}
                 <button onClick={() => setisshield(true)} className={styles.close}><img src={back} alt="" /></button>
             </div>
             <div className={styles.time} style={{ background: buyertime > 0 ? `linear-gradient(to right, #CB997E ${buyertime}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}></div>
@@ -101,11 +107,20 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
                     {buyerword && (<img className={buyerstatus == null ? (styles.clientimg + ' ' + styles.clientscomming) : (buyerstatus == true ? (styles.clientimg + ' ' + styles.clientsatisfied) : (styles.clientimg + ' ' + styles.clientdissatisfied))} src={`../src/assets/svg/workers${buyerpfp}.svg`} alt="" />)}
                     <img className={styles.likeatable} src={likeatable} alt="" />
                 </div>
+                {becomemoney && (<span className={styles.money}>
+                    <p> + {newmoney}</p>
+                    <img src={money} alt="" />
+                </span>)}
             </div>
             {buyerword && buyertime > 0 && (<span className={styles.bottompanel}>
-                <button onClick={() => clientissatisfied(false, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer,buyertime)}><img src={dis} /></button>
+                <button onClick={() => clientissatisfied(false, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime)}><img src={dis} /></button>
                 <button onClick={() => setispopupopen(2)}><img src={ok} /></button>
             </span>)}
         </div>
+        {wrongitem.length > 0 && (<div id={styles.wrongitem}>
+            <p>{wrongitem}</p>
+            <img src={`../src/assets/svg/workers${buyerpfp}.svg`} alt="" />
+        </div>)}
+    </>
     )
 }

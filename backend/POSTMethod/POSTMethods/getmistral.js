@@ -1,5 +1,5 @@
 const User = require('../../data/userdata.js')
-
+const getRandom = require('../../GETMethod/GETMethods/getRandom.js')
 const mistralModule = require('@mistralai/mistralai');
 const Mistral = mistralModule.Mistral;
 
@@ -34,7 +34,7 @@ async function getMistral(type, promt, res) {
         case 'getmaterialannouncement':
             startpromt = 'Верни мне просто сгенерированные тексты для объявлений для продажи материалов сырья, которые используютя для разных ремесел (объявлений должно быть 11). текст одного объявления обязан быть примерно интересных 2-3 предложения (это просто нельзя пропустить)!!. Прими во внимание, что все может быть в сеттинге античности. текст должен быть не от магазина, а скорее от человека, типа ему это не надо вот он и продает и еще причину можно указать. разные между собой объявления не нумеруй и разделяй символом ";" (это безумно важно!!!) . объявление должно быть формата (без кавычек): текст объявления. материал(кол-во в цифрах просто, без слов), материал(кол-во в цифрах просто, без слов), материал(кол-во в цифрах просто, без слов)( от 2 до 4). имя фамилия. цена (без валюты, от 0 до 400 в зависимости от ценности товара);'
             break;
-            case 'getorder': 
+        case 'getorder':
             startpromt = 'ты человек, который услышал о моем месте через знакомых и хочешь воспользоваться моими услугами. верни мне текст, который скажет посетитель при посещении моего места впервые, или, он может быть уже посещал меня. Не представляйся, и говори простым языком простого человека из античности, без формальностей и все такое. войди в роль! твой вопрос должен заключаться в приобритении моих услуг. верни мне '
             break;
         default:
@@ -50,13 +50,22 @@ async function getMistral(type, promt, res) {
             messages: [{ role: 'user', content: startpromt + promt }],
         });
 
-        const MistralRes = chatResponse.choices[0].message.content
+        let MistralRes = chatResponse.choices[0].message.content
 
         console.log("ANSWER: ", MistralRes);
 
         switch (type) {
+
             case 'emoji':
                 User.setprofessionformulation(MistralRes)
+                break;
+            case 'steps':
+                MistralRes = {
+                    title: MistralRes.split(',')[0],
+                    text: MistralRes.split(',').slice(1).join(','),
+                    price: getRandom(40, 120)
+                }
+                User.addnewnote(MistralRes)
                 break;
             case 'examplename':
                 console.log('examplename');

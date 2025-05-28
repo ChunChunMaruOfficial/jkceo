@@ -3,7 +3,8 @@ import axios from 'axios'
 
 export interface NoteInterface {
     title: string,
-    text: string
+    text: string,
+    price?: number
 }
 export interface statisticInterface {
     drawers: { value: number, level: number, maxlevel: number }, //кулдаун
@@ -31,7 +32,7 @@ export interface BaseState {
     day: number,
     name: string,
     professionformulation: string,
-    mainproduct: string,
+    mainproduct: string[],
     money: number,
     notes: NoteInterface[],
     messengerrange: number,
@@ -47,7 +48,7 @@ const initialState: BaseState = {
 
     name: '',
     professionformulation: '',
-    mainproduct: '',
+    mainproduct: [],
     money: -1,
     notes: [],
     messengerrange: 1,
@@ -80,8 +81,8 @@ export const BaseSlice = createSlice({
         },
         addnewnote: (state, action) => {
             state.notes.push(action.payload)
-
         },
+
         deletecurrentnote: (state, action) => {
             state.notes = state.notes.filter(v => v.text !== action.payload.text);
             axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
@@ -116,12 +117,16 @@ export const BaseSlice = createSlice({
             state.workersarray[id].production = production
         },
         setmainproduct: (state, action): void => {
-            state.mainproduct = action.payload
+            state.mainproduct.push(action.payload)
+            console.log(state.mainproduct);
+
         },
         addtoinventory: (state, action): void => {
             state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
-            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1
-            //axios.post('http://localhost:3001/addtoinventory', { item: action.payload, day: state.day })
+            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1;
+        },
+        setinventory: (state, action): void => {
+            state.inventory = action.payload
         },
         removefrominventory: (state, action) => {
             const itemName = action.payload;
@@ -142,7 +147,7 @@ export const BaseSlice = createSlice({
     },
 })
 
-export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct, setinventory } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

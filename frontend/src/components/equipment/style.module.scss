@@ -79,12 +79,12 @@
         >img {
             height: 4em;
             cursor: pointer;
-        }
+        } 
 
         >div {
             padding: 5px;
             font-size: 20px;
-            border: 2px solid #CB997E;
+            border: 2px solid var(--strong-orange);
             border-radius: 5px;
             width: 200px;
             text-align: center;
@@ -148,7 +148,7 @@
         width: max-content;
         padding: 15px;
         font-size: 20px;
-        border: 2px solid #A5A58D;
+        border: 2px solid var(--strong-green);
         border-radius: 20px;
     }
 
