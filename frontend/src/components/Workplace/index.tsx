@@ -75,11 +75,11 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
         setthinking(true)
         axios.get('http://localhost:3001/getsteps')
             .then((res) => {
-                setthinking(false)
-
                 const newnote = res.data.answer
-                dispatch(addnewnote(newnote));
                 dispatch(setmainproduct(newnote.title));
+                console.log(newnote);
+                dispatch(addnewnote(newnote));
+                setthinking(false)
             })
     }
 
@@ -92,19 +92,19 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }, []);
 
     useEffect(() => {
-      buyerarray.length > 0 && setbuyerarray(ba => {
+        buyerarray.length > 0 && setbuyerarray(ba => {
             let sum = 0;
             ba.map(v => sum += (notes.find(v1 => v1.title == v.name)?.price ?? 1) * v.count);
-             setnewmoney(sum); return ba
+            setnewmoney(sum); return ba
         })
-        
+
     }, [buyerarray]);
 
     useEffect(() => {
         if (notes.length === 0) {
             axios.get('http://localhost:3001/getnotes').then((res) => {
                 res.data.notes.forEach((v: NoteInterface) => {
-                    dispatch(addnewnote({ title: v.title, text: v.text, price: v.price }))
+                    dispatch(addnewnote({ title: v.title, steps: v.steps, price: v.price }))
                     dispatch(setmainproduct(v.title))
                 }
                 );
@@ -130,7 +130,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
     const clientmidleware = () => {
         buyerarray.some(item => mainproduct.includes(item.name)) ?
-            (clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime), setbuyerarray([]),setbecomemoney(true))
+            (clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime), setbuyerarray([]), setbecomemoney(true))
             : (generatebuyerword(wrong[getRandom(0, wrong.length - 1)], setwrongitem, daysorder))
     }
 
@@ -228,20 +228,31 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
         <div ref={sidemenuRef} className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}>
             <span><img onClick={() => setshowsidemenu(0)} src={back} alt="" /><h1>Ваши записи</h1><img onClick={() => { setnewnoteisopen(newnoteisopen == 1 ? 0 : 1) }} src={newnote} alt="" /></span>
+
             <div className={styles.allnotes}>
+
                 {notes.map((v, i) => (<div key={i}>
                     <span>
                         <h2 onClick={() => {
-                            setstepscurrent(v.text.split(',')); setshowsidemenu(2); setproductiontitle(v.title)
+                            setstepscurrent(v.steps.split(',')); setshowsidemenu(2); setproductiontitle(v.title)
                         }}>{v.title}</h2> <img onClick={() => deletenote(v)} src={cancel} alt="" /></span>
-                    <p>{v.text.split(',').map((v) => (<>• {v} <br /></>))}</p>
+                    <div>
+                        <span>
+                            <p>{v.steps.split(',').map((v1) => (<>• {v1} <br /></>))}</p>
+                        </span>
+                        <span>
+                            <p>{v.ingredients.split(',').map((v1) => (<>• {v1} <br /></>))}</p>
+                        </span>
+                    </div>
                     <h3>Цена: {v.price}</h3>
                 </div>))}
+
                 <span onClick={() => thinkingfunc()}>
                     <img src={thinking ? thinkingprocess : thinkingimg} alt="" />
                     <h4>Думать над новым продуктом...</h4>
                 </span>
             </div>
+
             <div className={styles.newnote + ' ' + (newnoteisopen == 0 ? styles.hidenewnote : newnoteisopen == 1 && styles.shownewnote)}>
                 <div className={styles.inputgroup}>
                     <input ref={inputHeadRef} type="text" className={styles.inputfield} id="title" placeholder=' ' />
@@ -254,7 +265,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
                 <button onClick={() => {
                     setnewnoteisopen(0); dispatch(addnewnote({
                         title: inputHeadRef.current?.value,
-                        text: inputtextRef.current?.value
+                        steps: inputtextRef.current?.value
                     })); inputHeadRef.current!.value = ''; inputtextRef.current!.value = ''
                 }}>Сохранить</button>
             </div>

@@ -1,82 +1,64 @@
-const User = require('../../data/userdata.js')
-const getRandom = require('../../GETMethod/GETMethods/getRandom.js')
+const User = require('../../data/userdata.js');
+const promts = require('../../data/promts.json');
+const getRandom = require('../../GETMethod/GETMethods/getRandom.js');
 const mistralModule = require('@mistralai/mistralai');
 const Mistral = mistralModule.Mistral;
 
 const apiKey = 'kXXdvcu0SGA6XHrcvyki2KvN2dbTj79O';
-console.log('API Key:', apiKey)
+console.log('API Key:', apiKey);
 
 const client = new Mistral({ apiKey: apiKey });
 
-async function getMistral(type, promt, res) {
+async function getMistralapi(startpromt, promt) {
     console.log('get Mistral');
 
-    let startpromt
-    switch (type) {
-        case 'emoji':
-            startpromt = 'Я дам тебе 3 эмодзи, а ты должен описать довольно кратко и простым текстом в одно предложение (без эмодзи в скобках!!! и от первого лица) мою модель бизнеса. Первый смайлик — это то, что я продаю, второй — это то, кому я продаю, третий — способ монетизации (то, как со мной расплачиваются за товар). Прими во внимание, что все это должно быть в сеттинге античности и максимально сильено соответствовать эмодзи, это самое главное. не обязательно это должно быть чтото адекватное, в том числе и способ монетизации. Эмодзи: '
-            break;
-        case 'examplename':
-            startpromt = 'придумай название из 1-4 слов на русском, которое может быть странным, но не примитивным (ответь только наванием без кавычек) и должно отображать каждое слово в формулировке, можешь с смешением английского и русского языков, для компании, которую можно описать как: '
-            break;
-        case 'steps':
-            startpromt = 'по производимой мною продукции, напиши пошаговый список через запятую того, что я должен делать для получения необходимой продукции с учетом того, что у меня есть все ингредиенты (от 3 до 6 пунктов). просто напиши через запятую, не более (не пиши "ингредиенты:" или чтото в этом роде, мне просто надо пропарсить твой ответ в массив) не принимай во внимание, для кого я произвожу и способ монетизации тоже игнорируй!!!!!!. вид ответа должен быть: Название, и шаги через запятую..  и сами действия должны быть не сильно сложными, скажем так, это все должно быть по силам одному человеку. вот: '
-            break;
-        case 'getworkers':
-            startpromt = 'дай список из 10 человек, ответ должен быть по шаблону: "Имя, фамилия, возраст, пол, прошлый вид деятельности". все свойства пиши через запятую, а самих людей через точку, ничего лишнего, только то, что я попросил. безумно важно: имена и профессии обязаны быть в сеттинге античности!!!!!'
-            break;
-        case 'getstory':
-            startpromt = 'Я тебе дам описание человека, а ты должен придумать ему предисторию на 4-5 предложений. Учти то, что по некоторым обстоятельствам этот человек ищет работу. Верни мне просто текст, ничего лишнего. безумно важно: имена и профессии обязаны быть в сеттинге античности!!!!! Вот человек: '
-            break;
-        case 'getmaterials':
-            startpromt = 'По описанию моего производства верни мне необходимое для производства сырье вид ответа: "материал1, материал2, материал3". Не пиши лишний текст, пиши только то, что я указал в примере через запятую. Прими во внимание, что все может быть в сеттинге античности. Игнорируй то, в обмен на что и за что я им это продаю. '
-            break;
-        case 'getmaterialannouncement':
-            startpromt = 'Верни мне просто сгенерированные тексты для объявлений для продажи материалов сырья, которые используютя для разных ремесел (объявлений должно быть 11). текст одного объявления обязан быть примерно интересных 2-3 предложения (это просто нельзя пропустить)!!. Прими во внимание, что все может быть в сеттинге античности. текст должен быть не от магазина, а скорее от человека, типа ему это не надо вот он и продает и еще причину можно указать. разные между собой объявления не нумеруй и разделяй символом ";" (это безумно важно!!!) . объявление должно быть формата (без кавычек): текст объявления. материал(кол-во в цифрах просто, без слов), материал(кол-во в цифрах просто, без слов), материал(кол-во в цифрах просто, без слов)( от 2 до 4). имя фамилия. цена (без валюты, от 0 до 400 в зависимости от ценности товара);'
-            break;
-        case 'getorder':
-            startpromt = 'ты человек, который услышал о моем месте через знакомых и хочешь воспользоваться моими услугами. верни мне текст, который скажет посетитель при посещении моего места впервые, или, он может быть уже посещал меня. Не представляйся, и говори простым языком простого человека из античности, без формальностей и все такое. войди в роль! твой вопрос должен заключаться в приобритении моих услуг. верни мне '
-            break;
-        default:
-            break;
-    }
     if (!apiKey) {
         console.error('API key is not set');
-        return;
     }
+
     try {
         const chatResponse = await client.chat.complete({
             model: 'mistral-large-latest',
             messages: [{ role: 'user', content: startpromt + promt }],
         });
 
-        let MistralRes = chatResponse.choices[0].message.content
+        return chatResponse.choices[0].message.content;
+    } catch (error) {
+        console.error('Error in getMistralapi:', error);
+        throw error;
+    }
+}
 
+async function getMistral(startpromt, promt, res) {
+    
+    try {
+        let MistralRes = await getMistralapi(startpromt, promt);
         console.log("ANSWER: ", MistralRes);
 
-        switch (type) {
-
-            case 'emoji':
-                User.setprofessionformulation(MistralRes)
+        switch (startpromt) {
+            case promts.emoji:
+                User.setprofessionformulation(MistralRes);
                 break;
-            case 'steps':
+
+            case promts.steps:
                 MistralRes = {
                     title: MistralRes.split(',')[0],
-                    text: MistralRes.split(',').slice(1).join(','),
-                    price: getRandom(40, 120)
-                }
-                User.addnewnote(MistralRes)
+                    steps: MistralRes.split(',').slice(1).join(','),
+                    price: getRandom(40, 120),
+                    ingredients: await getMistralapi(promts.getmaterials, MistralRes.split(',')[0])
+                };
+                User.addnewnote(MistralRes);
                 break;
-            case 'examplename':
-                console.log('examplename');
-                User.setname(MistralRes)
+
+            case promts.examplename:
+                User.setname(MistralRes);
                 break;
         }
-        res.json({ answer: MistralRes })
 
+        res.json({ answer: MistralRes });
     } catch (error) {
         console.error('Error:', error);
-        res.json({ answer: "Кажется, боги не удовлетворены таким раскладом, попробуйте еще раз." })
+        res.json({ answer: "Кажется, боги не удовлетворены таким раскладом, попробуйте еще раз." });
     }
 }
 

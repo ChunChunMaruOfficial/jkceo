@@ -1,17 +1,22 @@
 const getMistral = require("./POSTMethods/getmistral")
 const User = require('../data/userdata.js')
+const promts = require('../data/promts.json')
+
 
 function POSTmethod(req, res) {
     switch (req.path) {
         /*---------------- Mistral ----------------*/
         case '/getwinningtext':
-            getMistral('emoji', req.body.promt, res)
+            getMistral(promts.emoji, req.body.promt, res)
             break;
         case '/getstory':
-            getMistral('getstory', req.body.worker, res)
+            getMistral(promts.getstory, req.body.worker, res)
             break;
         case '/getorder':
-            getMistral('getorder', req.body.count + ' таких фраз в одно предложение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
+            getMistral(promts.getorder, req.body.count + ' таких фраз в одно предложение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
+            break;
+        case '/getmaterials':
+            getMistral(promts.getmaterials, req.body.product, res)
             break;
 
         /*---------------- User ----------------*/

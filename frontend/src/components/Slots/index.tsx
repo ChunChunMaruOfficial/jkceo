@@ -175,7 +175,7 @@ export default function Slots() {
                         </div>
                         <div>
                             <img src={sword} alt="" />
-                            {[...Array(4)].map(() => (<span className={styles.point}></span>))}
+                            {[...Array(4)].map((_,i) => (<span key={i} className={styles.point}></span>))}
                             <img src={scales} className={styles.rotated} alt="" />
                         </div>
                     </div>

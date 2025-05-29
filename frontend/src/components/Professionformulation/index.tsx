@@ -43,7 +43,9 @@ export default function Professionformulation() {
 
                 const newnote = {
                     title: inputRef.current!.value,
-                    text: professionformulation
+                    steps: professionformulation,
+                    ingredients: [],
+                    price: 0
                 }
 
                 dispatch(addnewnote(newnote))
@@ -62,10 +64,6 @@ export default function Professionformulation() {
                     setprofessionformulation(res.data.answer);
                 })
         }
-        axios.get('http://localhost:3001/getmaterials')
-            .then((res) => {
-                console.log(res.data.answer);
-            })
     }, [])
 
     return (
@@ -78,7 +76,7 @@ export default function Professionformulation() {
                 </div>
                 <div>
                     <button onClick={() => !isLoading && getexample(true)}><img className={isLoading ? styles.isLoading : ''} src={isLoading ? loading : ai} alt="" /></button>
-                     <button onClick={() => setnamefunction()}><img src={accept} alt="" /></button>
+                    <button onClick={() => setnamefunction()}><img src={accept} alt="" /></button>
                 </div>
             </div>
             <h2 className={allisdone ? styles.hideelement : ''}>{professionformulation}</h2>

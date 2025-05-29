@@ -1,5 +1,5 @@
 import styles from './style.module.scss'
-import { worker, addworker, setproduction, addtoinventory } from '../../_slices/baseslice';
+import { workerInterface, addworker, setproduction, addtoinventory } from '../../_slices/baseslice';
 
 import tea from '../../../assets/svg/workers/tea.svg'
 import noproduction from '../../../assets/svg/maininterface/noproduction.svg'
@@ -13,7 +13,7 @@ import { NoteInterface } from '../../_slices/baseslice';
 export default function Workers({ seconds, productionselect, currentworker, setcurrentworker }: { seconds: number, productionselect: React.RefObject<HTMLDivElement | null>, currentworker:number, setcurrentworker: React.Dispatch<React.SetStateAction<number>> }) {
 
     const dispatch = useDispatch()
-    const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
+    const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray);
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
     const intervalsRef = useRef<{ [key: number]: NodeJS.Timeout }>({});
 
@@ -23,7 +23,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
     useEffect(() => {
         if (workers.length === 0) {
             axios.get('http://localhost:3001/getmyworkers').then((res) => {
-                res.data.workers.forEach((v: worker) => dispatch(addworker(v)));
+                res.data.workers.forEach((v: workerInterface) => dispatch(addworker(v)));
                 setworkerprogress(new Array(res.data.workers.length).fill(0));
                 setworkerstatus(new Array(res.data.workers.length).fill(true));
             });

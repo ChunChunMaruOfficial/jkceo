@@ -5,7 +5,7 @@ const motivation = require('../data/motivation.json')
 const demotivation = require('../data/demotivation.json')
 
 const User = require('../data/userdata.js')
-
+const promts = require('../data/promts.json')
 const refusal = require('../data/refusal.json')
 const agreement = require('../data/agreement.json')
 const offers = require('../data/offers.json')
@@ -23,19 +23,16 @@ function GETmethod(req, res) {
 
     /*---------------- Mistral ----------------*/
     case '/getexamplename':
-      getMistral('examplename', User.professionformulation, res)
+      getMistral(promts.examplename, User.professionformulation, res)
       break;
     case '/getsteps':
-      getMistral('steps', User.professionformulation, res)
+      getMistral(promts.steps, User.professionformulation, res)
       break;
     case '/getworkers':
-      getMistral('getworkers', '', res)
-      break;
-    case '/getmaterials':
-      getMistral('getmaterials', User.professionformulation, res)
+      getMistral(promts.getworkers, '', res)
       break;
     case '/getmaterialannouncement':
-      getMistral('getmaterialannouncement', '', res)
+      getMistral(promts.getmaterialannouncement, '', res)
       break;
       
     /*---------------- User ----------------*/
@@ -68,6 +65,8 @@ function GETmethod(req, res) {
     case '/getselleranswers':
       res.json({ refuse: sellerrefusal, lucky: sellerlucky, wrong: wrongproduct, noanswer: noanswer })
       break;
+
+      /*---------------- API ----------------*/
 
     case '/getdata':
       res.json({ answer: GetAllEmoji() })

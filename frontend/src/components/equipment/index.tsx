@@ -7,7 +7,7 @@ import table from '../../assets/svg/equipment/table.svg'
 
 import next from '../../assets/svg/system/next.svg'
 
-import { worker } from '../_slices/baseslice'
+import { workerInterface } from '../_slices/baseslice'
 
 import drawersselected from '../../assets/svg/equipment/selected/drawers.svg'
 import lampselected from '../../assets/svg/equipment/selected/lamp.svg'
@@ -31,7 +31,7 @@ import axios from 'axios'
 export default function Equipment() {
     const dispatch = useDispatch()
 
-    const myworkers: worker[] = useSelector((state: RootState) => state.base.workersarray)
+    const myworkers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray)
     const [selectedequipment, setselectedequipment] = useState<number>(-1)
     const [workerindex, setworkerindex] = useState<number>(0)
     const [neworkerstyle, setneworkerstyle] = useState(styles.nextshowing)
@@ -39,7 +39,7 @@ export default function Equipment() {
     useEffect(() => {
         if (myworkers.length == 0) {
             axios.get('http://localhost:3001/getmyworkers').then((res) => {
-                res.data.workers.map((v: worker) => dispatch(addworker(v)))
+                res.data.workers.map((v: workerInterface) => dispatch(addworker(v)))
             })
         }
     }, [])

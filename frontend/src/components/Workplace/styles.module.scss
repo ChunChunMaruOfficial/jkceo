@@ -95,7 +95,7 @@ main {
         padding: 20px;
         width: min-content;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        z-index: 2;
+        z-index: 3;
 
         >span {
             text-wrap: nowrap;
@@ -150,7 +150,7 @@ main {
 
             >div {
                 background-color: var(--system-white);
-                max-width: 300px;
+                max-width: 500px;
                 color: var(--strong-green);
                 padding: 15px;
                 border-radius: 15px;
@@ -187,9 +187,31 @@ main {
                             text-decoration: underline;
                         }
                     }
-
-
                 }
+
+                >div {
+                    margin-bottom: 15px;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 15px;
+                    align-items: start;
+                    justify-content: space-evenly;
+                    text-wrap: nowrap;
+
+                    >span {
+                        padding: 10px;
+
+                        &:nth-of-type(2) {
+
+
+                            background-color: var(--soft-green);
+                            color: var(--system-white);
+                            border-radius: 10px;
+                        }
+                    }
+                }
+
+
 
                 h3 {
                     color: var(--strong-orange);

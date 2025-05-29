@@ -3,7 +3,8 @@ import axios from 'axios'
 
 export interface NoteInterface {
     title: string,
-    text: string,
+    steps: string,
+    ingredients: string,
     price?: number
 }
 export interface statisticInterface {
@@ -13,7 +14,7 @@ export interface statisticInterface {
     table: { value: number, level: number, maxlevel: number } // скорость производства
 }
 
-export interface worker {
+export interface workerInterface {
     name: string,
     surname: string,
     age: string,
@@ -37,7 +38,7 @@ export interface BaseState {
     notes: NoteInterface[],
     messengerrange: number,
     rumorsstatus: number,
-    workersarray: worker[],
+    workersarray: workerInterface[],
     goodsPerHour: number,
     productionArray: number[],
     inventory: { name: string, count: number }[]
@@ -84,7 +85,7 @@ export const BaseSlice = createSlice({
         },
 
         deletecurrentnote: (state, action) => {
-            state.notes = state.notes.filter(v => v.text !== action.payload.text);
+            state.notes = state.notes.filter(v => v.steps !== action.payload.steps);
             axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
         },
         addworker: (state, action): void => {

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { worker } from './baseslice'
+import { workerInterface } from './baseslice'
 
 export interface announcements {
     text: string,
@@ -11,7 +11,7 @@ export interface announcements {
 }
 
 export interface PersonsState {
-    workers: worker[],
+    workers: workerInterface[],
     announcements: announcements[]
 }
 

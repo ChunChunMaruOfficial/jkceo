@@ -6,12 +6,12 @@ import sleeping from '../../assets/svg/sleeping/sleeping.svg'
 import moon from '../../assets/svg/sleeping/moon.svg'
 import sun from '../../assets/svg/sleeping/sun.svg'
 
-import { worker, setmoney,newday } from '../_slices/baseslice'
+import { workerInterface, setmoney,newday } from '../_slices/baseslice'
 import { RootState } from '../mainstore'
 
 export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: React.Dispatch<React.SetStateAction<number>>, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
     const dispatch = useDispatch()
-    const workers: worker[] = useSelector((state: RootState) => state.base.workersarray);
+    const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray);
     const money: number = useSelector((state: RootState) => state.base.money);
 
     let sum = 0

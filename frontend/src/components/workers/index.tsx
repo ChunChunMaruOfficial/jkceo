@@ -11,24 +11,24 @@ import renderCoins from '../_modules/renderCoins'
 import deal from '../../assets/svg/workers/deal.svg'
 import { RootState } from '../mainstore';
 import { useSelector } from 'react-redux';
-import { worker } from '../_slices/baseslice'
+import { workerInterface } from '../_slices/baseslice'
 import { useDispatch } from 'react-redux'
 import { setworkers, deleteworker } from '../_slices/personsslice'
 import { addworker } from '../_slices/baseslice'
 
 export default function Workers() {
-    const workers: worker[] = useSelector((state: RootState) => state.base.workersarray); //мои
-    const newworkers: worker[] = useSelector((state: RootState) => state.persons.workers); // не мои
+    const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray); //мои
+    const newworkers: workerInterface[] = useSelector((state: RootState) => state.persons.workers); // не мои
 
     const dispatch = useDispatch()
 
-    const [workersarray, setworkersarray] = useState<worker[]>([])
+    const [workersarray, setworkersarray] = useState<workerInterface[]>([])
     const [storycurrent, setstorycurrent] = useState<string>('')
     const [newworker, setnewworker] = useState<boolean>(false)
     const [getmoretext, setgetmoretext] = useState<string>('Смотреть дальше..')
-    const [currentworker, setcurrentworker] = useState<worker | null>()
+    const [currentworker, setcurrentworker] = useState<workerInterface | null>()
 
-    const addworkerfunc = (worker: worker) => {
+    const addworkerfunc = (worker: workerInterface) => {
         setcurrentworker(null)
         dispatch(addworker(worker))
         dispatch(deleteworker(worker))
@@ -54,7 +54,7 @@ export default function Workers() {
                 const v1 = v.split(',');
                 const income = getRandom(80, 500)
                 const efficiency = Math.round(income / Math.PI)
-                const workerdata: worker = {
+                const workerdata: workerInterface = {
                     name: v1[0],
                     surname: v1[1],
                     age: v1[2],
@@ -98,7 +98,7 @@ export default function Workers() {
         newworkers.length == 0 ? getworkers() : setworkersarray(newworkers)
         if (workers.length == 0) {
             axios.get('http://localhost:3001/getmyworkers').then((res) => {
-                res.data.workers.map((v: worker) => dispatch(addworker(v)))
+                res.data.workers.map((v: workerInterface) => dispatch(addworker(v)))
             })
         }
     }, [])
