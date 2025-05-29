@@ -2,7 +2,7 @@ import axios from 'axios';
 import styles from './styles.module.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { addnewnote, deletecurrentnote, NoteInterface, addtoinventory, removefrominventory, setmainproduct, setinventory } from '../_slices/baseslice';
+import { NoteInterface, addtoinventory, removefrominventory, setinventory } from '../_slices/baseslice';
 import { RootState } from '../mainstore';
 
 import getRandom from '../_modules/getRandom';
@@ -14,12 +14,9 @@ import Client from './Client/index';
 import clientissatisfied from '../_modules/clientissatisfied';
 import Clock from './Clock';
 import Workers from './Workers';
+import Sidemenu from './Sidemenu';
 
 
-import newnote from '../../assets/svg/maininterface/newnote.svg'
-import back from '../../assets/svg/system/back.svg'
-import thinkingimg from '../../assets/svg/maininterface/thinking.svg'
-import thinkingprocess from '../../assets/svg/maininterface/thinkingprocess.svg'
 import cancel from '../../assets/svg/system/cancel.svg'
 import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 
@@ -32,8 +29,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const sidemenuRef = useRef<HTMLDivElement>(null)
     const popupRef = useRef<HTMLDivElement>(null)
     const CombinationGameRef = useRef<HTMLDivElement>(null)
-    const inputHeadRef = useRef<HTMLInputElement>(null)
-    const inputtextRef = useRef<HTMLInputElement>(null)
 
     const dispatch = useDispatch()
 
@@ -52,8 +47,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [stepscurrent, setstepscurrent] = useState<string[]>([])
     const [productiontitle, setproductiontitle] = useState<string>('')
     const [currentworker, setcurrentworker] = useState<number>(-200)
-    const [thinking, setthinking] = useState<boolean>(false)
-    const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
     const [ispopupopen, setispopupopen] = useState<number>(0)
 
     const [wrongitem, setwrongitem] = useState<string>('')
@@ -64,24 +57,9 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
     const [buyerarray, setbuyerarray] = useState<{ name: string, count: number }[]>([])
     const [becomemoney, setbecomemoney] = useState<boolean>(false)
-
-    const deletenote = (note: NoteInterface) => {
-        dispatch(deletecurrentnote(note))
-    }
-
     const memoizedStatistic = useMemo(() => <Statistic />, []);
 
-    const thinkingfunc = () => {
-        setthinking(true)
-        axios.get('http://localhost:3001/getsteps')
-            .then((res) => {
-                const newnote = res.data.answer
-                dispatch(setmainproduct(newnote.title));
-                console.log(newnote);
-                dispatch(addnewnote(newnote));
-                setthinking(false)
-            })
-    }
+
 
     useEffect(() => {
         if (inventory.length === 0) {
@@ -100,17 +78,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
     }, [buyerarray]);
 
-    useEffect(() => {
-        if (notes.length === 0) {
-            axios.get('http://localhost:3001/getnotes').then((res) => {
-                res.data.notes.forEach((v: NoteInterface) => {
-                    dispatch(addnewnote({ title: v.title, steps: v.steps, price: v.price }))
-                    dispatch(setmainproduct(v.title))
-                }
-                );
-            });
-        }
-    }, []);
+
 
     const getRumorsText = (): string => {
         switch (Math.round(rumorsstatus)) {
@@ -225,50 +193,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
         }
 
         {/* ------------------------------ SIDEMENU ------------------------------ */}
+        <Sidemenu showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} setproductiontitle={setproductiontitle} sidemenuRef={sidemenuRef} setstepscurrent={setstepscurrent}/>
 
-        <div ref={sidemenuRef} className={styles.sidemenu + ' ' + (showsidemenu == 0 ? styles.hidesidemenu : showsidemenu == 1 && styles.showsidemenu)}>
-            <span><img onClick={() => setshowsidemenu(0)} src={back} alt="" /><h1>Ваши записи</h1><img onClick={() => { setnewnoteisopen(newnoteisopen == 1 ? 0 : 1) }} src={newnote} alt="" /></span>
-
-            <div className={styles.allnotes}>
-
-                {notes.map((v, i) => (<div key={i}>
-                    <span>
-                        <h2 onClick={() => {
-                            setstepscurrent(v.steps.split(',')); setshowsidemenu(2); setproductiontitle(v.title)
-                        }}>{v.title}</h2> <img onClick={() => deletenote(v)} src={cancel} alt="" /></span>
-                    <div>
-                        <span>
-                            <p>{v.steps.split(',').map((v1) => (<>• {v1} <br /></>))}</p>
-                        </span>
-                        <span>
-                            <p>{v.ingredients.split(',').map((v1) => (<>• {v1} <br /></>))}</p>
-                        </span>
-                    </div>
-                    <h3>Цена: {v.price}</h3>
-                </div>))}
-
-                <span onClick={() => thinkingfunc()}>
-                    <img src={thinking ? thinkingprocess : thinkingimg} alt="" />
-                    <h4>Думать над новым продуктом...</h4>
-                </span>
-            </div>
-
-            <div className={styles.newnote + ' ' + (newnoteisopen == 0 ? styles.hidenewnote : newnoteisopen == 1 && styles.shownewnote)}>
-                <div className={styles.inputgroup}>
-                    <input ref={inputHeadRef} type="text" className={styles.inputfield} id="title" placeholder=' ' />
-                    <label htmlFor="title" className={styles.inputlabel}>Название</label>
-                </div>
-                <div className={styles.inputgroup}>
-                    <input ref={inputtextRef} type="text" className={styles.inputfield} id="text" placeholder=' ' />
-                    <label htmlFor="text" className={styles.inputlabel}>Текст заметки</label>
-                </div>
-                <button onClick={() => {
-                    setnewnoteisopen(0); dispatch(addnewnote({
-                        title: inputHeadRef.current?.value,
-                        steps: inputtextRef.current?.value
-                    })); inputHeadRef.current!.value = ''; inputtextRef.current!.value = ''
-                }}>Сохранить</button>
-            </div>
-        </div>
     </main >)
 }

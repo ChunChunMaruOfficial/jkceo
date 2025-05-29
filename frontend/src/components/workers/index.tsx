@@ -63,7 +63,7 @@ export default function Workers() {
                     imgsrc: v1[3].toLowerCase().trim() == 'мужской' ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`,
                     income: income,
                     efficiency: efficiency,
-                    production: '',
+                    production: {name: '', ingredients: []},
                     statistic: {
                         drawers: {
                             value: Math.round(2000 / efficiency * 200),

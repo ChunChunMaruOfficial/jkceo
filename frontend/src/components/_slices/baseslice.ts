@@ -3,8 +3,8 @@ import axios from 'axios'
 
 export interface NoteInterface {
     title: string,
-    steps: string,
-    ingredients: string,
+    steps: string[] | string,
+    ingredients: string[] | string,
     price?: number
 }
 export interface statisticInterface {
@@ -26,7 +26,7 @@ export interface workerInterface {
 
     statistic: statisticInterface,
 
-    production: string
+    production: {name: string, ingredients: string[]}
 }
 
 export interface BaseState {
@@ -114,8 +114,9 @@ export const BaseSlice = createSlice({
         },
 
         setproduction: (state, action): void => {
-            const [id, production]: [number, string] = action.payload;
-            state.workersarray[id].production = production
+            const [id, production, ingredients]: [number, string, string[]] = action.payload;
+            state.workersarray[id].production.name = production
+            state.workersarray[id].production.ingredients = ingredients
         },
         setmainproduct: (state, action): void => {
             state.mainproduct.push(action.payload)

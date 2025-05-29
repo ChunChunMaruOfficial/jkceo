@@ -1,18 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { workerInterface } from './baseslice'
 
-export interface announcements {
+export interface announcementsInterface {
     text: string,
     date: number,
     imgsrc: string,
     name: string,
-    materials: string[],
+    materials: {name: string, count: number}[],
     price: number
 }
 
 export interface PersonsState {
     workers: workerInterface[],
-    announcements: announcements[]
+    announcements: announcementsInterface[]
 }
 
 const initialState: PersonsState = {

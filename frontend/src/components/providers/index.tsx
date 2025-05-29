@@ -2,7 +2,7 @@ import styles from './styles.module.scss'
 
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-import { announcements } from '../_slices/personsslice'
+import { announcementsInterface } from '../_slices/personsslice'
 import getRandom from '../_modules/getRandom'
 import loading from '../../assets/svg/providers/loading.svg'
 import { addannouncements, setnewprice } from '../_slices/personsslice'
@@ -17,7 +17,7 @@ export default function Provider() {
     const dispatch = useDispatch()
     const popupRef = useRef<HTMLDivElement>(null)
 
-    const announcementsslice: announcements[] = useSelector((state: RootState) => state.persons.announcements);
+    const announcementsslice: announcementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
     const money: number = useSelector((state: RootState) => state.base.money);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
 
@@ -25,7 +25,7 @@ export default function Provider() {
         return [getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29)]
     }
 
-    const [announcements, setannouncements] = useState<announcements[]>([])
+    const [announcements, setannouncements] = useState<announcementsInterface[]>([])
     const [inputvalue, setinputvalue] = useState<number>(0)
     const [maxprice, setmaxprice] = useState<number>(0)
     const [currentannouncement, setcurrentannouncement] = useState<number>(0)
@@ -49,17 +49,13 @@ export default function Provider() {
     }, [announcementsslice])
 
 
-    const dealing = (materials: string[], price: number, answer: string) => {
+    const dealing = (materials: {name: string, count: number}[], price: number, answer: string) => {
         if ((money - price) > 0) {
             dispatch(setmoney(money - price))
             setdealeranswer(answer)
-
             materials.map((v) => {
-                const match = v.match(/^([^(]+)\((\d+)\)$/);
-                if (match) {
-                    for (let i = 0; i < parseInt(match[2], 10); i++) {
-                        dispatch(addtoinventory(match[1].trim()))
-                    }
+                    for (let i = 0; i < v.count; i++) {
+                        dispatch(addtoinventory(v.name.trim()))
                 }
             })
 
@@ -74,7 +70,7 @@ export default function Provider() {
     }
 
 
-    const bidding = (materials: string[], price: number) => {
+    const bidding = (materials: {name: string, count: number}[], price: number) => {
         const rndm = getRandom(0, 100)
         const userpricepercent = Math.floor((inputvalue / maxprice) * 100)
         switch (true) {
@@ -115,20 +111,13 @@ export default function Provider() {
 
         announcementsslice.length == 0 ? axios.get('http://localhost:3001/getmaterialannouncement')
             .then((res) => {
-                res.data.answer = res.data.answer.endsWith('.') || res.data.answer.endsWith(';') ? res.data.answer.slice(0, -1) : res.data.answer
-                res.data.answer.split(';').map((v: string) => {
-                    const middleraw = v.split('.')
-                    const obj = {
-                        name: middleraw[middleraw.length - 2],
-                        materials: middleraw[middleraw.length - 3].split(','),
-                        text: middleraw.slice(0, -3).join('.').trim(),
-                        date: getRandom(3, 10),
-                        imgsrc: getRandom(0, 2) ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`,
-                        price: Number(middleraw[middleraw.length - 1].trim()) / 10
-                    }
-                    setannouncements(an => [...an, obj])
-                    dispatch(addannouncements(obj))
+                setannouncements(res.data.answer)
+                console.log(res.data.answer);
+                
+                res.data.answer.map((v: announcementsInterface) => {
+                    dispatch(addannouncements(v))
                 })
+
             }) : setannouncements(announcementsslice)
     }, [])
 
@@ -143,7 +132,7 @@ export default function Provider() {
                         {v.price == 0 && (<span className={styles.notavaible}> <img src={shrug} alt="" /><p>уже раскупили</p></span>)}
                         <div>
                             <h3>{v.text}</h3>
-                            <h2>{v.materials.join(', ')}</h2>
+                            <h2>{v.materials.map(v1 => v1.name).join(', ')}</h2>
                             <p>Действует еще: <span>{v.date}</span> дней</p>
                             <span><img src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} alt="" /><p>{v.name}</p></span>
                         </div>
@@ -160,7 +149,7 @@ export default function Provider() {
                 }
             }} className={styles.popupwrapper}>
                 <div ref={popupRef} className={styles.popup}>
-                    <h2>{announcements[currentannouncement].materials.join(', ')}</h2>
+                    <h2>{announcements[currentannouncement].materials.map(v1 => (<>{v1.name} ({v1.count}), </>))}</h2>
                     <span className={styles.dealermessage}><img src={`../src/assets/svg/workers${announcements[currentannouncement].imgsrc}.svg`} alt="" /><p>{offers[answers[0]]} <b> {renderCoins(announcements[currentannouncement].price)}</b></p></span>
                     <p onClick={() => dealing(announcements[currentannouncement].materials, announcements[currentannouncement].price, deal[answers[3]])}>{agreement[answers[1]]}</p>
 

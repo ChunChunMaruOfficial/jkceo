@@ -15,6 +15,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
     const dispatch = useDispatch()
     const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray);
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
+    const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
     const intervalsRef = useRef<{ [key: number]: NodeJS.Timeout }>({});
 
     const [workerprogress, setworkerprogress] = useState<number[]>(new Array(workers.length).fill(0))
@@ -31,8 +32,9 @@ export default function Workers({ seconds, productionselect, currentworker, setc
     }, []);
 
     useEffect(() => {
+        //вобщем здесь логика на совпадение всех элементов из инвентаря
         workers.forEach((worker, i) => {
-            if (intervalsRef.current[i] || !workerstatus[i] || worker.production === '') return;
+            if (intervalsRef.current[i] || !workerstatus[i] || worker.production.name === '') return;
 
             intervalsRef.current[i] = setInterval(() => {
                 setworkerprogress(prev => {
@@ -75,12 +77,12 @@ export default function Workers({ seconds, productionselect, currentworker, setc
             <h2>Ваши работники:</h2>
             <div>
                 {workers.length > 0 && workers.map((v, i) => (v && (<div key={i} className={styles.worker}>
-                    <p className={styles.productionitem}>{workerprogress[i] < 0 ? 'работник отдыхает' : (v.production != '' ? v.production : 'выберите продукт')}</p>
-                    <span onClick={() => setcurrentworker(i)} style={{ background: workerprogress[i] && workerprogress[i] > 0 ? `linear-gradient(to top, #CB997E ${workerprogress[i]}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}><img src={workerprogress[i] < 0 ? hammock : ('../src/assets/svg/workers/' + v.imgsrc + '.svg')} alt="" />{(!intervalsRef.current[i] || v.production == '') && (<img className={styles.tea} src={v.production == '' ? noproduction : tea} />)}</span>
+                    <p className={styles.productionitem}>{workerprogress[i] < 0 ? 'работник отдыхает' : (v.production.name != '' ? v.production.name : 'выберите продукт')}</p>
+                    <span onClick={() => setcurrentworker(i)} style={{ background: workerprogress[i] && workerprogress[i] > 0 ? `linear-gradient(to top, #CB997E ${workerprogress[i]}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}><img src={workerprogress[i] < 0 ? hammock : ('../src/assets/svg/workers/' + v.imgsrc + '.svg')} alt="" />{(!intervalsRef.current[i] || v.production.name == '') && (<img className={styles.tea} src={v.production.name == '' ? noproduction : tea} />)}</span>
                     <p className={styles.productionpercent}>{workerprogress[i] < 0 ? 'просьба не беспокоить' : (workerprogress[i] == 0 ? 'небольшой перерыв' : (workerprogress[i] + (v.production && '%')))}</p>
                 </div>)))}
                 {currentworker >= 0 && notes.length > 0 && (<div ref={productionselect} className={styles.productionselect}>
-                    {notes.map((v, i) => (<p key={i} onClick={() => { dispatch(setproduction([currentworker, v.title])); setcurrentworker(-1) }}>• {v.title}</p>))}
+                    {notes.map((v, i) => (<p key={i} onClick={() => { dispatch(setproduction([currentworker, v.title, v.ingredients])); setcurrentworker(-1) }}>• {v.title}</p>))}
                 </div>)}
             </div>
         </div>)
