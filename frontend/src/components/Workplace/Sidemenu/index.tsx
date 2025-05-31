@@ -2,8 +2,8 @@ import styles from './style.module.scss'
 import { useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
-import { NoteInterface } from '../../_slices/baseslice'
-import { deletecurrentnote, addnewnote, setmainproduct } from '../../_slices/baseslice'
+import { NoteInterface } from '../../_Interfaces/NoteInterface'
+import { deletecurrentnote, addnewnote, setmainproduct, setinventory } from '../../_slices/baseslice'
 import { RootState } from '../../mainstore'
 
 import cancel from '../../../assets/svg/system/cancel.svg'
@@ -16,22 +16,20 @@ export default function Sidemenu({ showsidemenu, setshowsidemenu, setproductiont
     const dispatch = useDispatch()
 
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
+    const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
 
     const inputHeadRef = useRef<HTMLInputElement>(null)
     const inputtextRef = useRef<HTMLInputElement>(null)
     const [newnoteisopen, setnewnoteisopen] = useState<number>(2)
     const [thinking, setthinking] = useState<boolean>(false)
-
-
-    const deletenote = (note: NoteInterface) => {
-        dispatch(deletecurrentnote(note))
-    }
+    const [error, seterror] = useState<string>('')
 
     useEffect(() => {
+        console.log(notes);
         if (notes.length === 0) {
             axios.get('http://localhost:3001/getnotes').then((res) => {
-                res.data.notes.forEach((v: NoteInterface) => {
-                    dispatch(addnewnote({ title: v.title, steps: v.steps, price: v.price, ingredients: typeof v.ingredients == 'string' ? v.ingredients.split(',') : v.ingredients }))
+                res.data.notes.map((v: NoteInterface) => {
+                    dispatch(addnewnote(v))
                     dispatch(setmainproduct(v.title))
                 }
                 );
@@ -39,17 +37,52 @@ export default function Sidemenu({ showsidemenu, setshowsidemenu, setproductiont
         }
     }, []);
 
+    useEffect(() => {
+        error != '' && setTimeout(() => {
+            seterror('')
+        }, 1000)
+    }, [error]);
+
 
     const thinkingfunc = () => {
         setthinking(true)
         axios.get('http://localhost:3001/getsteps')
             .then((res) => {
-                const newnote = res.data.answer
-                dispatch(setmainproduct(newnote.title));
-                newnote.ingredients = newnote.ingredients.split(',')
-                dispatch(addnewnote(newnote));
                 setthinking(false)
+                if (res.data.answer == 'serverError') {
+                    seterror('Кажется, ничего придумать не получается..')
+                    return 0
+                }
+
+                const newnote = res.data.answer
+                console.log(newnote);
+
+                dispatch(setmainproduct(newnote.title));
+                dispatch(addnewnote(newnote));
             })
+    }
+
+    const setproductionfunc = (product: NoteInterface) => {
+        if (!product.ingredients.every(v => inventory.some(v1 => v1.name.trim() == v.trim()))) {
+            seterror('У вас недостаточно ингредиентов!')
+            return 0
+        }
+
+
+
+        setshowsidemenu(0)
+        setstepscurrent(product.steps as string[])
+        setproductiontitle(product.title)
+
+        let updatedInventory = [...inventory];
+        product.ingredients.forEach((ingredient) => {
+            updatedInventory = updatedInventory.filter(item => item.count > 0).map(item =>
+                item.name.trim() === ingredient.trim()
+                    ? { name: item.name, count: item.count - 1 }
+                    : item
+            );
+        });
+        dispatch(setinventory(updatedInventory));
     }
 
 
@@ -59,17 +92,17 @@ export default function Sidemenu({ showsidemenu, setshowsidemenu, setproductiont
 
             <div className={styles.allnotes}>
 
-                {notes.map((v, i) => (<div key={i}>
+                {notes.length > 0 && notes.map((v: NoteInterface, i) => (<div key={i}>
                     <span>
-                        <h2 onClick={() => {
-                            typeof v.steps != 'string' && (setstepscurrent(v.steps), setshowsidemenu(2), setproductiontitle(v.title))
-                        }}>{v.title}</h2> <img onClick={() => deletenote(v)} src={cancel} alt="" /></span>
+                        <h2 className={typeof v.steps != 'string' ? styles.active : ''} onClick={() => {
+                            typeof v.steps != 'string' && setproductionfunc(v)
+                        }}>{v.title}</h2> <img onClick={() => dispatch(deletecurrentnote([v.title, v.price]))} src={cancel} alt="" /></span>
                     <div>
                         <span>
-                            <p>{typeof v.steps != 'string' ? v.steps.map((v1) => (<>• {v1} <br /></>)) : (<>{v.steps}</>)}</p>
+                            {typeof v.steps != 'string' ? v.steps.map((v1, i1) => (<p key={i1}>• {v1} <br /></p>)) : (<p>{v.steps}</p>)}
                         </span>
                         {v.ingredients && (<span>
-                            <p>{typeof v.ingredients != 'string' && v.ingredients.map((v1) => (<>• {v1} <br /></>))}</p>
+                            {typeof v.ingredients != 'string' && v.ingredients.map((v1, i1) => (<p key={i1}>• {v1} <br /></p>))}
                         </span>)}
                     </div>
                     {v.price && (<h3>Цена: {v.price}</h3>)}
@@ -102,6 +135,7 @@ export default function Sidemenu({ showsidemenu, setshowsidemenu, setproductiont
                     }); inputHeadRef.current!.value = ''; inputtextRef.current!.value = ''
                 }}>Сохранить</button>
             </div>
+            <h2 className={error.length > 0 ? styles.sadmesshow : styles.sadmeshide}>{error}</h2>
         </div>
     )
 }

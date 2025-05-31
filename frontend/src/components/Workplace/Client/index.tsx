@@ -21,6 +21,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
     const dispatch = useDispatch()
 
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
+    const day: number = useSelector((state: RootState) => state.base.day);
     const mymoney: number = useSelector((state: RootState) => state.base.money);
 
     const [buyerpfp, setbuyerpfp] = useState<string>('')
@@ -38,8 +39,10 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
             dispatch(setwrong(res.data.wrong))
             dispatch(setnoanswer(res.data.noanswer))
         })
+    }, [])
 
-        axios.post('http://localhost:3001/getorder', { count: getRandom(1, 5) * Math.round(rumorsstatus) }).then((res) => {
+    useEffect(() => {
+      day > 0 && axios.post('http://localhost:3001/getorder', { count: getRandom(1, 5) * Math.round(rumorsstatus) }).then((res) => {
             const answer = res.data.answer.split('?').join('?.').split('.')
             daysorder.current = Array.from({ length: answer.length - 1 }, (_, i) => ({
                 time: getRandom(360 * 1.2, 1320),
@@ -48,7 +51,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
             }))
             daysorder.current = daysorder.current.filter((v) => v.text.length > 8)
         })
-    }, [])
+    }, [day])
 
     useEffect(() => {
         becomemoney == true && setTimeout(() => {
@@ -57,6 +60,10 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
             setnewmoney(0)
         }, 4000)
     }, [becomemoney])
+
+    useEffect(() => {
+      isshield && ( setbuyerword(''), setbuyertime(0))
+    }, [isshield])
 
 
     const startbuyertimer = () => {

@@ -1,6 +1,6 @@
 const User = require('../../data/userdata.js');
 const promts = require('../../data/promts.json');
-const overflow = require('../../data/overflow.json');
+const overflow = require('../../data/providers/overflow.json');
 const getRandom = require('../../GETMethod/GETMethods/getRandom.js');
 const mistralModule = require('@mistralai/mistralai');
 const Mistral = mistralModule.Mistral;
@@ -42,11 +42,12 @@ async function getMistral(startpromt, promt, res) {
                 break;
 
             case promts.steps:
+                const ingredients = await getMistralapi(promts.getmaterials, MistralRes.split(',')[0])
                 MistralRes = {
                     title: MistralRes.split(',')[0],
-                    steps: MistralRes.split(',').slice(1),
+                    steps: MistralRes.split(',').slice(1).map(v => v.trim()),
                     price: getRandom(40, 120),
-                    ingredients: await getMistralapi(promts.getmaterials, MistralRes.split(',')[0])
+                    ingredients: ingredients.split(',')
                 };
                 User.addnewnote(MistralRes);
                 break;
@@ -66,7 +67,7 @@ async function getMistral(startpromt, promt, res) {
                         }
                     })
                     return {
-                        name: middleraw[middleraw.length - 2],
+                        name: middleraw[middleraw.length - 2].trim(),
                         materials: materials,
                         text: middleraw.slice(0, -3).join('.').trim(),
                         date: getRandom(3, 10),
@@ -76,7 +77,7 @@ async function getMistral(startpromt, promt, res) {
 
                 })
                 const changedItemId = getRandom(0,MistralRes.length - 1)
-                MistralRes[changedItemId].materials = User.notes[0].ingredients.split(',').map(v => {return {name: v, count: getRandom(5,15)}})
+                MistralRes[changedItemId].materials = User.notes[0].ingredients.map(v => {return {name: v, count: getRandom(5,15)}})
                 MistralRes[changedItemId].text = overflow[getRandom(0, overflow.length - 1)]
         }
         console.log(MistralRes);
@@ -84,7 +85,7 @@ async function getMistral(startpromt, promt, res) {
     }
     catch (error) {
         console.error('Error:', error);
-        res.json({ answer: "Кажется, боги не удовлетворены таким раскладом, попробуйте еще раз." });
+        res.json({ answer: "serverError" });
     }
 }
 

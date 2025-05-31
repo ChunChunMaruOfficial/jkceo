@@ -1,23 +1,17 @@
-import axios from 'axios';
 import styles from './styles.module.scss'
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useRef, useState, useMemo } from 'react';
-import { NoteInterface, addtoinventory, removefrominventory, setinventory } from '../_slices/baseslice';
+import { useRef, useState, useMemo } from 'react';
 import { RootState } from '../mainstore';
-
-import getRandom from '../_modules/getRandom';
-import generatebuyerword from '../_modules/generatebuyerword';
 
 import CombinationGame from '../combinationgame';
 import Statistic from './Statistic';
 import Client from './Client/index';
-import clientissatisfied from '../_modules/clientissatisfied';
+
 import Clock from './Clock';
 import Workers from './Workers';
 import Sidemenu from './Sidemenu';
+import Inventory from './Inventory';
 
-
-import cancel from '../../assets/svg/system/cancel.svg'
 import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 
 
@@ -27,22 +21,10 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
     const productionselect = useRef<HTMLDivElement>(null)
     const sidemenuRef = useRef<HTMLDivElement>(null)
-    const popupRef = useRef<HTMLDivElement>(null)
     const CombinationGameRef = useRef<HTMLDivElement>(null)
 
-    const dispatch = useDispatch()
-
-    const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
 
-    const mainproduct: string[] = useSelector((state: RootState) => state.base.mainproduct);
-    const buyerlucky: string[] = useSelector((state: RootState) => state.phrase.lucky);
-    const buyerrefusal: string[] = useSelector((state: RootState) => state.phrase.refusal);
-    const noanswer: string[] = useSelector((state: RootState) => state.phrase.noanswer);
-    const wrong: string[] = useSelector((state: RootState) => state.phrase.wrong);
-
-
-    const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
 
     const [stepscurrent, setstepscurrent] = useState<string[]>([])
     const [productiontitle, setproductiontitle] = useState<string>('')
@@ -55,28 +37,11 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [buyertime, setbuyertime] = useState<number>(0)
     const [newmoney, setnewmoney] = useState<number>(0)
 
-    const [buyerarray, setbuyerarray] = useState<{ name: string, count: number }[]>([])
+
     const [becomemoney, setbecomemoney] = useState<boolean>(false)
     const memoizedStatistic = useMemo(() => <Statistic />, []);
 
 
-
-    useEffect(() => {
-        if (inventory.length === 0) {
-            axios.get('http://localhost:3001/getinventory').then((res) => {
-                dispatch(setinventory(res.data.inventory))
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        buyerarray.length > 0 && setbuyerarray(ba => {
-            let sum = 0;
-            ba.map(v => sum += (notes.find(v1 => v1.title == v.name)?.price ?? 1) * v.count);
-            setnewmoney(sum); return ba
-        })
-
-    }, [buyerarray]);
 
 
 
@@ -96,11 +61,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
         return ''
     }
 
-    const clientmidleware = () => {
-        buyerarray.some(item => mainproduct.includes(item.name)) ?
-            (clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime), setbuyerarray([]), setbecomemoney(true))
-            : (generatebuyerword(wrong[getRandom(0, wrong.length - 1)], setwrongitem, daysorder))
-    }
+
 
     return (<main onClick={(e) => {
         if (sidemenuRef.current && CombinationGameRef.current && !sidemenuRef.current.contains(e.target as Node) && !CombinationGameRef.current.contains(e.target as Node)) {
@@ -152,47 +113,8 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
         {/* ------------------------------ INVENTORY ------------------------------ */}
 
-        {ispopupopen > 0 && (<div onClick={(e) => {
-            axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
-            if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
-                setispopupopen(0)
-            }
-        }} className={styles.popupwrapper}>
-            <div ref={popupRef} className={styles.popup}>
-                <div>
-                    {inventory.length == 0 ? (<h1>Ваш склад пуст..</h1>) : (<><h1>Вещи на вашем складе</h1><hr />
-                        {inventory.map((v, i) => (
-                            <ul key={i} onClick={() => {
-                                ispopupopen == 2 && (dispatch(removefrominventory(v.name)) && setbuyerarray(ba => {
-                                    const itemExists = ba.some(v1 => v1.name === v.name);
-                                    if (itemExists) {
-                                        return ba.map(v1 => (v1.name === v.name ? { ...v1, count: v1.count + 1 } : v1));
-                                    } else {
-                                        return [...ba, { name: v.name, count: 1 }];
-                                    }
-                                })
-                                )
-                            }} className={styles.dottedlist}>
-                                <li>
-                                    <span className={styles.text}>{v.name}</span>
-                                    <span className={styles.dots}></span>
-                                    <span className={styles.number}>{v.count}</span>
-                                </li>
-                            </ul>
-                        ))}</>)}
+        <Inventory ispopupopen={ispopupopen} setispopupopen={setispopupopen} newmoney={newmoney} setnewmoney={setnewmoney} setwrongitem={setwrongitem} setbuyerword={setbuyerword} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} setbuyerstatus={setbuyerstatus} setbecomemoney={setbecomemoney}/>
 
-                </div>
-                {ispopupopen == 2 && (<div className={styles.sending}>
-                    {buyerarray.length == 0 && (<h2>выберите товар для покупателя</h2>)}
-                    {buyerarray.map((v, i) => (<div key={i}>{v.name} x {v.count} <img onClick={() => { setbuyerarray(ba => ba.filter((_, i1) => i1 != i)); dispatch(addtoinventory(v.name)); setwrongitem('') }} src={cancel} alt="" /></div>))}
-                    {buyerarray.length > 0 && (<><button onClick={() => clientmidleware()} className={styles.giving}>отдать</button><p>{newmoney}</p></>)}
-                </div>)}
-            </div>
-
-        </div>)
-        }
-
-        {/* ------------------------------ SIDEMENU ------------------------------ */}
         <Sidemenu showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} setproductiontitle={setproductiontitle} sidemenuRef={sidemenuRef} setstepscurrent={setstepscurrent}/>
 
     </main >)

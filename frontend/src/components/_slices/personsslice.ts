@@ -1,18 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { workerInterface } from './baseslice'
-
-export interface announcementsInterface {
-    text: string,
-    date: number,
-    imgsrc: string,
-    name: string,
-    materials: {name: string, count: number}[],
-    price: number
-}
+import { workerInterface } from '../_Interfaces/workerInterface' 
+import { AnnouncementsInterface } from '../_Interfaces/AnnouncementsInterface'
 
 export interface PersonsState {
     workers: workerInterface[],
-    announcements: announcementsInterface[]
+    announcements: AnnouncementsInterface[]
 }
 
 const initialState: PersonsState = {
@@ -31,6 +23,9 @@ export const PersonsState = createSlice({
         addannouncements: (state, action) => {            
             state.announcements = [...state.announcements, action.payload]
         },
+        updateannouncements: (state, action) => {            
+            state.announcements = action.payload
+        },
 
         deleteworker: (state, action) => {
             state.workers = state.workers.filter(v => v.name != action.payload.name)
@@ -44,6 +39,6 @@ export const PersonsState = createSlice({
     },
 })
 
-export const { setworkers, deleteworker, addannouncements, setnewprice } = PersonsState.actions //все методы сюда импортировать:3
+export const { setworkers, deleteworker, addannouncements, setnewprice,updateannouncements } = PersonsState.actions //все методы сюда импортировать:3
 
 export default PersonsState.reducer

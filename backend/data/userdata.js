@@ -28,7 +28,10 @@ const User = {
         this.workers.push(worker)
     },
     deletecurrentnote(note) {
-        this.notes = this.notes.filter(v => v.steps != note.steps)
+        const [title, price] = note; 
+        console.log(title, price);
+        
+        this.notes = this.notes.filter(v => v.title != title || v.price != price)
         console.log(this.notes, note);
 
     },

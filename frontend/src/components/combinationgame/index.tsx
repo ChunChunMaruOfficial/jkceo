@@ -149,7 +149,7 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
                     {v.text} {fillstate[i]}%
                 </div>
             ))}
-            {isworkdone && (<button onClick={() => { dispatch(addtoinventory(title)); setstepscurrent([]) }}> Закончить работу </button>)}
+            {isworkdone && (<button onClick={() => { dispatch(addtoinventory([title, true])); setstepscurrent([]) }}> Закончить работу </button>)}
         </div >
     );
 }

@@ -11,7 +11,7 @@ import renderCoins from '../_modules/renderCoins'
 import deal from '../../assets/svg/workers/deal.svg'
 import { RootState } from '../mainstore';
 import { useSelector } from 'react-redux';
-import { workerInterface } from '../_slices/baseslice'
+import { workerInterface } from '../_Interfaces/workerInterface'
 import { useDispatch } from 'react-redux'
 import { setworkers, deleteworker } from '../_slices/personsslice'
 import { addworker } from '../_slices/baseslice'

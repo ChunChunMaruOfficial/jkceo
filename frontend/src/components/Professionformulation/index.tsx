@@ -43,12 +43,13 @@ export default function Professionformulation() {
 
                 const newnote = {
                     title: inputRef.current!.value,
-                    steps: professionformulation,
-                    ingredients: [],
-                    price: 0
+                    steps: professionformulation
                 }
 
                 dispatch(addnewnote(newnote))
+                axios.post('http://localhost:3001/addnewnote', {
+                    note: newnote
+                })
                 navigate('../workplace');
             }, 1800)
         } else {

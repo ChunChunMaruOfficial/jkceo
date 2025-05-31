@@ -1,22 +1,31 @@
 const GetAllEmoji = require("./GETMethods/getemoji")
 const getMistral = require("../POSTMethod/POSTMethods/getmistral")
 
-const motivation = require('../data/motivation.json')
-const demotivation = require('../data/demotivation.json')
+const motivation = require('../data/race/motivation.json')
+const demotivation = require('../data/race/demotivation.json')
 
 const User = require('../data/userdata.js')
 const promts = require('../data/promts.json')
-const refusal = require('../data/refusal.json')
-const agreement = require('../data/agreement.json')
-const offers = require('../data/offers.json')
-const deal = require('../data/deal.json')
-const breakdeal = require('../data/breakdeal.json')
-const concessions = require('../data/concessions.json')
-const notenoughmoney = require('../data/notenoughmoney.json')
-const sellerrefusal = require('../data/sellerrefusal.json')
-const sellerlucky = require('../data/sellerlucky.json')
-const wrongproduct = require('../data/wrongproduct.json')
-const noanswer = require('../data/noanswer.json')
+
+const refusal = require('../data/providers/refusal.json')
+const agreement = require('../data/providers/agreement.json')
+const offers = require('../data/providers/offers.json')
+const deal = require('../data/providers/deal.json')
+const breakdeal = require('../data/providers/breakdeal.json')
+const concessions = require('../data/providers/concessions.json')
+const notenoughmoney = require('../data/providers/notenoughmoney.json')
+
+const sellerrefusal = require('../data/buyer/sellerrefusal.json')
+const sellerlucky = require('../data/buyer/sellerlucky.json')
+const wrongproduct = require('../data/buyer/wrongproduct.json')
+const noanswer = require('../data/buyer/noanswer.json')
+
+const newperson = require('../data/start/newperson.json')
+const ownerisback = require('../data/start/ownerisback.json')
+const newpersonbefore = require('../data/start/newpersonbefore.json')
+
+const fate = require('../data/slots/fate.json')
+const choise = require('../data/slots/choise.json')
 
 function GETmethod(req, res) {
   switch (req.path) {
@@ -64,6 +73,13 @@ function GETmethod(req, res) {
       break;
     case '/getselleranswers':
       res.json({ refuse: sellerrefusal, lucky: sellerlucky, wrong: wrongproduct, noanswer: noanswer })
+      break;
+
+    case '/getstart':
+      res.json({ newperson: newperson, ownerisback: ownerisback, newpersonbefore: newpersonbefore})
+      break;
+    case '/getslots':
+      res.json({ fate: fate, choise: choise})
       break;
 
       /*---------------- API ----------------*/

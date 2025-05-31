@@ -7,8 +7,9 @@ import decor from '../../assets/svg/slots/decoration.svg'
 import getRandom from '../_modules/getRandom';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import mainlogo from '../../assets/svg/system/mainlogo.svg'
-
+import income from '../../assets/svg/start/income.svg'
+import generatebuyerword from '../_modules/generatebuyerword';
+import talksound from '../../assets/sounds/talk.wav'
 import { setmoney, setprofessionformulation } from '../_slices/baseslice';
 
 export default function Slots() {
@@ -16,6 +17,7 @@ export default function Slots() {
     const badanswer = 'Кажется боги не отвечают.. твою судьбу они не предрешат!'
 
     const slotsspeedarray = [styles.speed1, styles.speed2, styles.speed3, styles.speed4, styles.speed5]
+    const audiotalkRef = useRef<HTMLAudioElement>(null);
     const dragRef = useRef<HTMLDivElement>(null);
     const parentRef = useRef<HTMLDivElement>(null);
     const fisrstslotRef = useRef<HTMLDivElement>(null);
@@ -25,6 +27,11 @@ export default function Slots() {
     const [serveremoji, setserveremoji] = useState<{ emoji: String, name: string }[]>([])
     const [silvercoins, setsilvercoins] = useState<number>(500)
     const [serveranswer, setserveranswer] = useState<string>('')
+
+    const [hellowords, sethellowords] = useState<string>('')
+    const fatewords = useRef([])
+    const choisewords = useRef([])
+
     const [attempts, setattempts] = useState<number>(0)
     const [winning, setwinning] = useState<string[]>()
     const [slotsspeed, setslotsspeed] = useState<number>(0)
@@ -47,6 +54,17 @@ export default function Slots() {
     }
 
     useEffect(() => {  //задать высоту слотов при загрузке страницы
+
+        axios.get('http://localhost:3001/getslots')
+            .then((res) => {
+                fatewords.current = (res.data.fate);
+                choisewords.current = (res.data.choise);
+                console.log(fatewords.current);
+
+                generatebuyerword(fatewords.current[getRandom(0, fatewords.current.length - 1)], sethellowords)
+            })
+
+
         if (!dragRef.current || !parentRef.current || !fisrstslotRef.current || !secondslotRef.current || !thirdslotRef.current) return;
         setmaxTop(parentRef.current.offsetHeight - dragRef.current?.offsetHeight)
         axios.get('http://localhost:3001/getdata')
@@ -57,6 +75,7 @@ export default function Slots() {
 
     useEffect(() => {
         if (winning?.length == 3) {
+            generatebuyerword(choisewords.current[getRandom(0, choisewords.current.length - 1)], sethellowords)
             axios.post('http://localhost:3001/getwinningtext', { promt: winning.join() })
                 .then((res) => {
                     setserveranswer(res.data.answer)
@@ -82,6 +101,12 @@ export default function Slots() {
             }, 400);
         }
     }, [slotsisactive])
+
+    useEffect(() => {
+        if (audiotalkRef.current) {
+            audiotalkRef.current.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }, [hellowords]);
 
 
     const startslots = (parent: HTMLDivElement | null, times: number) => { // старт каждого слота
@@ -149,106 +174,108 @@ export default function Slots() {
     }
 
     return (
-        <><img className={styles.mainlogo} src={mainlogo} alt="" />
-              <div className={styles.parent}>
-            
-             <div>
-
-                <span className={styles.bolt}><div></div></span>
-                <span className={styles.bolt}><div></div></span>
+        <div className={styles.mainparent}>
+            <audio ref={audiotalkRef} src={talksound} autoPlay />
+            <div className={styles.person}>
+                <h2>{hellowords}</h2>
+                <img src={income} alt="" />
             </div>
-            <div>
+            <div className={styles.parent}>
+
                 <div>
-                    <div className={styles.sidepart}>
-                        <span className={styles.microbolt}></span>
-                        <span className={styles.microbolt}></span>
+
+                    <span className={styles.bolt}><div></div></span>
+                    <span className={styles.bolt}><div></div></span>
+                </div>
+                <div>
+                    <div>
+                        <div className={styles.sidepart}>
+                            <span className={styles.microbolt}></span>
+                            <span className={styles.microbolt}></span>
+                        </div>
+                        <div>
+                            <div>
+                                <img src={scales} alt="" />
+                                {[...Array(4)].map((_, i) => (<span key={i} className={styles.point}></span>))}
+                                <img src={sword} className={styles.rotated} alt="" />
+                            </div>
+                            <div className={styles.headtext}>
+                                <h2>JKCEO </h2>
+                                <h2>MACHINE</h2>
+                            </div>
+                            <div>
+                                <img src={sword} alt="" />
+                                {[...Array(4)].map((_, i) => (<span key={i} className={styles.point}></span>))}
+                                <img src={scales} className={styles.rotated} alt="" />
+                            </div>
+                        </div>
+                        <div className={styles.sidepart}>
+                            <span className={styles.microbolt}></span>
+                            <span className={styles.microbolt}></span>
+                        </div>
                     </div>
                     <div>
-                        <div>
-                            <img src={scales} alt="" />
-                            {[...Array(4)].map((_,i) => (<span key={i} className={styles.point}></span>))}
-                            <img src={sword} className={styles.rotated} alt="" />
+                        <div className={styles.main}>
+                            <div>
+                                <div className={styles.display}>
+                                    <img src={decor} alt="" />
+                                    <span></span>
+                                    <div><div ref={fisrstslotRef} className={styles.slot}></div></div>
+                                    <span></span>
+                                    <div><div ref={secondslotRef} className={styles.slot}></div></div>
+                                    <span></span>
+                                    <div><div ref={thirdslotRef} className={styles.slot}></div></div>
+                                    <span></span>
+                                    <img src={decor} alt="" />
+                                </div>
+                            </div>
+                            <div className={styles.botompanel}>
+                                <div>
+                                    <span>Гроссо</span>
+                                    <span>{silvercoins}</span>
+                                </div>
+
+                                <div className={styles.botomcenter}>
+                                    {[...Array(4)].map(() => (<p className={styles.microbolt}></p>))}
+                                    <div className={styles.botomcenter_front}>
+                                        <p className={styles.textarea}>{typeof serveranswer == 'string' && serveranswer}</p>
+                                    </div>
+                                    <div className={styles.botomcenter_back}>
+                                        {serveranswer && serveranswer != badanswer && (<Link to='../current/formulation'> <button onClick={() => fatesaccept()}>принять свою участь</button> </Link>)}
+
+                                    </div>
+                                </div>
+                                <div>
+                                    <span>Попытки</span>
+                                    <span>{attempts}</span>
+                                </div>
+                                <div> {[...Array(4)].map((_, i) => (<p style={{ background: slotsspeed <= i ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
+                            </div>
                         </div>
-                        <div className={styles.headtext}>
-                            <h2>JKCEO </h2>
-                            <h2>MACHINE</h2>
+                        <div className={styles.lever}>
+                            <div className={styles.sidepart}>
+                                <span className={styles.microbolt}></span>
+                                <span className={styles.microbolt}></span>
+                            </div>
+                            <div>
+                                <span ref={parentRef} ><div
+                                    ref={dragRef}
+                                    onMouseDown={handleMouseDown}
+                                    className={styles.circle}></div></span>
+                            </div>
+                            <div className={styles.sidepart}>
+                                <span className={styles.microbolt}></span>
+                                <span className={styles.microbolt}></span>
+                            </div>
                         </div>
-                        <div>
-                            <img src={sword} alt="" />
-                            {[...Array(4)].map((_,i) => (<span key={i} className={styles.point}></span>))}
-                            <img src={scales} className={styles.rotated} alt="" />
-                        </div>
-                    </div>
-                    <div className={styles.sidepart}>
-                        <span className={styles.microbolt}></span>
-                        <span className={styles.microbolt}></span>
                     </div>
                 </div>
                 <div>
-                    <div className={styles.main}>
-                        <div>
-                            <div className={styles.display}>
-                                <img src={decor} alt="" />
-                                <span></span>
-                                <div><div ref={fisrstslotRef} className={styles.slot}></div></div>
-                                <span></span>
-                                <div><div ref={secondslotRef} className={styles.slot}></div></div>
-                                <span></span>
-                                <div><div ref={thirdslotRef} className={styles.slot}></div></div>
-                                <span></span>
-                                <img src={decor} alt="" />
-                            </div>
-                        </div>
-                        <div className={styles.botompanel}>
-                            <div>
-                                <span>Гроссо</span>
-                                <span>{silvercoins}</span>
-                            </div>
 
-                            <div className={styles.botomcenter}>
-                                {[...Array(4)].map(() => (<p className={styles.microbolt}></p>))}
-                                <div className={styles.botomcenter_front}>
-                                    <p className={styles.textarea}>{typeof serveranswer == 'string' && serveranswer}</p>
-                                </div>
-                                <div className={styles.botomcenter_back}>
-                                    {serveranswer && serveranswer != badanswer && (<Link to='../current/formulation'> <button onClick={() => fatesaccept()}>принять свою участь</button> </Link>)}
-
-                                </div>
-                            </div>
-                            <div>
-                                <span>Попытки</span>
-                                <span>{attempts}</span>
-                            </div>
-                            <div> {[...Array(4)].map((_, i) => (<p style={{ background: slotsspeed <= i ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
-                        </div>
-                    </div>
-                    <div className={styles.lever}>
-                        <div className={styles.sidepart}>
-                            <span className={styles.microbolt}></span>
-                            <span className={styles.microbolt}></span>
-                        </div>
-                        <div>
-                            <span ref={parentRef} ><div
-                                ref={dragRef}
-                                onMouseDown={handleMouseDown}
-                                className={styles.circle}></div></span>
-                        </div>
-                        <div className={styles.sidepart}>
-                            <span className={styles.microbolt}></span>
-                            <span className={styles.microbolt}></span>
-                        </div>
-                    </div>
+                    <span className={styles.bolt}><div></div></span>
+                    <span className={styles.bolt}><div></div></span>
                 </div>
             </div>
-
-      
-
-            <div>
-
-                <span className={styles.bolt}><div></div></span>
-                <span className={styles.bolt}><div></div></span>
-            </div> 
         </div>
-        </>
     )
 }

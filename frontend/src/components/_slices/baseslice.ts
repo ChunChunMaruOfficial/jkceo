@@ -1,33 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { statisticInterface } from '../_Interfaces/statisticInterface'
+import { NoteInterface } from '../_Interfaces/NoteInterface'
+import { workerInterface } from '../_Interfaces/workerInterface'
 
-export interface NoteInterface {
-    title: string,
-    steps: string[] | string,
-    ingredients: string[] | string,
-    price?: number
-}
-export interface statisticInterface {
-    drawers: { value: number, level: number, maxlevel: number }, //кулдаун
-    lamp: { value: number, level: number, maxlevel: number },
-    mug: { value: number, level: number, maxlevel: number },
-    table: { value: number, level: number, maxlevel: number } // скорость производства
-}
-
-export interface workerInterface {
-    name: string,
-    surname: string,
-    age: string,
-    sex: string,
-    prof: string,
-    imgsrc: string,
-    income: number,
-    efficiency: number,
-
-    statistic: statisticInterface,
-
-    production: {name: string, ingredients: string[]}
-}
 
 export interface BaseState {
     day: number,
@@ -46,7 +22,6 @@ export interface BaseState {
 
 const initialState: BaseState = {
     day: 0,
-
     name: '',
     professionformulation: '',
     mainproduct: [],
@@ -56,9 +31,7 @@ const initialState: BaseState = {
     rumorsstatus: 2.5,
     goodsPerHour: 1,
     productionArray: [], //все переменные, что хранятся в слайсе
-
     workersarray: [], //уже имеющееся работники
-
     inventory: []
 }
 
@@ -85,7 +58,8 @@ export const BaseSlice = createSlice({
         },
 
         deletecurrentnote: (state, action) => {
-            state.notes = state.notes.filter(v => v.steps !== action.payload.steps);
+            const [title, price]: [string, number] = action.payload;
+            state.notes = state.notes.filter(v => v.title !== title || v.price != price);
             axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
         },
         addworker: (state, action): void => {
@@ -124,8 +98,9 @@ export const BaseSlice = createSlice({
 
         },
         addtoinventory: (state, action): void => {
-            state.inventory.some(v => v.name == action.payload) ? state.inventory.map(v => (v.name == action.payload ? v.count += 1 : v.count)) : state.inventory.push({ name: action.payload, count: 1 })
-            state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1;
+            const [product, income]: [string, boolean] = action.payload;
+            state.inventory.some(v => v.name == product) ? state.inventory.map(v => (v.name == product ? v.count += 1 : v.count)) : state.inventory.push({ name: product, count: 1 })
+            income && (state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1);
         },
         setinventory: (state, action): void => {
             state.inventory = action.payload

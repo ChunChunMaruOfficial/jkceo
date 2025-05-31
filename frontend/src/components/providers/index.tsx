@@ -2,7 +2,7 @@ import styles from './styles.module.scss'
 
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-import { announcementsInterface } from '../_slices/personsslice'
+import { AnnouncementsInterface } from '../_Interfaces/AnnouncementsInterface'
 import getRandom from '../_modules/getRandom'
 import loading from '../../assets/svg/providers/loading.svg'
 import { addannouncements, setnewprice } from '../_slices/personsslice'
@@ -17,7 +17,7 @@ export default function Provider() {
     const dispatch = useDispatch()
     const popupRef = useRef<HTMLDivElement>(null)
 
-    const announcementsslice: announcementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
+    const announcementsslice: AnnouncementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
     const money: number = useSelector((state: RootState) => state.base.money);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
 
@@ -25,7 +25,7 @@ export default function Provider() {
         return [getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29)]
     }
 
-    const [announcements, setannouncements] = useState<announcementsInterface[]>([])
+    const [announcements, setannouncements] = useState<AnnouncementsInterface[]>([])
     const [inputvalue, setinputvalue] = useState<number>(0)
     const [maxprice, setmaxprice] = useState<number>(0)
     const [currentannouncement, setcurrentannouncement] = useState<number>(0)
@@ -55,7 +55,7 @@ export default function Provider() {
             setdealeranswer(answer)
             materials.map((v) => {
                     for (let i = 0; i < v.count; i++) {
-                        dispatch(addtoinventory(v.name.trim()))
+                        dispatch(addtoinventory([v.name.trim(), false]))
                 }
             })
 
@@ -114,7 +114,7 @@ export default function Provider() {
                 setannouncements(res.data.answer)
                 console.log(res.data.answer);
                 
-                res.data.answer.map((v: announcementsInterface) => {
+                res.data.answer.map((v: AnnouncementsInterface) => {
                     dispatch(addannouncements(v))
                 })
 
@@ -122,11 +122,11 @@ export default function Provider() {
     }, [])
 
     return (
-        <div className={styles.parent} >
+        <div className={styles.parent} >    
             <h1>Доска объявлений</h1>
             <div className={styles.providersarray}>
                 {announcements.length == 0 ? (<span><img src={loading} alt="" />
-                    <h2>идем к доске объявлений..</h2>
+                    <h2>Идем к доске объявлений..</h2>
                 </span>) : announcements.map((v, i) => (
                     <div key={i} className={styles.provider}>
                         {v.price == 0 && (<span className={styles.notavaible}> <img src={shrug} alt="" /><p>уже раскупили</p></span>)}
@@ -149,7 +149,7 @@ export default function Provider() {
                 }
             }} className={styles.popupwrapper}>
                 <div ref={popupRef} className={styles.popup}>
-                    <h2>{announcements[currentannouncement].materials.map(v1 => (<>{v1.name} ({v1.count}), </>))}</h2>
+                    <h2>{announcements[currentannouncement].materials.map((v1)=> (<>{v1.name} ({v1.count}), </>))}</h2>
                     <span className={styles.dealermessage}><img src={`../src/assets/svg/workers${announcements[currentannouncement].imgsrc}.svg`} alt="" /><p>{offers[answers[0]]} <b> {renderCoins(announcements[currentannouncement].price)}</b></p></span>
                     <p onClick={() => dealing(announcements[currentannouncement].materials, announcements[currentannouncement].price, deal[answers[3]])}>{agreement[answers[1]]}</p>
 

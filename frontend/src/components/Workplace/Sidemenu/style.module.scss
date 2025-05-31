@@ -1,6 +1,6 @@
 .sidemenu {
     background-color: var(--strong-orange);
-    height: 100vh;
+    height: calc(100vh - 40px);
     position: absolute;
     top: 0;
     transform: translateX(-105%);
@@ -73,7 +73,6 @@
             }
 
             >span {
-                margin-bottom: 15px;
                 display: flex;
                 align-items: center;
                 gap: 20px;
@@ -93,16 +92,19 @@
 
                 >h2 {
                     color: var(--strong-orange);
+                }
+
+                >.active {
                     cursor: pointer;
 
                     &:hover {
                         text-decoration: underline;
                     }
                 }
+
             }
 
             >div {
-                margin-bottom: 15px;
                 display: flex;
                 flex-direction: row;
                 gap: 15px;
@@ -112,6 +114,8 @@
 
                 >span {
                     padding: 10px;
+                    display: flex;
+                    flex-direction: column;
 
                     &:nth-of-type(2) {
 
@@ -119,6 +123,10 @@
                         background-color: var(--soft-green);
                         color: var(--system-white);
                         border-radius: 10px;
+                    }
+
+                    >p {
+                        text-wrap: auto;
                     }
                 }
             }
@@ -136,9 +144,14 @@
             align-items: center;
             cursor: pointer;
             height: fit-content;
+            transition: .3s ease-in-out;
 
             >img {
                 height: 10em;
+            }
+
+            &:hover {
+                scale: 1.05;
             }
         }
 
@@ -156,12 +169,13 @@
 
 
     .newnote {
+        padding-top: 20px;
         display: flex;
         flex-direction: column;
         gap: 20px;
-        width: 90%;
+        width: 85%;
         position: absolute;
-        bottom: 8%;
+        bottom: 4%;
         transform: translateY(130%);
         background-color: var(--strong-orange);
 
@@ -228,7 +242,27 @@
 
     }
 
+    >h2 {
+        position: absolute;
+        bottom: 40px;
+        text-wrap: nowrap;
+        left: 50%;
+        transform: translate(-50%, 0);
+        opacity: 1;
+        font-size: 26px;
+        opacity: 0;
+        text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    >.sadmeshide {
+        animation: sadmeshide .3s ease-in-out forwards;
+    }
+
+    >.sadmesshow {
+        animation: sadmesshow .3s ease-in-out forwards;
+    }
 }
+
 @keyframes hidesidemenu {
     from {
         transform: translateX(0);
@@ -266,5 +300,29 @@
 
     to {
         transform: translateX(0);
+    }
+}
+
+@keyframes sadmesshow {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes sadmeshide {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, 100%);
     }
 }

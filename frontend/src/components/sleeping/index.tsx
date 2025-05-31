@@ -5,12 +5,20 @@ import styles from './style.module.scss'
 import sleeping from '../../assets/svg/sleeping/sleeping.svg'
 import moon from '../../assets/svg/sleeping/moon.svg'
 import sun from '../../assets/svg/sleeping/sun.svg'
-
-import { workerInterface, setmoney,newday } from '../_slices/baseslice'
+import { workerInterface } from '../_Interfaces/workerInterface'
+import { setmoney, newday } from '../_slices/baseslice'
+import { updateannouncements } from '../_slices/personsslice'
 import { RootState } from '../mainstore'
+import { AnnouncementsInterface } from '../_Interfaces/AnnouncementsInterface'
+
+
+
 
 export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: React.Dispatch<React.SetStateAction<number>>, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
+
     const dispatch = useDispatch()
+
+    const announcements: AnnouncementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
     const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray);
     const money: number = useSelector((state: RootState) => state.base.money);
 
@@ -29,7 +37,9 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
         }, cooldown)
         dispatch(newday())
         dispatch(setmoney(money - sum))
-        
+        const newannouncements = announcements.map(v => ({...v, date: v.date - 1 })).filter(v => v.date > 0)
+        dispatch(updateannouncements(newannouncements))
+
     }, [])
 
 

@@ -7,7 +7,7 @@ import table from '../../assets/svg/equipment/table.svg'
 
 import next from '../../assets/svg/system/next.svg'
 
-import { workerInterface } from '../_slices/baseslice'
+import { workerInterface } from '../_Interfaces/workerInterface'
 
 import drawersselected from '../../assets/svg/equipment/selected/drawers.svg'
 import lampselected from '../../assets/svg/equipment/selected/lamp.svg'
