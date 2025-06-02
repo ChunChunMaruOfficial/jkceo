@@ -1,5 +1,5 @@
 import styles from './style.module.scss'
-import {addworker, setproduction, addtoinventory, setinventory } from '../../_slices/baseslice';
+import { addworker, setproduction, addtoinventory, setinventory } from '../../_slices/baseslice';
 
 import tea from '../../../assets/svg/workers/tea.svg'
 import noproduction from '../../../assets/svg/maininterface/noproduction.svg'
@@ -10,6 +10,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import axios from 'axios'
 import { NoteInterface } from '../../_Interfaces/NoteInterface'
 import { workerInterface } from '../../_Interfaces/workerInterface';
+import setactiveCharacter from '../../_modules/setactiveCharacter';
 
 export default function Workers({ seconds, productionselect, currentworker, setcurrentworker }: { seconds: number, productionselect: React.RefObject<HTMLDivElement | null>, currentworker: number, setcurrentworker: React.Dispatch<React.SetStateAction<number>> }) {
 
@@ -58,7 +59,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
                 (workers[i].statistic.lamp.value <= Math.floor((seconds / 60) % 24) || Math.floor((seconds / 60) % 24) <= (workers[i].statistic.mug.value - 1) ? -1 : (v < 0 ? 0 : v))
             )
         )
-    }, [seconds,workerstatus])
+    }, [seconds, workerstatus])
 
     useEffect(() => {
         workers.forEach((worker, i) => {
@@ -80,6 +81,8 @@ export default function Workers({ seconds, productionselect, currentworker, setc
                             );
                         });
                         dispatch(setinventory(updatedInventory));
+                        axios.post('http://localhost:3001/updateinventory', { inventory: updatedInventory })
+                        setactiveCharacter('inventory', updatedInventory)
                         dispatch(addtoinventory([worker.production.name, true]))
                         handleRestart(i, worker.statistic.drawers.value)
                         newProgress[i] = 0
@@ -88,7 +91,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
                     }
 
                     if (!worker.production.ingredients.every(v => inventory.some(v1 => v1.name.trim() == v.trim()))) {
-                        newProgress[i] = -2                        
+                        newProgress[i] = -2
                         clearInterval(intervalsRef.current[i])
                         delete intervalsRef.current[i]
                     }
@@ -98,7 +101,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
                     }
 
                     return newProgress;
-                });                
+                });
             }, worker.statistic.table.value);
         });
 

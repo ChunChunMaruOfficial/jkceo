@@ -2,6 +2,115 @@
     width: 100%;
     height: 100%;
 
+    .popupwrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 4;
+        animation: showpopup .3s ease-in-out forwards;
+
+        .popup {
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--strong-green);
+            border-radius: 15px;
+            padding: 20px 30px ;
+            padding-left: 20px;
+            gap: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+            hr {
+                height: 1px;
+                width: 90%;
+                background-color: var(--soft-green);
+                margin: auto;
+            }
+
+            h2 {
+                font-size: 34px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin: 25px auto;
+
+                >h3 {
+                    font-size: 34px;
+                    color: var(--soft-pink);
+                }
+            }
+
+            h5 {
+                font-size: 12px;
+                margin: auto;
+                    line-height: 2px;
+            }
+
+            button {
+                border-radius: 10px;
+                padding: 10px;
+                font-size: 20px;
+                transition: .1s ease-in-out;
+                border: 3px solid var(--system-white);
+                background-color: var(--strong-green);
+                color: var(--system-white);
+                width: min-content;
+                align-self: flex-end;
+                text-wrap: nowrap;
+                width: 100%;
+
+                &:hover {
+                    background-color: var(--system-white);
+                    color: var(--strong-green);
+                }
+            }
+
+            >h1 {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
+
+            img {
+                height: 1.5em;
+            }
+        }
+
+    }
+
+
+    >h1 {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        >h2 {
+            font-size: inherit;
+        }
+
+        >.bounce {
+            animation: bounce 2s ease infinite;
+        }
+
+        >img {
+            position: initial;
+            height: 1em;
+        }
+    }
+
     .plane {
         padding: 60px;
         display: grid;
@@ -11,11 +120,28 @@
 
     div {
         position: absolute;
-
-        
     }
 
-    img {
+    p {
+        width: 45px;
+        height: 45px;
+        border-radius: 100%;
+        z-index: 0;
+        position: absolute;
+        transition: 5s ease-in-out;
+        font-size: 1;
+        color: rgba(0, 0, 0, 0);
+    }
+
+    span {
+        z-index: 1;
+        transform: translate(-50%, 0);
+        animation: killedtext 1s ease-in-out forwards;
+    }
+
+    >main>img {
+        cursor: grab;
+        z-index: 2;
         position: absolute;
         height: 50px;
         user-drag: none;
@@ -27,6 +153,15 @@
         transition: 5s ease-in-out;
     }
 
+    .timer {
+        font-size: 76px;
+        animation: pulse 1s infinite;
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
     .bullet {
         transition: .7s ease;
         width: 15px;
@@ -35,4 +170,98 @@
         background-size: contain;
         background-image: url('../src/assets/svg/spaceinvaders/bullet.svg');
     }
-} 
+}
+
+@keyframes killedtext {
+    0% {
+        transform: translate(-50%, 0);
+
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(-50%, -20px);
+
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-15px) scale(1.02) rotate(2deg);
+    }
+
+    50% {
+        transform: translateY(0) scale(0.98) rotate(0deg);
+    }
+
+    75% {
+        transform: translateY(-10px) scale(1.01) rotate(-2deg);
+    }
+}
+
+@keyframes hitTheFloor {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    20% {
+        transform: translateY(20px);
+    }
+
+    40% {
+        transform: translateY(0);
+    }
+
+    60% {
+        transform: translateY(10px);
+    }
+
+    80% {
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes showpopup {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

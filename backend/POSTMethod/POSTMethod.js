@@ -23,6 +23,17 @@ function POSTmethod(req, res) {
         case '/setname':
             User.setname(req.body.name)
             break;
+        case '/setuserinfo':
+            console.log(req.body.user.name);
+            
+            User.setname(req.body.user.name)
+            User.setprofessionformulation(req.body.user.professionformulation)
+            User.notes = req.body.user.notes
+            User.workers = req.body.user.workers
+            User.invadersattemps = req.body.user.invadersattemps
+            User.updateinventory(req.body.user.inventory)
+            User.productionArray = req.body.user.productionArray
+            break;
         case '/setmoney':
             req.body.money != User.money && User.setmoney(req.body.money)
             break;

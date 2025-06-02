@@ -7,7 +7,6 @@ import approval from '../../assets/svg/system/approval.svg'
 import Questioning from '../../assets/svg/system/Questioning.svg'
 
 import renderCoins from '../_modules/renderCoins'
-
 import deal from '../../assets/svg/workers/deal.svg'
 import { RootState } from '../mainstore';
 import { useSelector } from 'react-redux';
@@ -63,7 +62,7 @@ export default function Workers() {
                     imgsrc: v1[3].toLowerCase().trim() == 'мужской' ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`,
                     income: income,
                     efficiency: efficiency,
-                    production: {name: '', ingredients: []},
+                    production: { name: '', ingredients: [] },
                     statistic: {
                         drawers: {
                             value: Math.round(2000 / efficiency * 200),

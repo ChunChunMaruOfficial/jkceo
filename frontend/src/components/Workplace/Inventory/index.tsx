@@ -10,10 +10,10 @@ import cancel from '../../../assets/svg/system/cancel.svg'
 import { NoteInterface } from '../../_Interfaces/NoteInterface';
 import axios from 'axios';
 import { setinventory } from '../../_slices/baseslice';
+import setactiveCharacter from '../../_modules/setactiveCharacter';
 
 
-
-export default function Inventory({ ispopupopen, setispopupopen, newmoney, setnewmoney,setwrongitem,setbuyerword,setbuyertime,buyertime,daysorder,setbuyerstatus,setbecomemoney }: { ispopupopen: number, setispopupopen: React.Dispatch<React.SetStateAction<number>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>,setwrongitem:React.Dispatch<React.SetStateAction<string>>,setbuyerword:React.Dispatch<React.SetStateAction<string>>, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime:number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>,setbuyerstatus:React.Dispatch<React.SetStateAction<boolean | null>>,setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>}) {
+export default function Inventory({ ispopupopen, setispopupopen, newmoney, setnewmoney, setwrongitem, setbuyerword, setbuyertime, buyertime, daysorder, setbuyerstatus, setbecomemoney }: { ispopupopen: number, setispopupopen: React.Dispatch<React.SetStateAction<number>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>, setwrongitem: React.Dispatch<React.SetStateAction<string>>, setbuyerword: React.Dispatch<React.SetStateAction<string>>, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>> }) {
     const dispatch = useDispatch()
     const popupRef = useRef<HTMLDivElement>(null)
     const mainproduct: string[] = useSelector((state: RootState) => state.base.mainproduct);
@@ -45,7 +45,8 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
 
     const clientmidleware = () => {
         buyerarray.every(item => mainproduct.includes(item.name)) ?
-            (clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime), setbuyerarray([]), setbecomemoney(true))
+            (clientissatisfied(true, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime), setbuyerarray([]), setbecomemoney(true), axios.post('http://localhost:3001/updateinventory', { inventory: inventory }),
+                setactiveCharacter('inventory', inventory))
             : (generatebuyerword(wrong[getRandom(0, wrong.length - 1)], setwrongitem, daysorder))
     }
 
@@ -53,6 +54,7 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
     return (
         ispopupopen > 0 && (<div onClick={(e) => {
             axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
+            setactiveCharacter('inventory', inventory)
             if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
                 setispopupopen(0)
             }

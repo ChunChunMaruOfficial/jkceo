@@ -11,7 +11,6 @@ import Clock from './Clock';
 import Workers from './Workers';
 import Sidemenu from './Sidemenu';
 import Inventory from './Inventory';
-
 import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 
 
@@ -30,7 +29,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [productiontitle, setproductiontitle] = useState<string>('')
     const [currentworker, setcurrentworker] = useState<number>(-200)
     const [ispopupopen, setispopupopen] = useState<number>(0)
-
+    const [isshield, setisshield] = useState<boolean>(false)
     const [wrongitem, setwrongitem] = useState<string>('')
     const [buyerword, setbuyerword] = useState<string>('')
     const [buyerstatus, setbuyerstatus] = useState<boolean | null>(null)
@@ -40,9 +39,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
     const [becomemoney, setbecomemoney] = useState<boolean>(false)
     const memoizedStatistic = useMemo(() => <Statistic />, []);
-
-
-
 
 
     const getRumorsText = (): string => {
@@ -76,7 +72,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }}>
 
         <div>
-            <Clock seconds={seconds} setsleeping={setsleeping} />
+            <Clock seconds={seconds} setsleeping={setsleeping} setisshield={setisshield}/>
             <Workers seconds={seconds} productionselect={productionselect} currentworker={currentworker} setcurrentworker={setcurrentworker} />
 
             {/* ------------------------------ SCREEN BUTTONS ------------------------------ */}
@@ -100,7 +96,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             {memoizedStatistic}
 
 
-            <Client setispopupopen={setispopupopen} seconds={seconds} setbuyerword={setbuyerword} buyerword={buyerword} setbuyerstatus={setbuyerstatus} buyerstatus={buyerstatus} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} wrongitem={wrongitem} becomemoney={becomemoney} setbecomemoney={setbecomemoney} newmoney={newmoney} setnewmoney={setnewmoney} />
+            <Client setispopupopen={setispopupopen} seconds={seconds} setbuyerword={setbuyerword} buyerword={buyerword} setbuyerstatus={setbuyerstatus} buyerstatus={buyerstatus} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} wrongitem={wrongitem} becomemoney={becomemoney} setbecomemoney={setbecomemoney} newmoney={newmoney} setnewmoney={setnewmoney} isshield={isshield} setisshield={setisshield}/>
 
         </div>
 

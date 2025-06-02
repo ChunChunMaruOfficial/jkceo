@@ -5,6 +5,7 @@ import { workerInterface } from "../_Interfaces/workerInterface";
 export default class UserClass implements UserInterface {
     key: string;
     name: string;
+    invadersattemps: number;
     professionformulation: '';
     notes: NoteInterface[];
     money: number;
@@ -15,6 +16,7 @@ export default class UserClass implements UserInterface {
     constructor(key: string) {
         this.key = key;
         this.name = ''
+        this.invadersattemps = 0
         this.professionformulation = ''
         this.notes = []
         this.money = 0

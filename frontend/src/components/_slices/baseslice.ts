@@ -1,9 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { statisticInterface } from '../_Interfaces/statisticInterface'
 import { NoteInterface } from '../_Interfaces/NoteInterface'
 import { workerInterface } from '../_Interfaces/workerInterface'
-
+import setactiveCharacter from '../_modules/setactiveCharacter'
 
 export interface BaseState {
     day: number,
@@ -30,7 +30,7 @@ const initialState: BaseState = {
     messengerrange: 1,
     rumorsstatus: 2.5,
     goodsPerHour: 1,
-    productionArray: [], //все переменные, что хранятся в слайсе
+    productionArray: [], //все переменные, что хранятся в слайсе (график)
     workersarray: [], //уже имеющееся работники
     inventory: []
 }
@@ -49,21 +49,25 @@ export const BaseSlice = createSlice({
         setmoney: (state, action) => {
             state.money = action.payload
             axios.post('http://localhost:3001/setmoney', { money: action.payload })
+            setactiveCharacter('money', action.payload)
         },
         setname: (state, action) => {
             state.name = action.payload
         },
         addnewnote: (state, action) => {
             state.notes.push(action.payload)
+            setactiveCharacter('notes', current(state.notes))
         },
 
         deletecurrentnote: (state, action) => {
             const [title, price]: [string, number] = action.payload;
             state.notes = state.notes.filter(v => v.title !== title || v.price != price);
+            // setactiveCharacter('notes', state.notes)
             axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
         },
         addworker: (state, action): void => {
             state.workersarray.push(action.payload)
+            setactiveCharacter('workers', current(state.workersarray))
         },
         upgradestatistic: (state, action): void => {
             const [id, characteristic]: [number, string] = action.payload;
@@ -83,6 +87,7 @@ export const BaseSlice = createSlice({
                         workersstatistic.value -= 1
                         break;
                 }
+                setactiveCharacter('workers', current(state.workersarray))
                 axios.post('http://localhost:3001/updateworkerstat', { index: id, worker: state.workersarray[id] })
             }
         },
@@ -99,8 +104,10 @@ export const BaseSlice = createSlice({
         },
         addtoinventory: (state, action): void => {
             const [product, income]: [string, boolean] = action.payload;
-            state.inventory.some(v => v.name == product) ? state.inventory.map(v => (v.name == product ? v.count += 1 : v.count)) : state.inventory.push({ name: product, count: 1 })
+            state.inventory.some(v => v.name.toLocaleLowerCase() == product.toLocaleLowerCase()) ? state.inventory.map(v => (v.name.toLocaleLowerCase() == product.toLocaleLowerCase() ? v.count += 1 : v.count)) : state.inventory.push({ name: product, count: 1 })
             income && (state.productionArray[state.day] = state.productionArray[state.day] ? state.productionArray[state.day] + 1 : 1);
+            setactiveCharacter('inventory', current(state.inventory))
+            setactiveCharacter('productionArray', current(state.productionArray))
         },
         setinventory: (state, action): void => {
             state.inventory = action.payload
@@ -115,8 +122,10 @@ export const BaseSlice = createSlice({
                     state.inventory = state.inventory.filter(v => v.name !== itemName);
                 }
             }
+            setactiveCharacter('inventory', current(state.inventory))
             axios.post('http://localhost:3001/removefrominventory', { item: action.payload })
         },
+        
         updaterumorsstatus: (state, action): void => {
             state.rumorsstatus += action.payload
         },

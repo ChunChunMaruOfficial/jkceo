@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../mainstore';
 import { addtoinventory, setmoney, updaterumorsstatus } from '../_slices/baseslice'
 import renderCoins from '../_modules/renderCoins'
-
+import setactiveCharacter from '../_modules/setactiveCharacter'
 import shrug from '../../assets/svg/providers/shrug.svg'
 
 export default function Provider() {
@@ -20,6 +20,7 @@ export default function Provider() {
     const announcementsslice: AnnouncementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
     const money: number = useSelector((state: RootState) => state.base.money);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
+    const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
 
     const getRandoms = () => {
         return [getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29)]
@@ -58,7 +59,8 @@ export default function Provider() {
                         dispatch(addtoinventory([v.name.trim(), false]))
                 }
             })
-
+            axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
+            setactiveCharacter('inventory', inventory)
         } else setdealeranswer(notenoughmoney[answers[3]])
 
         setTimeout(() => {
@@ -74,11 +76,11 @@ export default function Provider() {
         const rndm = getRandom(0, 100)
         const userpricepercent = Math.floor((inputvalue / maxprice) * 100)
         switch (true) {
-            case inputvalue >= maxprice:
+            case inputvalue >= maxprice: //выше цены
                 dispatch(updaterumorsstatus(rumorsstatus + .1))
                 dealing(materials, price, deal[answers[3]])
                 break;
-            case rndm < userpricepercent:
+            case rndm < userpricepercent: //удачный рандом
                 dealing(materials, price, concessions[answers[5]])
                 return 0
             case rndm >= userpricepercent:

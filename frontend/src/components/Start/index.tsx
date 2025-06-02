@@ -8,7 +8,7 @@ import table from '../../assets/svg/start/table.svg'
 import mainlogo from '../../assets/svg/system/mainlogo.svg'
 import entersound from '../../assets/sounds/enter.wav'
 import talksound from '../../assets/sounds/talk.wav'
-
+ 
 import UserInterface from '../_Interfaces/UserInterface'
 import UserClass from '../_Classes/UserClass'
 
@@ -22,7 +22,7 @@ export default function Start() {
     const [Keytext, setKeytext] = useState<string>('')
     const [buttonstatus, setbuttonstatus] = useState<number>(-1)
     const [hellowords, sethellowords] = useState<string>('')
-    const [isanewmember, setisanewmember] = useState<boolean>(false)
+    const [isanewmember, setisanewmember] = useState<boolean | null>(null)
     const [isinteracted, setisinteracted] = useState<boolean>(false)
 
     const ownerisback = useRef([])
@@ -32,7 +32,8 @@ export default function Start() {
 
     const entry = (user: UserInterface) => {
         localStorage.setItem('activeuser', JSON.stringify(user))
-        navigate('./slots')
+        axios.post('http://localhost:3001/setuserinfo', { user })
+
     }
 
     const checkverification = () => {
@@ -46,8 +47,7 @@ export default function Start() {
 
         users.current = JSON.parse(localStorage.getItem('users')!)
         const olduser = users.current.find((v: UserInterface) => v.key == Keytext)
-        if (olduser) { entry(olduser) } else {
-            generatebuyerword(newpersonbefore.current[getRandom(0, newpersonbefore.current.length - 1)], sethellowords)
+        if (olduser) { entry(olduser); setisanewmember(false); } else {
             setisanewmember(true)
         }
     }
@@ -60,8 +60,7 @@ export default function Start() {
         users.current.push(new UserClass(Keytext))
         localStorage.setItem('users', JSON.stringify(users.current))
         entry(new UserClass(Keytext))
-        console.log('123');
-
+        navigate('./slots')
     }
 
 
@@ -89,6 +88,15 @@ export default function Start() {
         }
     }, [hellowords]);
 
+    useEffect(() => {
+        if (isanewmember == true) {
+            generatebuyerword(newpersonbefore.current[getRandom(0, newpersonbefore.current.length - 1)], sethellowords)
+        } else if (isanewmember == false) {
+            generatebuyerword('хотите ли вы выбрать ваше призвание заново?', sethellowords)
+        }
+
+    }, [isanewmember]);
+
     return (
         <>
             <audio ref={audiostartRef} src={entersound} autoPlay />
@@ -96,8 +104,10 @@ export default function Start() {
             <img onMouseMove={() => MouseMove()} className={styles.mainlogo} src={mainlogo} alt="" />
             <div className={styles.parent}>
                 <div className={styles.person}>
-                    <h2>{hellowords}</h2>
-                    <img src={isanewmember ? table : income} alt="" />
+                    <h2>{hellowords}
+                        {isanewmember == false && (<span><button onClick={() => navigate('./slots')}>да</button><button onClick={() => navigate('./current/workplace')}>нет</button></span>)}
+                    </h2>
+                    <img src={isanewmember == null ? income : table} alt="" />
                 </div>
                 <div className={styles.window}>
                     <div className={styles.inputgroup} data-hint={`От 4х символов`}>
@@ -105,7 +115,7 @@ export default function Start() {
                         <label htmlFor="password" className={styles.inputlabel}>Кодовое слово для входа</label>
                     </div>
 
-                    {buttonstatus != -1 && (<span className={buttonstatus > 0 ? styles.showbutton : styles.hidebutton}><button onClick={() => checkverification()}>Продолжить дело</button>{isanewmember && (<button onClick={() => newbegin()}>Начать новое дело</button>)}</span>)}
+                    {buttonstatus != -1 && (<span className={buttonstatus > 0 ? styles.showbutton : styles.hidebutton}><button onClick={() => checkverification()}>Продолжить дело</button>{isanewmember == true && (<button onClick={() => newbegin()}>Начать новое дело</button>)}</span>)}
 
                 </div></div>
         </>

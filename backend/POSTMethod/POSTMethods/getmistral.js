@@ -62,8 +62,8 @@ async function getMistral(startpromt, promt, res) {
                     const middleraw = v.split('.')
                     materials = middleraw[middleraw.length - 3].split(',').map(v1 => {
                         const match = v1.match(/^([^(]+)\((\d+)\)$/)
-                        if(match){
-                            return {name: match[1].trim(), count: Number(match[2])}
+                        if (match) {
+                            return { name: match[1].trim(), count: Number(match[2]) }
                         }
                     })
                     return {
@@ -74,11 +74,16 @@ async function getMistral(startpromt, promt, res) {
                         imgsrc: getRandom(0, 2) ? `/m/${getRandom(1, 11)}` : `/f/${getRandom(1, 8)}`,
                         price: Number(middleraw[middleraw.length - 1].trim()) / 10
                     }
-
                 })
-                const changedItemId = getRandom(0,MistralRes.length - 1)
-                MistralRes[changedItemId].materials = User.notes[0].ingredients.map(v => {return {name: v, count: getRandom(5,15)}})
-                MistralRes[changedItemId].text = overflow[getRandom(0, overflow.length - 1)]
+
+
+                if (User.notes.length > 0) {
+                    const noteswithingredients = User.notes.filter(v => v.ingredients) //заметки с ингредиентами
+                    const changednumbers = [...new Array(noteswithingredients.length)].map(() => (getRandom(0, MistralRes.length - 1))) //массив с индексами для ингредиентов из заметок
+                    noteswithingredients.forEach((v, i) => {MistralRes[changednumbers[i]].materials = v.ingredients.map(v => { return { name: v, count: getRandom(5, 15) } }); MistralRes[changednumbers[i]].text = overflow[getRandom(0, overflow.length - 1)] })
+
+                }
+                
         }
         console.log(MistralRes);
         res.json({ answer: MistralRes });

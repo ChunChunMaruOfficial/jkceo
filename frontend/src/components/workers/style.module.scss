@@ -24,7 +24,7 @@
         flex-direction: row;
         width: 100%;
         flex-wrap: nowrap;
-        height: 90%;
+        height: -webkit-fill-available;
 
         >.myworkers,
         >.list {
@@ -95,9 +95,9 @@
                 margin-inline: auto;
             }
         }
-        
-        >.myworkers{
-            >div{
+
+        >.myworkers {
+            >div {
                 border: 1px solid #6b705c;
                 border-radius: 20px;
                 padding: 15px;
@@ -111,8 +111,7 @@
             width: 40%;
             display: flex;
             flex-direction: column;
-            transform: translateY(-100px);
-            height: 12  0%;
+            height: 12 0%;
             overflow: auto;
 
 

@@ -1,53 +1,87 @@
+import axios from 'axios'
 import plane from '../../assets/svg/spaceinvaders/plane.svg'
 import getRandom from '../_modules/getRandom'
-
-import bronze from '../../assets/svg/coins/bronze.svg'
-
+import star from '../../assets/svg/spaceinvaders/star.svg'
+import clock from '../../assets/svg/spaceinvaders/clock.svg'
+import stop from '../../assets/svg/spaceinvaders/stop.svg'
 import styles from './style.module.scss'
 import { useEffect, useRef, useState } from 'react'
 
 export default function AntiqueInvaders() {
+
     const planeRef = useRef<HTMLImageElement>(null)
     const parentRef = useRef<HTMLImageElement>(null)
+
+    const hates = useRef([])
+    const prides = useRef([])
     let parentwidth = 0
     let parentheight = 0
     const [isdragging, setisdragging] = useState<boolean>(false)
     const [newX, setnewX] = useState<number>(0)
     const [newY, setnewY] = useState<number>(0)
-    const [invadersArray, setinvadersArray] = useState<{ top: number, left: number }[]>([{ top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth + 100) : 300) }])
+    const [starttimer, setstarttimer] = useState<number>(3)
+    const [maintimer, setmaintimer] = useState<number>(100)
+    const isgoodinitial: boolean = getRandom(0, 4) == 0 ? true : false
+    const [invadersArray, setinvadersArray] = useState<{ top: number, left: number, good: boolean }[]>([{ top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth - 200) : 300), good: isgoodinitial }])
     const [rate, setrate] = useState<number>(0)
 
     const invadersRender = () => {
-        setInterval(() => {
-            const invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('img'))
+        const invadersRenderinterval = setInterval(() => {
+            let invaders: any = []
+            try {
+                invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLParagraphElement>).filter(child => child.matches('p'))
+            } catch {
+                clearInterval(invadersRenderinterval)
+            }
             const lastinvader = invaders[invaders.length - 1]
-            invaders.map(v => (v.getBoundingClientRect().top >= parentRef.current!.getBoundingClientRect().height) && v.remove())
-            lastinvader.getBoundingClientRect().left < (parentwidth / 2) ? (lastinvader.style.left = (lastinvader.getBoundingClientRect().left + getRandom(100, parentwidth)) + 'px') : ((lastinvader.getBoundingClientRect().left + getRandom(100, parentwidth)) + 'px')
-            lastinvader.style.top = lastinvader.getBoundingClientRect().top + parentheight + 'px'
-            setinvadersArray(invadersArray => [...invadersArray, { top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth + 100) : 300) }])
+
+            const listyle = lastinvader.getBoundingClientRect()
+
+            invaders.map((v: HTMLParagraphElement) => (v.getBoundingClientRect().top >= (parentRef.current!.getBoundingClientRect().height + 300)) && v.remove())
+
+            listyle.left < (parentwidth / 2) ? (lastinvader.style.left = (listyle.left + getRandom(100, parentwidth)) + 'px') : ((listyle.left + getRandom(100, parentwidth)) + 'px')
+            lastinvader.style.top = listyle.top + parentheight + 300 + 'px'
+            const isgoodinitial: boolean = getRandom(0, 4) == 0 ? true : false
+            setinvadersArray(invadersArray => [...invadersArray, { top: getRandom(-150, -100), left: getRandom(-100, parentRef.current ? (parentwidth - 200) : 300), good: isgoodinitial }])
+
+            setmaintimer((mt) => {
+                if (mt < 2) { clearInterval(invadersRenderinterval) } return mt
+            })
         }, 800)
     }
 
     const bulletsRender = () => {
-        setInterval(() => {
+        const bulletsInterval = setInterval(() => {
             if (!planeRef.current || !parentRef.current) return 0
             const newbullet = document.createElement('div')
-            Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.classList.contains(styles.bullet)).map(v => (v.getBoundingClientRect().top == -10) && v.remove())
+            Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.classList.contains(styles.bullet)).map(v => (v.getBoundingClientRect().top < 40) && v.remove())
             newbullet.style.top = planeRef.current!.getBoundingClientRect().top + 'px'
             newbullet.style.left = (planeRef.current!.getBoundingClientRect().left + (planeRef.current!.getBoundingClientRect().width / 2)) + 'px'
-            parentRef.current.appendChild(newbullet)
             newbullet.classList.toggle(styles.bullet);
+            parentRef.current.appendChild(newbullet)
+
+            setmaintimer((mt) => {
+                if (mt < 2) { clearInterval(bulletsInterval) } return mt
+            })
+
             setTimeout(() => {
                 newbullet.style.top = '-20px'
-            }, 5);
-        }, 150)
+            }, 1);
+        }, 300)
     }
 
     const checkCollision = () => {
-        setInterval(() => {
-            const invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('img'))
-            const bullets = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLElement>).filter(child => child.matches('div'))
-            invaders.map(invader => (bullets.map(bullet => {
+        const CollisionInterval = setInterval(() => {
+
+            let invaders: any = []
+            let bullets: any = []
+            try {
+                invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLParagraphElement>).filter(child => child.matches('p'))
+                bullets = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLDivElement>).filter(child => child.matches('div'))
+            } catch {
+                clearInterval(CollisionInterval)
+            }
+            invaders?.length > 0 && invaders?.map((invader: HTMLParagraphElement) => (bullets.map((bullet: HTMLDivElement) => {
                 if (
                     bullet.getBoundingClientRect().right > invader.getBoundingClientRect().left &&
                     bullet.getBoundingClientRect().left < invader.getBoundingClientRect().right &&
@@ -55,24 +89,53 @@ export default function AntiqueInvaders() {
                     bullet.getBoundingClientRect().top < invader.getBoundingClientRect().bottom
                 ) {
                     bullet.remove()
+                    const lastmessage = document.createElement('span');
+                    lastmessage.innerHTML = Number(invader.innerText) != 1 ? hates.current[getRandom(0, hates.current.length - 1)] : prides.current[getRandom(0, prides.current.length - 1)]
+                    lastmessage.style.position = 'absolute';
+                    lastmessage.style.color = Number(invader.innerText) != 0 ? "#658761" : '#AC5045'
+                    lastmessage.style.left = `${invader.getBoundingClientRect().left}px`;
+                    lastmessage.style.top = `${invader.getBoundingClientRect().top}px`
+                    parentRef.current!.appendChild(lastmessage)
                     invader.remove()
-                    setrate(r => r + 1)
+                    setTimeout(() => {
+                        lastmessage.remove()
+                    }, 3010)
+                    setrate(r => Number(invader.innerText) != 1 ? r + 1 : (r == 0 ? 0 : r - 1))
                 }
             })))
         }, 16)
     }
 
-
+    const startmaininterval = () => {
+        const mainInter = setInterval(() => {
+            setmaintimer((mt) => {
+                if (mt < 2) { clearInterval(mainInter); return 0 } else return mt - 1
+            })
+        }, 1000)
+    }
 
 
     useEffect(() => {
         parentwidth = parentRef.current!.getBoundingClientRect().width
         parentheight = parentRef.current!.getBoundingClientRect().height + 200 //+200!!!!!!!!!!!!
-        invadersRender()
-        checkCollision()
-        bulletsRender()
-    }, [])
 
+        const startInter = setInterval(() => {
+            setstarttimer(st => {
+                if (st < 2) { clearInterval(startInter); invadersRender(); checkCollision(); bulletsRender(); startmaininterval(); return 0 } else return st - 1
+            })
+        }, 1000)
+
+        if (planeRef.current) {
+            planeRef.current.style.left = `${(parentwidth / 2) - 50}px`
+            planeRef.current.style.top = `${(parentheight / 2)}px`
+        }
+
+        axios.get('http://localhost:3001/getinvaders').then((res) => {
+            hates.current = res.data.hate
+            prides.current = res.data.pride
+        });
+
+    }, [])
 
     const grabbing = (e: unknown) => {
         if (!planeRef.current) return
@@ -93,11 +156,21 @@ export default function AntiqueInvaders() {
 
     return (
         <div ref={parentRef} className={styles.parent}>
-            <h1>{rate}</h1>
-            <main ref={planeRef} className={styles.plane} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
+            {maintimer == 0 && (<section className={styles.popupwrapper}>
+                <section className={styles.popup}><h1><img src={stop} alt="" />На сегодня все!<img src={stop} alt="" /></h1>
+                    <hr />
+                    <h2>Вы набрали: &nbsp; <h3> {rate}</h3><img src={star} alt="" /></h2>
+                    <button>Вернуться домой</button>
+                    <h5>Этот результат изменит слухи о вас</h5>
+                </section>
+            </section>)}
+            {starttimer > 0 && (<h1 className={styles.timer}>{starttimer}</h1>)}
+            <h1><h2 className={maintimer < 20 ? styles.bounce : ''}>{maintimer}</h2><img src={clock} alt="" /> | <img src={star} alt="" />{rate}</h1>
+            <main ref={planeRef} className={styles.plane} style={{ opacity: starttimer == 0 ? '1' : '0' }} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
                 <img src={plane} alt="" />
             </main>
-            {invadersArray.map(v => (<img alt='' style={{ top: v.top, left: v.left }} src={bronze} />))}
+            {invadersArray.map((v, i) => (<p key={i} style={{ top: v.top, left: v.left, backgroundColor: v.good ? "#658761" : '#AC5045' }} >{v.good ? '1' : '0'}</p>))}
+
         </div>
     )
 }

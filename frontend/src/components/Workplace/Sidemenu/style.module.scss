@@ -149,12 +149,20 @@
             >img {
                 height: 10em;
             }
-
-            &:hover {
-                scale: 1.05;
-            }
         }
 
+        .logout {
+            position: fixed;
+            height: 4em;
+            left: 20px;
+            bottom: 20px;
+            transition: .3s ease-in-out;
+
+            &:hover {
+                cursor: pointer;
+                scale: 1.03;
+            }
+        }
 
     }
 
@@ -220,17 +228,29 @@
             padding: 0 5px;
         }
 
-        >button {
-            border-radius: 4px;
-            padding: 10px;
-            font-size: 16px;
-            background-color: var(--soft-yellow);
-            color: var(--strong-orange);
-            width: min-content;
-            align-self: flex-end;
+        >span {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+
+            >button {
+                border-radius: 4px;
+                padding: 10px;
+                font-size: 16px;
+                border: 3px solid var(--soft-yellow);
+                background-color: var(--strong-orange);
+                color: var(--soft-yellow);
+                width: min-content;
+                align-self: flex-end;
+
+                &:hover {
+                    background-color: var(--soft-yellow);
+                    color: var(--strong-orange);
+                }
+            }
+
         }
-
-
 
         &.hidenewnote {
             animation: hidenewnote .3s forwards ease-in-out;
@@ -285,7 +305,7 @@
 
 @keyframes hidenewnote {
     from {
-        transform: translateX(0);
+        transform: translateY(20px);
     }
 
     to {
@@ -299,7 +319,7 @@
     }
 
     to {
-        transform: translateX(0);
+        transform: translateY(20px);
     }
 }
 

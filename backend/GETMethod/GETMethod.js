@@ -27,6 +27,9 @@ const newpersonbefore = require('../data/start/newpersonbefore.json')
 const fate = require('../data/slots/fate.json')
 const choise = require('../data/slots/choise.json')
 
+const hate = require('../data/invaders/hating.json')
+const pride = require('../data/invaders/pride.json')
+
 function GETmethod(req, res) {
   switch (req.path) {
 
@@ -80,6 +83,9 @@ function GETmethod(req, res) {
       break;
     case '/getslots':
       res.json({ fate: fate, choise: choise})
+      break;
+    case '/getinvaders':
+      res.json({ hate: hate, pride: pride})
       break;
 
       /*---------------- API ----------------*/

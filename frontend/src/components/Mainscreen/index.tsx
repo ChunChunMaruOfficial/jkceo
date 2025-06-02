@@ -27,7 +27,7 @@ import Workers from '../workers';
 import Provider from '../providers';
 import Equipment from '../equipment';
 import Sleeping from '../sleeping';
-
+import AntiqueInvaders from '../spaceinvaders';
 import axios from 'axios';
 
 export default function Mainscreen() {
@@ -47,16 +47,13 @@ export default function Mainscreen() {
             });
         setInterval(() => {
             setseconds(sec => sec + 10)            
-        }, 15000) // 150000
+        }, 7000) // 150000
     }, [])
 
 
     useEffect(() => {
         window.location.pathname == '/current/workplace' ? setmainbutton(true) : setmainbutton(false)
     }, [location.pathname])
-
-
-
 
     const headerarray = [{ img: customer, text: 'Клиенты', link: 'customer' },
     { img: provider, text: 'Поставка', link: 'providers' },
@@ -83,6 +80,7 @@ export default function Mainscreen() {
                 <Route path='workers' element={<Workers />}></Route>
                 <Route path='providers' element={<Provider />}></Route>
                 <Route path='upgradegear' element={<Equipment />}></Route>
+                <Route path='rating' element={<AntiqueInvaders />}></Route>
 
             </Routes>
 

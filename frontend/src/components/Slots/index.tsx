@@ -11,6 +11,9 @@ import income from '../../assets/svg/start/income.svg'
 import generatebuyerword from '../_modules/generatebuyerword';
 import talksound from '../../assets/sounds/talk.wav'
 import { setmoney, setprofessionformulation } from '../_slices/baseslice';
+import setactiveCharacter from '../_modules/setactiveCharacter';
+
+
 
 export default function Slots() {
     const dispatch = useDispatch()
@@ -41,6 +44,7 @@ export default function Slots() {
     const fatesaccept = () => {
         dispatch(setmoney(silvercoins / 10))
         dispatch(setprofessionformulation(serveranswer))
+        setactiveCharacter('professionformulation', serveranswer)
     }
 
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {

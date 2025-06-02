@@ -9,23 +9,23 @@ import { setmoney } from '../../_slices/baseslice'
 import { RootState } from '../../mainstore'
 
 import clientissatisfied from '../../_modules/clientissatisfied'
-
+import talksound from '../../../assets/sounds/talk.wav'
 import likeatable from '../../../assets/svg/maininterface/likeatable.svg'
 import dis from '../../../assets/svg/maininterface/buyerreaction/dis.svg'
 import ok from '../../../assets/svg/maininterface/buyerreaction/ok.svg'
 import back from '../../../assets/svg/system/back.svg'
 import money from '../../../assets/svg/buyer/money.svg'
 
-export default function Client({ setispopupopen, seconds, setbuyerword, buyerword, setbuyerstatus, buyerstatus, setbuyertime, buyertime, daysorder, wrongitem, becomemoney, setbecomemoney, newmoney, setnewmoney }: { setispopupopen: React.Dispatch<React.SetStateAction<number>>, seconds: number, setbuyerword: React.Dispatch<React.SetStateAction<string>>, buyerword: string, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, buyerstatus: boolean | null, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, wrongitem: string, becomemoney: boolean, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>> }) {
+export default function Client({ setispopupopen, seconds, setbuyerword, buyerword, setbuyerstatus, buyerstatus, setbuyertime, buyertime, daysorder, wrongitem, becomemoney, setbecomemoney, newmoney, setnewmoney, isshield, setisshield }: { setispopupopen: React.Dispatch<React.SetStateAction<number>>, seconds: number, setbuyerword: React.Dispatch<React.SetStateAction<string>>, buyerword: string, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, buyerstatus: boolean | null, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, wrongitem: string, becomemoney: boolean, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>,isshield: boolean, setisshield: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const dispatch = useDispatch()
-
+    const talksoundRef = useRef<HTMLAudioElement>(null)
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
     const day: number = useSelector((state: RootState) => state.base.day);
     const mymoney: number = useSelector((state: RootState) => state.base.money);
 
     const [buyerpfp, setbuyerpfp] = useState<string>('')
-    const [isshield, setisshield] = useState<boolean>(false)
+
 
     const buyerlucky: string[] = useSelector((state: RootState) => state.phrase.lucky);
     const buyerrefusal: string[] = useSelector((state: RootState) => state.phrase.refusal);
@@ -42,10 +42,16 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
     }, [])
 
     useEffect(() => {
-      day > 0 && axios.post('http://localhost:3001/getorder', { count: getRandom(1, 5) * Math.round(rumorsstatus) }).then((res) => {
+        if (talksoundRef.current) {
+            talksoundRef.current.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }, [buyerword]);
+
+    useEffect(() => {
+        day > 0 && axios.post('http://localhost:3001/getorder', { count: getRandom(1, 5) * Math.round(rumorsstatus) }).then((res) => {
             const answer = res.data.answer.split('?').join('?.').split('.')
             daysorder.current = Array.from({ length: answer.length - 1 }, (_, i) => ({
-                time: getRandom(360 * 1.2, 1320),
+                time: getRandom(370 * 1.2, 1320),
                 text: answer[i].trim(),
                 done: false
             }))
@@ -62,7 +68,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
     }, [becomemoney])
 
     useEffect(() => {
-      isshield && ( setbuyerword(''), setbuyertime(0))
+        isshield && (setbuyerword(''), setbuyertime(0))
     }, [isshield])
 
 
@@ -109,6 +115,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
             </div>
             <div className={styles.time} style={{ background: buyertime > 0 ? `linear-gradient(to right, #CB997E ${buyertime}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}></div>
             <div className={styles.client}>
+                <audio ref={talksoundRef} src={talksound} autoPlay></audio>
                 <p>{buyerword}</p>
                 <div>
                     {buyerword && (<img className={buyerstatus == null ? (styles.clientimg + ' ' + styles.clientscomming) : (buyerstatus == true ? (styles.clientimg + ' ' + styles.clientsatisfied) : (styles.clientimg + ' ' + styles.clientdissatisfied))} src={`../src/assets/svg/workers${buyerpfp}.svg`} alt="" />)}

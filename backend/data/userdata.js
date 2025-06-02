@@ -6,6 +6,7 @@ const User = {
     notes: [],
     money: 2000,
     workers: [],
+    invadersattemps: 0,
     inventory: [],
     productionArray: [],
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from './style.module.scss'
 import axios from 'axios';
-
+import setactiveCharacter from '../_modules/setactiveCharacter';
 import { RootState } from '../mainstore';
 import { setname } from '../_slices/baseslice';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,10 +10,11 @@ import ai from '../../assets/svg/system/ai.svg'
 import accept from '../../assets/svg/system/accept.svg'
 import loading from '../../assets/svg/system/loading.svg'
 import { addnewnote } from '../_slices/baseslice';
-
+import { NoteInterface } from '../_Interfaces/NoteInterface';
 export default function Professionformulation() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
     const [professionformulation, setprofessionformulation] = useState<string>(useSelector((state: RootState) => state.base.professionformulation))
     const [examplename, setexamplename] = useState<string>('test')
     const [isLoading, setisLoading] = useState<boolean>(false)
@@ -50,6 +51,8 @@ export default function Professionformulation() {
                 axios.post('http://localhost:3001/addnewnote', {
                     note: newnote
                 })
+                setactiveCharacter('name', inputRef.current!.value)
+              //  setactiveCharacter('notes', notes)
                 navigate('../workplace');
             }, 1800)
         } else {
