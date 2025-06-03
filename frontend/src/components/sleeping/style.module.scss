@@ -1,3 +1,5 @@
+@use '../mixin.scss' as mixin;
+
 .parent {
     height: 100vh;
     width: 100vw;
@@ -15,11 +17,8 @@
         top: 50%;
         position: absolute;
         transform: translate(-50%, 350%);
-        display: flex;
+        @include mixin.flex(center, auto, row, nowrap, 10px);
         width: max-content;
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
 
         >img {
             height: 1em;

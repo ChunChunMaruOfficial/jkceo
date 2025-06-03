@@ -165,7 +165,7 @@ export default function AntiqueInvaders() {
                 </section>
             </section>)}
             {starttimer > 0 && (<h1 className={styles.timer}>{starttimer}</h1>)}
-            <h1><h2 className={maintimer < 20 ? styles.bounce : ''}>{maintimer}</h2><img src={clock} alt="" /> | <img src={star} alt="" />{rate}</h1>
+            <h1><span className={maintimer < 20 ? styles.bounce : ''}>{maintimer}</span><img src={clock} alt="" /> | <img src={star} alt="" />{rate}</h1>
             <main ref={planeRef} className={styles.plane} style={{ opacity: starttimer == 0 ? '1' : '0' }} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
                 <img src={plane} alt="" />
             </main>

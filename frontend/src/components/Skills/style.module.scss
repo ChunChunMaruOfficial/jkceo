@@ -1,0 +1,70 @@
+@use '../mixin.scss' as mixin;
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    padding: 0 40px;
+    gap: 40px;
+    height: 78%;
+    width: calc(100% - 80px);
+
+    >div {
+        @include mixin.flex(center, space-evenly, row, wrap, 30px);
+        width: calc(100% - 300px);
+        padding-inline: 150px;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+
+        >div {
+            @include mixin.flex(center, center, column);
+            transition: .3s ease-in-out;
+
+            >img {
+                height: 12em;
+            }
+
+            >span {
+                @include mixin.flex(center, center, column, nowrap, 20px);
+                padding: 15px;
+                border: 2px solid var(--strong-green);
+                border-radius: 20px;
+
+                >p {
+                    font-size: larger;
+                    word-wrap: break-word;
+                    text-align: center;
+                }
+
+                >span {
+                    @include mixin.flex(start, space-between, row, nowrap, 25px);
+
+                    >h2 {
+                        color: var(--soft-green);
+
+                        >img {
+                            height: 1em;
+                        }
+                    }
+
+                    >span {
+                        >p {
+                            font-size: 36px;
+                            color: var(--soft-pink);
+                        }
+
+                        >h2 {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+                transform: translateY(-10px);
+            }
+        }
+    }
+}

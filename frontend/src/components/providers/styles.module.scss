@@ -1,16 +1,13 @@
+@use '../mixin.scss' as mixin;
+
 .parent {
-    display: flex;
-    flex-direction: column;
+    @include mixin.flex(auto, auto, column, nowrap, 40px);
     padding: 0 40px;
-    gap: 40px;
     height: 78%;
     width: calc(100% - 80px);
 
     >.providersarray {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 40px;
+        @include mixin.flex(auto, auto, row, wrap, 40px);
         height: 100%;
         overflow: auto;
 
@@ -34,10 +31,7 @@
         }
 
         >span {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            @include mixin.flex(center, center, column, nowrap, 40px);
             margin: auto;
 
             >img {
@@ -47,27 +41,18 @@
 
 
         >.provider {
-            display: flex;
-            flex-direction: column;
+            @include mixin.flex(auto, space-between, column, nowrap, 15px);
             padding: 15px;
             width: 400px;
-            gap: 15px;
             border: 2px solid var(--strong-green);
             border-radius: 20px;
-            justify-content: space-between;
             position: relative;
 
             >div {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
+                @include mixin.flex(auto, auto, column, nowrap, 10px);
 
                 >span {
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: nowrap;
-                    align-items: center;
-                    gap: 10px;
+                    @include mixin.flex(center, auto, row, nowrap, 10px);
 
                     >img {
                         height: 2em;
@@ -83,10 +68,8 @@
                 background-color: rgba(0, 0, 0, 0.65);
                 left: 0;
                 top: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
+
+                @include mixin.flex(center, center, column);
                 z-index: 3;
 
                 >img {
@@ -134,8 +117,7 @@
 
         .popup {
             z-index: 4;
-            display: flex;
-            flex-direction: column;
+            @include mixin.flex(auto, auto, column, nowrap, 15px);
             position: absolute;
             top: 50%;
             left: 50%;
@@ -144,16 +126,12 @@
             border-radius: 15px;
             padding: 15px;
             padding-left: 20px;
-            gap: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
 
 
             b {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 4px;
+                @include mixin.flex(center, auto, row, nowrap, 4px);
 
                 >img {
                     height: 1.2em;
@@ -168,9 +146,7 @@
                 align-self: flex-end;
                 cursor: pointer;
                 transition: .2s ease-in-out;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
+                @include mixin.flex(center, auto, row);
 
                 &:hover {
                     transform: translateX(-15px);
@@ -192,11 +168,7 @@
             }
 
             .dealermessage {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                gap: 10px;
-                justify-content: flex-start;
+                @include mixin.flex(auto, flex-start, row, nowrap, 10px);
 
                 >img {
                     height: 3.5em;
@@ -211,20 +183,13 @@
                     border-radius: 0 15px 15px 15px;
                     padding: 10px;
                     font-size: 20px;
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
+                    @include mixin.flex(center, auto, row);
                 }
             }
 
             >span {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
+                @include mixin.flex(center, space-between, row, nowrap, 30px);
                 width: 100%;
-                gap: 30px;
-                align-items: center;
-
 
                 input[type="range"] {
                     -webkit-appearance: none;

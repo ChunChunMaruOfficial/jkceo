@@ -1,62 +1,97 @@
-.mainlogo {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    top: 50%;
-    opacity: 0;
-    animation: mainlogoshowing 3s ease-in-out forwards;
-}
+    @use '../mixin.scss' as mixin;
 
-.parent {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    align-items: center;
-    justify-content: center;
-
-
-
-    .person {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        overflow: visible;
-        animation: personshowing 1s ease-in-out forwards 3s;
-        transform: translateX(-50%);
+    .mainlogo {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        left: 50%;
+        top: 50%;
         opacity: 0;
+        animation: mainlogoshowing 3s ease-in-out forwards;
+    }
 
-        >h2 {
-            box-sizing: content-box;
-            max-width: 90%;
-            position: absolute;
-            border-radius: 20px 20px 20px 0;
-            border: 2px solid var(--strong-green);
-            padding: 20px;
-            transform: translate(19vw, -50px);
+    .parent {
+        @include mixin.flex(center, center, row, nowrap, 30px);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+
+        .person {
+            @include mixin.flex(auto, auto, column);
+            position: relative;
+            overflow: visible;
+            animation: personshowing 1s ease-in-out forwards 3s;
+            transform: translateX(-50%);
+            opacity: 0;
+
+            >h2 {
+                box-sizing: content-box;
+                max-width: 90%;
+                position: absolute;
+                border-radius: 20px 20px 20px 0;
+                border: 2px solid var(--strong-green);
+                padding: 20px;
+                transform: translate(19vw, -50px);
+
+                >span {
+                    width: 100%;
+                    @include mixin.flex(auto, auto, row, nowrap, 10px);
+                    margin-top: 15px;
+
+                    >button {
+                        border-radius: 10px;
+                        padding: 10px;
+                        font-size: 20px;
+                        transition: .1s ease-in-out;
+                        border: 2px solid var(--strong-green);
+                        background-color: var(--body-color);
+                        color: var(--strong-green);
+                        width: min-content;
+                        align-self: flex-end;
+                        text-wrap: nowrap;
+                        width: 100%;
+
+                        &:hover {
+                            background-color: var(--strong-green);
+                            color: var(--body-color);
+                        }
+                    }
+                }
+            }
+
+            >img {
+                height: 30em;
+            }
+        }
+
+
+        .window {
+             @include mixin.flex(auto, auto, column);
+            position: relative;
+            padding: 40px;
+            width: 300px;
 
             >span {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-                margin-top: 15px;
+                @include mixin.flex(auto, auto, row, nowrap, 10px);
+                position: absolute;
+                left: 50%;
+                top: 105%;
+                transform: translate(-50%, 0);
 
                 >button {
+                    z-index: 0;
                     border-radius: 10px;
                     padding: 10px;
                     font-size: 20px;
                     transition: .1s ease-in-out;
-                    border: 2px solid var(--strong-green);
+                    border: 3px solid var(--strong-green);
                     background-color: var(--body-color);
                     color: var(--strong-green);
                     width: min-content;
                     align-self: flex-end;
                     text-wrap: nowrap;
-                    width: 100%;
+
 
                     &:hover {
                         background-color: var(--strong-green);
@@ -65,191 +100,147 @@
                 }
             }
         }
-
-        >img {
-            height: 30em;
-        }
     }
 
-
-    .window {
+    .inputgroup {
+        animation: inputgroupshowing 1s ease-in-out forwards 3s;
+        opacity: 0;
+        z-index: 2;
+        width: 93%;
         position: relative;
-        display: flex;
-        flex-direction: column;
-        padding: 40px;
-        width: 300px;
+    }
 
-        >span {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            position: absolute;
-            left: 50%;
-            top: 105%;
-            transform: translate(-50%, 0);
+    .inputfield {
+        width: 100%;
+        padding: 15px;
+        font-size: 16px;
+        border: 3px solid var(--strong-green);
+        background: var(--body-color);
+        border-radius: 4px;
+        outline: none;
+        transition: border-color 0.3s;
+    }
 
-            >button {
-                z-index: 0;
-                border-radius: 10px;
-                padding: 10px;
-                font-size: 20px;
-                transition: .1s ease-in-out;
-                border: 3px solid var(--strong-green);
-                background-color: var(--body-color);
-                color: var(--strong-green);
-                width: min-content;
-                align-self: flex-end;
-                text-wrap: nowrap;
+    .inputlabel {
+        position: absolute;
+        text-wrap: nowrap;
+        left: 15px;
+        top: 15px;
+        font-size: 16px;
+        color: var(--strong-green);
+        transition: all 0.3s ease;
+        pointer-events: none;
+        background-color: transparent;
+    }
 
+    .inputfield:focus {
+        border-color: var(--soft-pink);
+    }
 
-                &:hover {
-                    background-color: var(--strong-green);
-                    color: var(--body-color);
-                }
-            }
+    .inputfield:focus+.inputlabel,
+    .inputfield:not(:placeholder-shown)+.inputlabel {
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        color: var(--soft-pink);
+        background: var(--body-color);
+        padding: 0 5px;
+    }
+
+    .inputgroup::after {
+        content: attr(data-hint);
+        position: absolute;
+        left: 2px;
+        bottom: -18px;
+        font-size: 12px;
+        color: #888;
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: all 0.2s ease;
+    }
+
+    .inputgroup:focus-within::after {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .showbutton {
+        animation: showbutton .3s ease-in-out forwards;
+    }
+
+    @keyframes showbutton {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -20px);
+
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, 35px);
+
         }
     }
-}
 
-.inputgroup {
-    animation: inputgroupshowing 1s ease-in-out forwards 3s;
-    opacity: 0;
-    z-index: 2;
-    width: 93%;
-    position: relative;
-}
-
-.inputfield {
-    width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    border: 3px solid var(--strong-green);
-    background: var(--body-color);
-    border-radius: 4px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-.inputlabel {
-    position: absolute;
-    text-wrap: nowrap;
-    left: 15px;
-    top: 15px;
-    font-size: 16px;
-    color: var(--strong-green);
-    transition: all 0.3s ease;
-    pointer-events: none;
-    background-color: transparent;
-}
-
-.inputfield:focus {
-    border-color: var(--soft-pink);
-}
-
-.inputfield:focus+.inputlabel,
-.inputfield:not(:placeholder-shown)+.inputlabel {
-    top: -10px;
-    left: 10px;
-    font-size: 12px;
-    color: var(--soft-pink);
-    background: var(--body-color);
-    padding: 0 5px;
-}
-
-.inputgroup::after {
-    content: attr(data-hint);
-    position: absolute;
-    left: 2px;
-    bottom: -18px;
-    font-size: 12px;
-    color: #888;
-    opacity: 0;
-    transform: translateY(-5px);
-    transition: all 0.2s ease;
-}
-
-.inputgroup:focus-within::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.showbutton {
-    animation: showbutton .3s ease-in-out forwards;
-}
-
-@keyframes showbutton {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -20px);
-
+    .hidebutton {
+        animation: hidebutton .3s ease-in-out forwards;
     }
 
-    to {
-        opacity: 1;
-        transform: translate(-50%, 35px);
+    @keyframes hidebutton {
+        from {
+            opacity: 1;
+            transform: translate(-50%, 35px);
 
-    }
-}
+        }
 
-.hidebutton {
-    animation: hidebutton .3s ease-in-out forwards;
-}
+        to {
+            opacity: 0;
+            transform: translate(-50%, -20px);
 
-@keyframes hidebutton {
-    from {
-        opacity: 1;
-        transform: translate(-50%, 35px);
-
+        }
     }
 
-    to {
-        opacity: 0;
-        transform: translate(-50%, -20px);
+    @keyframes mainlogoshowing {
+        0% {
+            opacity: 0;
+        }
 
-    }
-}
+        18% {
+            opacity: 1;
+        }
 
-@keyframes mainlogoshowing {
-    0% {
-        opacity: 0;
-    }
+        82% {
+            opacity: 1;
+        }
 
-    18% {
-        opacity: 1;
-    }
-
-    82% {
-        opacity: 1;
+        100% {
+            opacity: 0;
+        }
     }
 
-    100% {
-        opacity: 0;
-    }
-}
+    @keyframes personshowing {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%);
+        }
 
-@keyframes personshowing {
-    0% {
-        opacity: 0;
-        transform: translateX(-50%);
-    }
+        50% {
+            opacity: 1;
+        }
 
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes inputgroupshowing {
-    from {
-        opacity: 0;
-
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 
-    to {
-        opacity: 1;
+    @keyframes inputgroupshowing {
+        from {
+            opacity: 0;
+
+        }
+
+        to {
+            opacity: 1;
+        }
     }
-}

@@ -1,3 +1,5 @@
+@use '../mixin.scss' as mixin;
+
 .nextshowing {
     animation: nextshowing .1s ease-in-out forwards;
 }
@@ -31,17 +33,13 @@
 }
 
 .panel {
-
-    display: flex;
-    flex-direction: row;
+    @include mixin.flex(center, space-between, row, nowrap);
     margin-left: 15px;
-    align-items: center;
-    justify-content: space-between;
     width: 30%;
-    text-wrap: nowrap;
     position: absolute;
     left: 60px;
     top: 150px;
+
     >img {
         height: 4em;
         cursor: pointer;
@@ -55,31 +53,26 @@
         transform: scale(-1);
     }
 
-    h1>img{
+    h1>img {
         height: 1em;
     }
 
 }
 
 .statistic {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    @include mixin.flex(auto, auto, column, nowrap, 20px);
     position: absolute;
     left: 60px;
     top: 300px;
 
     >span {
-        display: flex;
-        flex-direction: row;
+        @include mixin.flex(center, space-between, row, nowrap);
         margin-left: 15px;
-        align-items: center;
-        justify-content: space-between;
 
         >img {
             height: 4em;
             cursor: pointer;
-        } 
+        }
 
         >div {
             padding: 5px;
@@ -175,12 +168,8 @@
 }
 
 .noworkers {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    @include mixin.flex(center, center, column, nowrap, 25px);
     margin: auto;
-    gap: 25px;
 
     >img {
         height: 20em;

@@ -1,17 +1,15 @@
+    @use '../mixin.scss' as mixin;
+
     .mainparent {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: start;
+      @include mixin.flex(center, start, row);
       width: 100vw;
       height: 100vh;
 
       .person {
         width: fit-content;
-        display: flex;
-        flex-direction: column;
         position: relative;
         overflow: visible;
+        @include mixin.flex(auto, auto, column);
         animation: personshowing 1s ease-in-out forwards;
         transform: translateX(-50%);
         opacity: 0;
@@ -34,8 +32,7 @@
       .parent {
         background-color: var(--system-white);
         width: 920px;
-        display: flex;
-        flex-direction: row;
+        @include mixin.flex(auto, auto, row);
         position: absolute;
         left: 50%;
         top: 50%;
@@ -54,11 +51,8 @@
         .sidepart,
         >div {
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
+          @include mixin.flex(auto, space-between, column, nowrap, 15px);
           width: min-content;
-
-          gap: 15px;
 
           .microbolt {
             border-radius: 100%;
@@ -94,10 +88,8 @@
             border: 4px solid #242423;
             border-radius: 25px;
             background-color: var(--soft-yellow);
-            display: flex;
-            flex-direction: row;
+            @include mixin.flex(auto, space-between, row);
             padding: 15px;
-            justify-content: space-between;
 
             &:nth-of-type(2) {
               background-color: var(--soft-orange);
@@ -105,18 +97,13 @@
             }
 
             >div {
-              display: flex;
-              flex-direction: row;
-              justify-content: center;
+              @include mixin.flex(center, center, row);
               width: -webkit-fill-available;
-              align-items: center;
 
 
 
               .headtext {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                @include mixin.flex(center, auto, column, nowrap, 20px);
                 margin: 25px 25px 15px 25px;
 
                 >h2 {
@@ -133,12 +120,7 @@
               }
 
               >div {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 20px;
-
-
+                @include mixin.flex(center, auto, row, nowrap, 20px);
               }
 
               .point {
@@ -157,18 +139,11 @@
 
             &:nth-of-type(2) {
               height: -webkit-fill-available;
-              display: flex;
-              flex-direction: row;
-              gap: 15px;
-
-              >div {}
+              @include mixin.flex(auto, auto, row, nowrap, 15px);
 
               >.main {
                 width: -webkit-fill-available;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                gap: 30px;
+                @include mixin.flex(auto, flex-start, column, nowrap, 30px);
 
                 >div:first-of-type {
                   background-color: var(--soft-pink);
@@ -182,9 +157,9 @@
                   >.display {
                     height: 150px;
                     position: relative;
+                    @include mixin.flex(auto, center);
                     display: flex;
                     justify-content: center;
-                    gap: 0;
 
                     >span {
                       width: 15px;
@@ -215,9 +190,7 @@
                         transition: top 12s ease-out;
                         background-color: white;
                         color: #1E2749;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: flex-start;
+                        @include mixin.flex(auto, flex-start, column);
                         width: 150px;
                         border-block: 3px solid #242423;
 
@@ -227,7 +200,6 @@
                           margin-inline: center;
                           font-size: 88px;
                           transform-origin: bottom;
-                          /* теперь он как будто стоит и падает назад */
                           transform: perspective(300px) rotateX(15deg) translateX(-50%);
                           left: 50%;
 
@@ -266,9 +238,6 @@
                           animation-duration: .3s;
                         }
 
-
-
-
                         >p {
                           top: -20px;
                           position: absolute;
@@ -304,16 +273,11 @@
                         transform: translateY(-50%) scaleX(-1);
                       }
                     }
-
-
                   }
                 }
 
                 >.botompanel {
-                  display: flex;
-                  flex-direction: row;
-                  flex-wrap: nowrap;
-                  gap: 20px;
+                  @include mixin.flex(auto, auto, row, nowrap, 20px);
                   width: 100%;
                   position: relative;
 
@@ -322,9 +286,7 @@
                     left: 50%;
                     bottom: -12%;
                     transform: translateX(-70%);
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: nowrap;
+                    @include mixin.flex(auto, auto, row, nowrap, 15px);
 
                     >.microbolt {
                       background-color: var(--system-white);
@@ -365,9 +327,7 @@
                     }
 
                     >* {
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
+                      @include mixin.flex(center, center);
                     }
 
                     >.botomcenter_front {
@@ -423,11 +383,7 @@
                   }
 
                   >div {
-                    display: flex;
-                    flex-direction: column;
-                    flex-wrap: nowrap;
-                    gap: 15px;
-                    justify-content: center;
+                     @include mixin.flex(auto, center, column, nowrap, 15px);
 
                     >span {
                       border: 3px solid #242423;
@@ -522,7 +478,6 @@
         to {
           transform: perspective(500px) rotateX(-40deg) scale(0.98) translateX(-50%);
           transform-origin: top;
-          /* вращение от верхней грани */
           top: 150px;
         }
       }

@@ -1,3 +1,5 @@
+@use '../../mixin.scss' as mixin;
+
 #clientwrapper {
     width: 383px;
     min-height: min-content;
@@ -9,7 +11,7 @@
 
 
     >.shield {
-        display: flex;
+        @include mixin.flex(center, space-around, column);
         background-color: var(--body-color);
         width: 100%;
         position: absolute;
@@ -18,10 +20,6 @@
         height: 100%;
         z-index: 3;
         border-bottom: 2px solid var(--strong-orange);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-around;
         border-radius: 20px;
 
         >span {
@@ -31,6 +29,7 @@
         }
 
         >.close {
+
             transform: translateY(100%);
             background-color: var(--body-color);
             border: 1px solid var(--strong-orange);
@@ -84,8 +83,7 @@
         }
 
         >div {
-            display: flex;
-            flex-direction: column;
+            @include mixin.flex(auto, auto, column);
             width: min-content;
             margin: auto;
 
@@ -109,10 +107,7 @@
             bottom: 40px;
             opacity: 0;
             animation: getmoney 2s ease-in-out forwards;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            @include mixin.flex(center, auto, column);
 
             >img {
                 height: 5em;
@@ -140,13 +135,9 @@
     }
 
     .bottompanel {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        @include mixin.flex(center, space-between, row, nowrap, 20px);
         width: -webkit-fill-available;
-        gap: 20px;
         padding-top: 15px;
-        justify-content: space-between;
 
         >button {
             border-radius: 100%;
@@ -181,10 +172,8 @@
 }
 
 #wrongitem {
+    @include mixin.flex(auto, auto, row);
     border: none;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
     position: absolute;
     bottom: 20px;
     right: 20px;

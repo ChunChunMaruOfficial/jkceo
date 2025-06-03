@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.8.4",
+    "mixin": "^0.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",

@@ -63,11 +63,12 @@ export default function Workers({ seconds, productionselect, currentworker, setc
 
     useEffect(() => {
         workers.forEach((worker, i) => {
-            if (intervalsRef.current[i] || !workerstatus[i] || worker.production.name === '') return;
+            if (intervalsRef.current[i] || !workerstatus[i] || worker.production.name === '') return 0;
 
             intervalsRef.current[i] = setInterval(() => {
                 setworkerprogress(prev => {
                     const newProgress = [...prev]
+                    
                     if (newProgress[i] >= 100) {
                         clearInterval(intervalsRef.current[i])
                         delete intervalsRef.current[i]

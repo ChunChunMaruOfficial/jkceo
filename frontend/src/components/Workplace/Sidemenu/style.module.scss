@@ -1,3 +1,6 @@
+@use '../../mixin.scss' as mixin;
+
+
 .sidemenu {
     background-color: var(--strong-orange);
     height: calc(100vh - 40px);
@@ -10,12 +13,9 @@
     z-index: 3;
 
     >span {
+        @include mixin.flex(auto, auto, row, nowrap, 30px);
         text-wrap: nowrap;
         width: 100%;
-        display: flex;
-        flex-direction: row;
-        gap: 30px;
-        text-wrap: nowrap;
         margin-bottom: 40px;
 
         >img {
@@ -29,13 +29,8 @@
     }
 
     >.allnotes {
+        @include mixin.flex(flex-start, center, row, wrap, 15px);
         width: 100%;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 15px;
-        justify-content: center;
-        align-items: flex-start;
         position: relative;
         overflow-y: auto;
         max-height: 85%;
@@ -73,10 +68,7 @@
             }
 
             >span {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-                justify-content: space-between;
+                @include mixin.flex(center, space-between, row, nowrap, 20px);
 
                 >img {
                     height: 2em;
@@ -105,17 +97,13 @@
             }
 
             >div {
-                display: flex;
-                flex-direction: row;
-                gap: 15px;
-                align-items: start;
-                justify-content: space-evenly;
+                @include mixin.flex(start, space-evenly, row, nowrap, 15px);
                 text-wrap: nowrap;
 
                 >span {
+                    @include mixin.flex(auto, auto, column);
                     padding: 10px;
-                    display: flex;
-                    flex-direction: column;
+
 
                     &:nth-of-type(2) {
 
@@ -139,9 +127,7 @@
         }
 
         >span {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            @include mixin.flex(center, auto, column);
             cursor: pointer;
             height: fit-content;
             transition: .3s ease-in-out;

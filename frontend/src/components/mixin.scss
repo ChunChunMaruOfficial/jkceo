@@ -1,0 +1,86 @@
+:root {
+    //font-family
+    --Iceberg: "Iceberg", sans-serif;
+    --Koulen: "Koulen", sans-serif;
+    --Big-Shoulders-Display: "Big Shoulders Display", sans-serif;
+    --Iceland: "Iceland", sans-serif;
+  
+    //ACHIEVEMENTS
+    --legendary: #e6b23b;
+    --epic: #d34343; 
+    --rare: #4aafe8;
+    --ordinary: #5de26a;
+  
+  
+    //font-sizes
+    --font-l-size: 18px;
+    --font-m-size: 16px;
+    --font-s-size: 14px;
+    --font-xs-size: 12px;
+    --font-xxs-size: 7px;
+  
+    --letter-spacing: 0.07em;
+  
+    //indents
+    --indent-xxl-size: 25px;
+    --indent-xl-size: 20px;
+    --indent-l-size: 15px;
+    --indent-m-size: 10px;
+    --indent-s-size: 5px;
+  
+    //padding
+    --padding-big: 5px;
+    --padding-default: 2px 10px;
+  
+    //color
+    --white: #fff; // main-color-1
+    --grey: #99999a; // main-color-2
+    --black-grey: #212121; // main-color-3
+    --white-grey: #333; // main-color-4
+    --nav-grey: #161616; // main-color-5
+  
+    --red: #e84a4a; // custom-color-1
+    --black-red: #7425263d; // custom-color-2
+    --inactive-red: #e84a4a7e; // custom-color-3
+    --nav-red: #a23435; // custom-color-4
+    --green: #7dff68; // custom-color-5
+  
+    //filter: hue-rotate(120deg) для цвета IMG
+    //color
+  
+    //panel-Left-Right
+    --panel-width: 200px;
+    --panel-height: 800px;
+    //panel-Left-Right
+  
+    //transition
+    --transition-short: 0.03s ease;
+    --transition-default: 0.13s ease;
+    //transition
+  
+    --title-everyone-top: 35px;
+    //Для внутр
+    --border-size: 12px;
+  }
+  
+  @mixin hue($deg: 0deg) {
+    filter: hue-rotate($deg);
+  }
+  
+  
+  @mixin flex($align: start, $justify: start, $direction: row, $wrap: nowrap, $gap: 0) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    flex-wrap: $wrap;
+    gap: $gap;
+  }
+  
+  @mixin font($color: rgb(255, 255, 255), $family: Segoe UI Variable Static Text, $size: 14px, $weight: 400, $height: 16px) {
+    color: $color;
+    font-family: $family;
+    font-size: $size;
+    font-weight: $weight;
+    line-height: $height;
+  }

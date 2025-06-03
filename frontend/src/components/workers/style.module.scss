@@ -1,16 +1,13 @@
+@use '../mixin.scss' as mixin;
+
 .parent {
-    display: flex;
-    flex-direction: column;
+    @include mixin.flex(auto, auto, column, nowrap, 50px);
     width: calc(100% - 80px);
     height: 71%;
     padding: 0 40px;
-    gap: 50px;
 
     >div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+        @include mixin.flex(center, space-between, row);
 
         >h1 {
             >span {
@@ -20,17 +17,13 @@
     }
 
     >main {
-        display: flex;
-        flex-direction: row;
+        @include mixin.flex(auto, auto, row);
         width: 100%;
-        flex-wrap: nowrap;
         height: -webkit-fill-available;
 
         >.myworkers,
         >.list {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: nowrap;
+            @include mixin.flex(auto, auto, column, nowrap, 20px);
             padding: 0;
             width: 50%;
             height: 100%;
@@ -58,21 +51,15 @@
 
 
             >div {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
+                @include mixin.flex(center, auto, row, nowrap, 10px);
                 transition: .3s ease-in-out;
                 width: -webkit-fill-available;
-                align-items: center;
                 position: relative;
 
                 >h2 {
+                    @include mixin.flex(center, auto, row, nowrap, 10px);
                     position: absolute;
                     right: 30px;
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    gap: 10px;
 
                     >img {
                         height: 1em;
@@ -101,16 +88,14 @@
                 border: 1px solid #6b705c;
                 border-radius: 20px;
                 padding: 15px;
-                margin: 20px;
-                margin-top: 0;
+                margin-inline: 20px;
             }
         }
 
         >.currentworker {
             padding-inline: 30px;
             width: 40%;
-            display: flex;
-            flex-direction: column;
+            @include mixin.flex(auto, auto, column);
             height: 12 0%;
             overflow: auto;
 
@@ -146,16 +131,10 @@
             }
 
             >div {
-                display: flex;
-                flex-direction: column;
-                gap: 25px;
+                @include mixin.flex(auto, auto, column, nowrap, 25px);
 
                 >h2 {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    gap: 10px;
-
+                    @include mixin.flex(center, auto, row, nowrap, 10px);
                     >img {
                         height: 1em;
                     }
@@ -164,11 +143,7 @@
                 }
 
                 >div {
-                    display: flex;
-                    flex-direction: row;
-                    gap: 20px;
-
-
+                    @include mixin.flex(auto, auto, row, nowrap, 20px);
 
                     &:last-of-type {
                         width: 100%;
@@ -179,9 +154,7 @@
         }
 
         .loading {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            @include mixin.flex(auto, center, column);
             width: min-content;
 
             margin: auto;

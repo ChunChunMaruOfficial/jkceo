@@ -1,48 +1,36 @@
+@use '../mixin.scss' as mixin;
+
 .parent {
+    @include mixin.flex(center, center, column);
     width: 600px;
-    display: flex;
-    flex-direction: column;
     margin: 20px;
-    justify-content: center;
-    align-items: center;
 
     >h2 {
+        @include mixin.flex(center, start, row);
         text-wrap: nowrap;
         position: absolute;
         transform: translateY(134%);
         top: 80px;
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        flex-wrap: nowrap;
 
-        >img { 
+
+        >img {
             height: 3em;
         }
     }
 
     button {
-        text-wrap: nowrap;
-        margin: 10px;
-        background-image: url('../src/assets/img/system/bg.jpg');
-        background-size: cover;
-        border: 4px solid #8a5a3d;
-        border-radius: 15px;
-        padding: 12px;
-        width: min-content;
-        height: min-content;
-        box-shadow: inset 0 0 12px #754c29, 0 8px 15px rgba(0, 0, 0, 0.4);
-        text-align: center;
-        position: relative;
-        font-size: 24px;
-        color: #3b1e14;
-        text-shadow: -.1px -.1px 0 #6a3d1c, .1px .1px 0 #6a3d1c, 2px 2px 8px rgba(0, 0, 0, 0.4);
-        align-items: center;
-        display: flex;
-        gap: 10px;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 20px;
+        transition: .1s ease-in-out;
+        border: 3px solid var(--strong-green);
+        background-color: var(--body-color);
+        color: var(--strong-green);
+        align-self: flex-end;
 
-        >img {
-            height: 1em;
+        &:hover {
+            background-color: var(--strong-green);
+            color: var(--body-color);
         }
     }
 
@@ -56,19 +44,19 @@
         width: 100%;
         background: #6D2B2D;
         background: linear-gradient(90deg, rgba(109, 43, 45, 1) 0%, rgba(80, 23, 29, 1) 100%);
-        display: flex;
-        flex-direction: column;
+        @include mixin.flex(none, space-between, column);
         gap: 10px;
 
         >div {
 
-            >.fireworks{
+            >.fireworks {
                 position: absolute;
                 z-index: 1;
                 right: 50px;
                 top: -20px;
                 animation: firework 1.5s infinite;
             }
+
             >img {
                 height: 4em;
             }
@@ -90,9 +78,9 @@
             }
 
             position: relative;
-
             display: flex;
             justify-content: end;
+            @include mixin.flex(start, end);
             padding-inline: 20px;
             flex: 1;
             background: rgba(255, 255, 255, 0.2);
@@ -105,10 +93,8 @@
     }
 
     >.controlpanel {
-        display: flex;
-        flex-direction: row;
+        @include mixin.flex(start, space-between);
         width: 100%;
-        justify-content: space-between;
 
         >div {
             >img {
@@ -134,7 +120,7 @@
 
         >.star {
             cursor: grab;
-            left: 332px;
+            left: 314px;
             top: 713px;
             position: absolute;
 
@@ -152,20 +138,24 @@
 
 @keyframes firework {
     0% {
-      opacity: 1;
-      transform: scale(1);
+        opacity: 1;
+        transform: scale(1);
     }
+
     25% {
-      opacity: 0.5;
+        opacity: 0.5;
     }
+
     50% {
-      opacity: 1;
+        opacity: 1;
     }
+
     75% {
-      opacity: 0.5;
+        opacity: 0.5;
     }
+
     100% {
-      opacity: 0;
-      transform: scale(1.5);
+        opacity: 0;
+        transform: scale(1.5);
     }
-  }
+}

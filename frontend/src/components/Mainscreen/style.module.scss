@@ -1,3 +1,5 @@
+@use '../mixin.scss' as mixin;
+
 body {
     width: 100vw;
     height: 100vh;
@@ -7,15 +9,10 @@ body {
 .parent {
     width: 100vw;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    @include mixin.flex(auto, auto, column);
 
     >.top {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        align-items: center;
+        @include mixin.flex(center, space-between, row, nowrap);
         width: 100%;
         height: min-content;
         animation: topshowing .5s ease-in-out forwards;
@@ -25,16 +22,12 @@ body {
         }
 
         >header {
-            display: flex;
-            flex-direction: row;
+            @include mixin.flex(auto, auto, row);
             gap: 45px;
 
             >a>span {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-
+                @include mixin.flex(center, center, column);
+                >img:nth-of-type(1),
                 >img:nth-of-type(3),
                 >img:nth-of-type(4),
                 >img:nth-of-type(6) {
@@ -79,11 +72,7 @@ body {
             transition: .3s ease-in-out;
 
             >span {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                gap: 20px;
+                @include mixin.flex(center, space-between, row, nowrap, 20px);
                 font-size: 3em;
             }
 

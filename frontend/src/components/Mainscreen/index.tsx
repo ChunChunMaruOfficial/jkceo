@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Professionformulation from '../Professionformulation';
 import { useEffect, useState } from 'react';
 
-import customer from '../../assets/svg/maininterface/customer.svg'
+import skills from '../../assets/svg/maininterface/skills.svg'
 import provider from '../../assets/svg/maininterface/provider.svg'
 import rating from '../../assets/svg/maininterface/rating.svg'
 import upgradegear from '../../assets/svg/maininterface/upgradegear.svg'
@@ -28,6 +28,7 @@ import Provider from '../providers';
 import Equipment from '../equipment';
 import Sleeping from '../sleeping';
 import AntiqueInvaders from '../spaceinvaders';
+import Skills from '../Skills';
 import axios from 'axios';
 
 export default function Mainscreen() {
@@ -55,7 +56,7 @@ export default function Mainscreen() {
         window.location.pathname == '/current/workplace' ? setmainbutton(true) : setmainbutton(false)
     }, [location.pathname])
 
-    const headerarray = [{ img: customer, text: 'Клиенты', link: 'customer' },
+    const headerarray = [{ img: skills, text: 'Навыки', link: 'skills' },
     { img: provider, text: 'Поставка', link: 'providers' },
     { img: rating, text: 'Огласка', link: 'rating' },
     { img: upgradegear, text: 'Оборудование', link: 'upgradegear' },
@@ -81,6 +82,7 @@ export default function Mainscreen() {
                 <Route path='providers' element={<Provider />}></Route>
                 <Route path='upgradegear' element={<Equipment />}></Route>
                 <Route path='rating' element={<AntiqueInvaders />}></Route>
+                <Route path='skills' element={<Skills />}></Route>
 
             </Routes>
 

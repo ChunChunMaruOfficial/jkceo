@@ -1,49 +1,44 @@
-            #production {
-                display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                align-items: end;
-                gap: 5px;
-                position: relative;
-                height: 300px;
-                justify-content: start;
-                overflow-y: hidden;
+          @use '../../mixin.scss' as mixin;
 
-                &::-webkit-scrollbar {
-                    height: 8px;
-                }
 
-                &::-webkit-scrollbar-track {
-                    background: rgba(0, 0, 0, 0);
-                    border-radius: 6px;
-                    margin-inline: 10px;
-                }
+          #production {
+              @include mixin.flex(end, start, row, nowrap, 5px);
+              position: relative;
+              height: 300px;
+              overflow-y: hidden;
 
-                &::-webkit-scrollbar-thumb {
-                    background: var(--strong-orange);
-                    border-radius: 6px;
-                }
+              &::-webkit-scrollbar {
+                  height: 8px;
+              }
 
-                &::-webkit-scrollbar-thumb:hover {
-                    background: var(--strong-orange);
-                }
+              &::-webkit-scrollbar-track {
+                  background: rgba(0, 0, 0, 0);
+                  border-radius: 6px;
+                  margin-inline: 10px;
+              }
 
-                >span {
-                    position: sticky;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    top: 0;
-                    left: 0;
-                    transform: translateX(-65%);
-                    height: 100%;
+              &::-webkit-scrollbar-thumb {
+                  background: var(--strong-orange);
+                  border-radius: 6px;
+              }
 
-                }
+              &::-webkit-scrollbar-thumb:hover {
+                  background: var(--strong-orange);
+              }
 
-                >p {
-                    padding-inline: 20px;
-                    border-radius: 5px;
-                    border: 1px solid black;
+              >span {
+                  @include mixin.flex(auto, space-between, column);
+                  position: sticky;
+                  top: 0;
+                  left: 0;
+                  transform: translateX(-65%);
+                  height: 100%;
+              }
 
-                }
-            }
+              >p {
+                  padding-inline: 20px;
+                  border-radius: 5px;
+                  border: 1px solid black;
+
+              }
+          }

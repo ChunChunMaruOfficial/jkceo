@@ -36,7 +36,6 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const [buyertime, setbuyertime] = useState<number>(0)
     const [newmoney, setnewmoney] = useState<number>(0)
 
-
     const [becomemoney, setbecomemoney] = useState<boolean>(false)
     const memoizedStatistic = useMemo(() => <Statistic />, []);
 

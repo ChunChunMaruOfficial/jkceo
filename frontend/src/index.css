@@ -12,24 +12,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-    --system-white: #F0EFEB;
+  --system-white: #F0EFEB;
 
-    --strong-orange: #CB997E;
-    --strong-green: #A5A58D;
+  --strong-orange: #CB997E;
+  --strong-green: #A5A58D;
 
-    --soft-orange: #DDBEA9;
-    --soft-green: #B7B7A4;
-    --soft-pink: #EDDCD2;
-    --soft-yellow: #FFF1E6;
+  --soft-orange: #DDBEA9;
+  --soft-green: #B7B7A4;
+  --soft-pink: #EDDCD2;
+  --soft-yellow: #FFF1E6;
 
-    --body-color: #30343F;
+  --body-color: #30343F;
 
-    --system-red:#AC5045; 
-    --system-yellow: #DFA05D;
-    --system-green: #658761;
+  --system-red: #AC5045;
+  --system-yellow: #DFA05D;
+  --system-green: #658761;
 }
 
-#root{
+#root {
   width: 100vw;
   height: 100vh;
 }
@@ -45,7 +45,7 @@
   src: url('./assets/fonts/caesar-dressing-cyrillic.otf');
 }
 
-img{
+img {
   user-drag: none;
   -webkit-user-drag: none;
   user-select: none;
@@ -54,7 +54,7 @@ img{
   -ms-user-select: none;
 }
 
-button{
+button {
   transition: .1s ease-in-out;
 }
 
@@ -65,6 +65,11 @@ button{
 
   font-family: "antique", sans-serif;
 }
+
+html {
+  scrollbar-gutter: stable;
+}
+
 
 a {
   font-weight: 500;

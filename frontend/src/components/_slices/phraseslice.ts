@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export interface BaseState {
+export interface PhraseState {
     refusal: string[],
     lucky: string[],
     wrong: string[],
@@ -8,7 +8,7 @@ export interface BaseState {
 
 }
 
-const initialState: BaseState = {
+const initialState: PhraseState = {
     refusal: [], // сделка соравалась
     lucky: [], //сделка удачно прошла
     wrong: [], //не тот продукт, что хотел клиент

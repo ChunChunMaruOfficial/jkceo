@@ -1,3 +1,5 @@
+@use '../mixin.scss' as mixin;
+
 .hideelement {
     animation: hideelement 1s ease-in-out forwards;
 }
@@ -11,12 +13,8 @@ h2.hideelement {
 }
 
 .parent {
-    display: flex;
-    flex-direction: column;
+    @include mixin.flex(center, center, column, nowrap, 70px);
     width: fit-content;
-    justify-content: center;
-    align-items: center;
-    gap: 70px;
     margin: auto;
 
     >h1:not(.hideelement) {
@@ -25,11 +23,9 @@ h2.hideelement {
 
 
     .maingroup {
-        display: flex;
-        flex-direction: row;
-        width: 50%;
+        @include mixin.flex(auto, auto, row, nowrap, 50px);
         height: min-content;
-        gap: 50px;
+        width: 50%;
 
         &:not(.hideelement) {
             transform: translateX(-250%);
@@ -97,9 +93,7 @@ h2.hideelement {
 
         >div:last-of-type {
             height: -webkit-fill-available;
-            display: flex;
-            flex-direction: row;
-            gap: 15px;
+            @include mixin.flex(auto, auto, row, nowrap, 15px);
 
             .isLoading {
                 animation: loading .5s ease infinite;
