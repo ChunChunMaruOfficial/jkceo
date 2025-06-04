@@ -21,7 +21,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import notes from '../../assets/svg/maininterface/notes.svg'
 import { RootState } from '../mainstore';
 import { setmoney } from '../_slices/baseslice';
-import { setskills } from '../_slices/skillsslice';
+import { setinventory } from '../_slices/baseslice';
 import Workplace from '../Workplace';
 import Workers from '../workers';
 import Provider from '../providers';
@@ -35,7 +35,7 @@ export default function Mainscreen() {
     const location = useLocation();
     const dispatch = useDispatch()
     const money: number = useSelector((state: RootState) => state.base.money)
-
+    const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
     const [showsidemenu, setshowsidemenu] = useState<number>(2)
     const [seconds, setseconds] = useState<number>(360)  //360 - 6 утра 
     const [mainbutton, setmainbutton] = useState<boolean>(false)
@@ -43,14 +43,21 @@ export default function Mainscreen() {
 
     useEffect(() => {
 
-        axios.get('http://localhost:3001/getday')
-            .then((res) => {
-                dispatch(setmoney(res.data.day));
+        if (inventory.length === 0) {
+            axios.get('http://localhost:3001/getinventory').then((res) => {
+                console.log(res.data.inventory);
+                dispatch(setinventory(res.data.inventory))
             });
-        axios.get('http://localhost:3001/getskills')
-            .then((res) => {
-                dispatch(setskills(res.data.skills));
-            });
+        }
+
+        // axios.get('http://localhost:3001/getday')
+        //     .then((res) => {
+        //         dispatch(setmoney(res.data.day));
+        //     });
+        // axios.get('http://localhost:3001/getskills')
+        //     .then((res) => {
+        //         dispatch(setskills(res.data.skills));
+        //     });
         axios.get('http://localhost:3001/getmoney')
             .then((res) => {
                 dispatch(setmoney(res.data.money));

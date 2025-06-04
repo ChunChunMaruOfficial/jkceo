@@ -9,7 +9,7 @@ import clientissatisfied from '../../_modules/clientissatisfied';
 import cancel from '../../../assets/svg/system/cancel.svg'
 import { NoteInterface } from '../../_Interfaces/NoteInterface';
 import axios from 'axios';
-import { setinventory } from '../../_slices/baseslice';
+
 import setactiveCharacter from '../../_modules/setactiveCharacter';
 
 
@@ -27,20 +27,11 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
     const inventorymax = useSelector((state: RootState) => state.skills.inventorymax);
 
     useEffect(() => {
-        if (inventory.length === 0) {
-            axios.get('http://localhost:3001/getinventory').then((res) => {
-                dispatch(setinventory(res.data.inventory))
-            });
-        }
-    }, []);
-
-    useEffect(() => {
         buyerarray.length > 0 && setbuyerarray(ba => {
             let sum = 0;
             ba.map(v => sum += (notes.find(v1 => v1.title == v.name)?.price ?? 1) * v.count);
             setnewmoney(sum); return ba
         })
-
     }, [buyerarray]);
 
 
@@ -50,7 +41,6 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
                 setactiveCharacter('inventory', inventory))
             : (generatebuyerword(wrong[getRandom(0, wrong.length - 1)], setwrongitem, daysorder))
     }
-
 
     return (
         ispopupopen > 0 && (<div onClick={(e) => {
@@ -63,7 +53,7 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
         }} className={styles.popupwrapper}>
             <div ref={popupRef} className={styles.popup}>
                 <div>
-                    {inventory.length == 0 ? (<h1>Ваш склад пуст..</h1>) : (<><h1>Вещи на вашем складе</h1><h4>{ countofitems <= inventorymax.value ? (countofitems + "/" + inventorymax.value) : 'склад переполнен!'}</h4><hr />
+                    {inventory.length == 0 ? (<h1>Ваш склад пуст..</h1>) : (<><h1>Вещи на вашем складе</h1><h4>{countofitems <= inventorymax.value ? (countofitems + "/" + inventorymax.value) : 'склад переполнен!'}</h4><hr />
                         {inventory.map((v, i) => (
                             <ul key={i} onClick={() => {
                                 ispopupopen == 2 && (dispatch(removefrominventory(v.name)) && setbuyerarray(ba => {
@@ -72,7 +62,7 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
                                         return ba.map(v1 => (v1.name === v.name ? { ...v1, count: v1.count + 1 } : v1));
                                     } else {
                                         console.log('one');
-                                        
+
                                         return [...ba, { name: v.name, count: 1 }];
                                     }
                                 })
@@ -90,7 +80,7 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
                 {ispopupopen == 2 && (<div className={styles.sending}>
                     {buyerarray.length == 0 && (<h2>выберите товар для покупателя</h2>)}
                     {buyerarray.map((v, i) => (<div key={i}>{v.name} x {v.count} <img onClick={() => { setbuyerarray(ba => ba.filter((_, i1) => i1 != i)); dispatch(addtoinventory([v.name, false])); setwrongitem('') }} src={cancel} alt="" /></div>))}
-                    {buyerarray.length > 0 && (<><button onClick={() => clientmidleware()} className={styles.giving}>отдать</button><p>{newmoney}</p></>)}
+                    {buyerarray.length > 0 && (<><button onClick={() => clientmidleware()} className={styles.giving}>отдать</button></>)}
                 </div>)}
             </div>
 

@@ -55,6 +55,8 @@ function GETmethod(req, res) {
       res.json({ notes: User.day })
       break;
     case '/getskills':
+      console.log(skills);
+      
       res.json({ notes: User.skills })
       break;
     case '/getmoney':

@@ -1,5 +1,3 @@
-const { log } = require("util")
-
 const User = {
     name: 'КровьЖонглерШоу',
     professionformulation: 'Я продаю представления жонглеров старикам за анализ их крови.',

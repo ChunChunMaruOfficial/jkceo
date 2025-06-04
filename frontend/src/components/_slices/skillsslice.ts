@@ -60,6 +60,7 @@ export const SkillsState = createSlice({
         },
 
         setskills: (state, action: { payload: SkillsState }) => {
+            console.log(action.payload)
             const newValues = Object.values(action.payload);
             (Object.keys(state) as Array<keyof SkillsState>).forEach((key, i) => {
                 const skillKey = key as keyof SkillsState;
