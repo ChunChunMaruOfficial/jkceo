@@ -15,9 +15,8 @@ import { AnnouncementsInterface } from '../_Interfaces/AnnouncementsInterface'
 
 
 export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: React.Dispatch<React.SetStateAction<number>>, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
-
     const dispatch = useDispatch()
-
+    const [text, settext] = useState<string>('');
     const announcements: AnnouncementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
     const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray);
     const money: number = useSelector((state: RootState) => state.base.money);
@@ -36,11 +35,13 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
             })
         }, cooldown)
         dispatch(newday())
+        money - sum < 0 ? settext(`Рабочим выплачена зарплата в размере ${renderCoins(sum)}`) : settext(`у вас не хватило денег для зарплаты рабочим..`)
         dispatch(setmoney(money - sum))
-        const newannouncements = announcements.map(v => ({...v, date: v.date - 1 })).filter(v => v.date > 0)
+        const newannouncements = announcements.map(v => ({ ...v, date: v.date - 1 })).filter(v => v.date > 0)
         dispatch(updateannouncements(newannouncements))
 
     }, [])
+
 
 
 
@@ -50,7 +51,7 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
             <img className={styles.sleeping} src={sleeping} alt="" />
             <img className={styles.moon} src={moon} alt="" />
             <img className={styles.sun} src={sun} alt="" />
-            <h1 className={styles.paycheck}>Рабочим выплачена зарплата в размере {renderCoins(sum)}</h1>
+            <h1 className={styles.paycheck}></h1>
         </div>
     )
 }

@@ -30,6 +30,12 @@
             >h1 {
                 width: max-content;
             }
+            >h4{
+                margin-inline: auto;
+                text-wrap: nowrap;
+                width: min-content;
+                color: var(--system-white);
+            }
         }
 
         hr {

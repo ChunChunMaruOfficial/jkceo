@@ -46,10 +46,16 @@ function GETmethod(req, res) {
     case '/getmaterialannouncement':
       getMistral(promts.getmaterialannouncement, '', res)
       break;
-      
+
     /*---------------- User ----------------*/
     case '/getnotes':
       res.json({ notes: User.notes })
+      break;
+    case '/getdays':
+      res.json({ notes: User.day })
+      break;
+    case '/getskills':
+      res.json({ notes: User.skills })
       break;
     case '/getmoney':
       res.json({ money: User.money })
@@ -79,16 +85,16 @@ function GETmethod(req, res) {
       break;
 
     case '/getstart':
-      res.json({ newperson: newperson, ownerisback: ownerisback, newpersonbefore: newpersonbefore})
+      res.json({ newperson: newperson, ownerisback: ownerisback, newpersonbefore: newpersonbefore })
       break;
     case '/getslots':
-      res.json({ fate: fate, choise: choise})
+      res.json({ fate: fate, choise: choise })
       break;
     case '/getinvaders':
-      res.json({ hate: hate, pride: pride})
+      res.json({ hate: hate, pride: pride })
       break;
 
-      /*---------------- API ----------------*/
+    /*---------------- API ----------------*/
 
     case '/getdata':
       res.json({ answer: GetAllEmoji() })

@@ -21,7 +21,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import notes from '../../assets/svg/maininterface/notes.svg'
 import { RootState } from '../mainstore';
 import { setmoney } from '../_slices/baseslice';
-
+import { setskills } from '../_slices/skillsslice';
 import Workplace from '../Workplace';
 import Workers from '../workers';
 import Provider from '../providers';
@@ -37,17 +37,26 @@ export default function Mainscreen() {
     const money: number = useSelector((state: RootState) => state.base.money)
 
     const [showsidemenu, setshowsidemenu] = useState<number>(2)
-    const [seconds, setseconds] = useState<number>(720)  //360 - 6 утра 
+    const [seconds, setseconds] = useState<number>(360)  //360 - 6 утра 
     const [mainbutton, setmainbutton] = useState<boolean>(false)
     const [sleeping, setsleeping] = useState<boolean>(false)
 
     useEffect(() => {
+
+        axios.get('http://localhost:3001/getday')
+            .then((res) => {
+                dispatch(setmoney(res.data.day));
+            });
+        axios.get('http://localhost:3001/getskills')
+            .then((res) => {
+                dispatch(setskills(res.data.skills));
+            });
         axios.get('http://localhost:3001/getmoney')
             .then((res) => {
                 dispatch(setmoney(res.data.money));
             });
         setInterval(() => {
-            setseconds(sec => sec + 10)            
+            setseconds(sec => sec + 10)
         }, 7000) // 150000
     }, [])
 
@@ -72,12 +81,12 @@ export default function Mainscreen() {
                 <header>{headerarray.map((v, i) => (<Link key={i} onClick={() => setshowsidemenu(2)} to={'../current/' + v.link}><span><img src={v.img} alt={i.toString()} /><p>{v.text}</p></span></Link>))}</header>
                 <img className={styles.bag} src={bag} alt="" />
                 <span className={styles.coins}>
-                    {coinsarray.map((v, i) => (<span key={i}><p>{Math.floor(i == 0 ? (money / 100) : (i == 1 ? money % 100 / 10 : money % 10))}</p><img src={v} alt="" /></span>))}
+                    {coinsarray.map((v, i) => (<span key={i}><p>{Math.floor(i == 0 ? (money / 10000) : (i == 1 ? money % 1000 / 100 : money % 100))}</p><img src={v} alt="" /></span>))}
                 </span>
             </div>
             <Routes>
                 <Route path='formulation' element={<Professionformulation />}></Route>
-                <Route path='workplace' element={<Workplace showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} seconds={seconds} setsleeping={setsleeping}/>}></Route>
+                <Route path='workplace' element={<Workplace showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} seconds={seconds} setsleeping={setsleeping} />}></Route>
                 <Route path='workers' element={<Workers />}></Route>
                 <Route path='providers' element={<Provider />}></Route>
                 <Route path='upgradegear' element={<Equipment />}></Route>

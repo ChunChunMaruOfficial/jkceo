@@ -19,7 +19,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
     const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
     const intervalsRef = useRef<{ [key: number]: NodeJS.Timeout }>({});
-
+    const workersmax = useSelector((state: RootState) => state.skills.workersmax);
     const [workerprogress, setworkerprogress] = useState<number[]>(new Array(workers.length).fill(0))
     const [workersmessages, setworkersmessages] = useState<string[]>(new Array(workers.length).fill(''))
     const [workerstatus, setworkerstatus] = useState<boolean[]>(new Array(workers.length).fill(true))
@@ -56,19 +56,19 @@ export default function Workers({ seconds, productionselect, currentworker, setc
     useEffect(() => {
         setworkerprogress(wp =>
             wp.map((v, i) =>
-                (workers[i].statistic.lamp.value <= Math.floor((seconds / 60) % 24) || Math.floor((seconds / 60) % 24) <= (workers[i].statistic.mug.value - 1) ? -1 : (v < 0 ? 0 : v))
+                (workers[i] && (workers[i].statistic.lamp.value <= Math.floor((seconds / 60) % 24) || Math.floor((seconds / 60) % 24) <= (workers[i].statistic.mug.value - 1) ? -1 : (v < 0 ? 0 : v)))
             )
         )
     }, [seconds, workerstatus])
 
     useEffect(() => {
         workers.forEach((worker, i) => {
-            if (intervalsRef.current[i] || !workerstatus[i] || worker.production.name === '') return 0;
+            if (intervalsRef.current[i] || !workerstatus[i] || !worker || worker.production.name === '') return 0;
 
             intervalsRef.current[i] = setInterval(() => {
                 setworkerprogress(prev => {
                     const newProgress = [...prev]
-                    
+
                     if (newProgress[i] >= 100) {
                         clearInterval(intervalsRef.current[i])
                         delete intervalsRef.current[i]
@@ -84,7 +84,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
                         dispatch(setinventory(updatedInventory));
                         axios.post('http://localhost:3001/updateinventory', { inventory: updatedInventory })
                         setactiveCharacter('inventory', updatedInventory)
-                        dispatch(addtoinventory([worker.production.name, true]))
+                        dispatch(addtoinventory([worker.production.name, true])) //добавить проверку на максимум инвентарь!!
                         handleRestart(i, worker.statistic.drawers.value)
                         newProgress[i] = 0
                     } else {
@@ -122,6 +122,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
     return (
         workers.length > 0 && (<div id={styles.workers}>
             <h2>Ваши работники:</h2>
+            <h4>({workers.length}/{workersmax.value})</h4>
             <div>
                 {workers.length > 0 && workers.map((v, i) => (v && (<div key={i} className={styles.worker}>
                     <p className={styles.productionitem}>{workerprogress[i] < 0 ? 'работник отдыхает' : (v.production.name != '' ? v.production.name : 'выберите продукт')}</p>

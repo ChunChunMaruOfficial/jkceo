@@ -13,7 +13,7 @@ import { setinventory } from '../../_slices/baseslice';
 import setactiveCharacter from '../../_modules/setactiveCharacter';
 
 
-export default function Inventory({ ispopupopen, setispopupopen, newmoney, setnewmoney, setwrongitem, setbuyerword, setbuyertime, buyertime, daysorder, setbuyerstatus, setbecomemoney }: { ispopupopen: number, setispopupopen: React.Dispatch<React.SetStateAction<number>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>, setwrongitem: React.Dispatch<React.SetStateAction<string>>, setbuyerword: React.Dispatch<React.SetStateAction<string>>, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function Inventory({ ispopupopen, setispopupopen, newmoney, setnewmoney, setwrongitem, setbuyerword, setbuyertime, buyertime, daysorder, setbuyerstatus, setbecomemoney, countofitems }: { ispopupopen: number, setispopupopen: React.Dispatch<React.SetStateAction<number>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>, setwrongitem: React.Dispatch<React.SetStateAction<string>>, setbuyerword: React.Dispatch<React.SetStateAction<string>>, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>, countofitems: number }) {
     const dispatch = useDispatch()
     const popupRef = useRef<HTMLDivElement>(null)
     const mainproduct: string[] = useSelector((state: RootState) => state.base.mainproduct);
@@ -24,6 +24,7 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
     const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
     const notes: NoteInterface[] = useSelector((state: RootState) => state.base.notes);
     const [buyerarray, setbuyerarray] = useState<{ name: string, count: number }[]>([])
+    const inventorymax = useSelector((state: RootState) => state.skills.inventorymax);
 
     useEffect(() => {
         if (inventory.length === 0) {
@@ -57,11 +58,12 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
             setactiveCharacter('inventory', inventory)
             if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
                 setispopupopen(0)
+                setwrongitem('')
             }
         }} className={styles.popupwrapper}>
             <div ref={popupRef} className={styles.popup}>
                 <div>
-                    {inventory.length == 0 ? (<h1>Ваш склад пуст..</h1>) : (<><h1>Вещи на вашем складе</h1><hr />
+                    {inventory.length == 0 ? (<h1>Ваш склад пуст..</h1>) : (<><h1>Вещи на вашем складе</h1><h4>{ countofitems <= inventorymax.value ? (countofitems + "/" + inventorymax.value) : 'склад переполнен!'}</h4><hr />
                         {inventory.map((v, i) => (
                             <ul key={i} onClick={() => {
                                 ispopupopen == 2 && (dispatch(removefrominventory(v.name)) && setbuyerarray(ba => {
@@ -69,6 +71,8 @@ export default function Inventory({ ispopupopen, setispopupopen, newmoney, setne
                                     if (itemExists) {
                                         return ba.map(v1 => (v1.name === v.name ? { ...v1, count: v1.count + 1 } : v1));
                                     } else {
+                                        console.log('one');
+                                        
                                         return [...ba, { name: v.name, count: 1 }];
                                     }
                                 })

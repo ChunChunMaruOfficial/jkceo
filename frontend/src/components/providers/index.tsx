@@ -21,6 +21,8 @@ export default function Provider() {
     const money: number = useSelector((state: RootState) => state.base.money);
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
     const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
+    const inventorymax = useSelector((state: RootState) => state.skills.inventorymax);
+    const priceagreementwinnings = useSelector((state: RootState) => state.skills.priceagreementwinnings);
 
     const getRandoms = () => {
         return [getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29)]
@@ -40,7 +42,7 @@ export default function Provider() {
     const [deal, setdeal] = useState<string[]>([]) // 2
     const [concessions, setconcessions] = useState<string[]>([]) // 1
     const [breakdeal, setbreakdeal] = useState<string[]>([]) // 0
-
+    const [countofitems, setcountofitems] = useState<number>(0)
     const [refusal, setrefusal] = useState<string[]>([])
     const [agreement, setagreement] = useState<string[]>([])
     const [offers, setoffers] = useState<string[]>([])
@@ -49,30 +51,45 @@ export default function Provider() {
         setannouncements(announcementsslice)
     }, [announcementsslice])
 
+    useEffect(() => {
+        let sum = 0
+        inventory.map(v => {
+            sum += v.count
+        })
+        setcountofitems(sum)
+    }, [inventory]);
 
-    const dealing = (materials: {name: string, count: number}[], price: number, answer: string) => {
-        if ((money - price) > 0) {
-            dispatch(setmoney(money - price))
-            setdealeranswer(answer)
-            materials.map((v) => {
+
+    const dealing = (materials: { name: string, count: number }[], price: number, answer: string) => {
+        let allmaterials = 0
+        materials.map(v => {
+            allmaterials += v.count
+        })
+        const isenough = inventorymax.value > (countofitems + allmaterials)
+        if (!isenough) {
+            setdealeranswer('вы столько не унесете!')
+        } else
+            if ((money - price) > 0) {
+                dispatch(setmoney(money - price))
+                setdealeranswer(answer)
+                materials.map((v) => {
                     for (let i = 0; i < v.count; i++) {
                         dispatch(addtoinventory([v.name.trim(), false]))
-                }
-            })
-            axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
-            setactiveCharacter('inventory', inventory)
-        } else setdealeranswer(notenoughmoney[answers[3]])
+                    }
+                })
+                axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
+                setactiveCharacter('inventory', inventory)
+            } else setdealeranswer(notenoughmoney[answers[3]])
 
         setTimeout(() => {
             setispopupopen(false)
             setdealeranswer('')
-            answer && (money - price) > 0 && dispatch(setnewprice([currentannouncement, 0]))
+            answer && isenough && (money - price) > 0 && dispatch(setnewprice([currentannouncement, 0]))
             return 0
         }, 2000)
     }
 
-
-    const bidding = (materials: {name: string, count: number}[], price: number) => {
+    const bidding = (materials: { name: string, count: number }[], price: number) => {
         const rndm = getRandom(0, 100)
         const userpricepercent = Math.floor((inputvalue / maxprice) * 100)
         switch (true) {
@@ -80,10 +97,10 @@ export default function Provider() {
                 dispatch(updaterumorsstatus(rumorsstatus + .1))
                 dealing(materials, price, deal[answers[3]])
                 break;
-            case rndm < userpricepercent: //удачный рандом
+            case (rndm / priceagreementwinnings.value) < userpricepercent: //удачный рандом
                 dealing(materials, price, concessions[answers[5]])
                 return 0
-            case rndm >= userpricepercent:
+            case (rndm / priceagreementwinnings.value) >= userpricepercent:
                 setdealeranswer(breakdeal[answers[4]])
                 dispatch(updaterumorsstatus(rumorsstatus - .1))
                 setTimeout(() => {
@@ -115,7 +132,7 @@ export default function Provider() {
             .then((res) => {
                 setannouncements(res.data.answer)
                 console.log(res.data.answer);
-                
+
                 res.data.answer.map((v: AnnouncementsInterface) => {
                     dispatch(addannouncements(v))
                 })
@@ -124,7 +141,7 @@ export default function Provider() {
     }, [])
 
     return (
-        <div className={styles.parent} >    
+        <div className={styles.parent} >
             <h1>Доска объявлений</h1>
             <div className={styles.providersarray}>
                 {announcements.length == 0 ? (<span><img src={loading} alt="" />
@@ -151,7 +168,7 @@ export default function Provider() {
                 }
             }} className={styles.popupwrapper}>
                 <div ref={popupRef} className={styles.popup}>
-                    <h2>{announcements[currentannouncement].materials.map((v1)=> (<>{v1.name} ({v1.count}), </>))}</h2>
+                    <h2>{announcements[currentannouncement].materials.map((v1) => (<>{v1.name} ({v1.count}), </>))}</h2>
                     <span className={styles.dealermessage}><img src={`../src/assets/svg/workers${announcements[currentannouncement].imgsrc}.svg`} alt="" /><p>{offers[answers[0]]} <b> {renderCoins(announcements[currentannouncement].price)}</b></p></span>
                     <p onClick={() => dealing(announcements[currentannouncement].materials, announcements[currentannouncement].price, deal[answers[3]])}>{agreement[answers[1]]}</p>
 

@@ -5,38 +5,61 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import approval from '../../assets/svg/system/approval.svg'
 import Questioning from '../../assets/svg/system/Questioning.svg'
-
+import cancel from '../../assets/svg/system/cancel.svg'
 import renderCoins from '../_modules/renderCoins'
 import deal from '../../assets/svg/workers/deal.svg'
+import facepalm from '../../assets/svg/workers/facepalm.svg'
+import noworkers from '../../assets/svg/workers/noworkers.svg'
 import { RootState } from '../mainstore';
 import { useSelector } from 'react-redux';
 import { workerInterface } from '../_Interfaces/workerInterface'
 import { useDispatch } from 'react-redux'
-import { setworkers, deleteworker } from '../_slices/personsslice'
-import { addworker } from '../_slices/baseslice'
+import { setworkers, deleteworker, addaworker } from '../_slices/personsslice'
+import { addworker, deletemyworker } from '../_slices/baseslice'
 
 export default function Workers() {
     const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray); //мои
     const newworkers: workerInterface[] = useSelector((state: RootState) => state.persons.workers); // не мои
-
+    const workersmax = useSelector((state: RootState) => state.skills.workersmax);
     const dispatch = useDispatch()
 
     const [workersarray, setworkersarray] = useState<workerInterface[]>([])
     const [storycurrent, setstorycurrent] = useState<string>('')
-    const [newworker, setnewworker] = useState<boolean>(false)
+    const [newworker, setnewworker] = useState<number>(0)
+    const [sumincome, setsumincome] = useState<number>(0)
     const [getmoretext, setgetmoretext] = useState<string>('Смотреть дальше..')
     const [currentworker, setcurrentworker] = useState<workerInterface | null>()
 
     const addworkerfunc = (worker: workerInterface) => {
+        console.log('addworker');
+        
+        if (workers.length >= workersmax.value) {
+            setnewworker(2)
+            setTimeout(() => {
+                setnewworker(0)
+                setcurrentworker(null)
+            }, 2000)
+            return 0
+        }
         setcurrentworker(null)
         dispatch(addworker(worker))
         dispatch(deleteworker(worker))
         setworkersarray(wa => wa.filter(v => v != worker))
+
         axios.post('http://localhost:3001/addnewworker', { worker: worker })
-        setnewworker(true)
+        setnewworker(1)
         setTimeout(() => {
-            setnewworker(false)
+            setnewworker(0)
         }, 2000)
+    }
+
+    const deletecurrentworker = (worker: workerInterface) => {
+                console.log('deleteworker');
+
+        dispatch(addaworker(worker))
+        dispatch(deletemyworker(worker))
+        setworkersarray(wa => [...wa, worker])
+        axios.post('http://localhost:3001/deletemyworker', { worker: worker })
     }
 
     const getcurrent = (v1: string[]) => {
@@ -98,29 +121,40 @@ export default function Workers() {
         if (workers.length == 0) {
             axios.get('http://localhost:3001/getmyworkers').then((res) => {
                 res.data.workers.map((v: workerInterface) => dispatch(addworker(v)))
+                console.log(res.data.workers);
+                
             })
         }
     }, [])
+
+
+    useEffect(() => {
+        let sum = 0
+        workers.map(v => {
+            sum += v.income
+        })
+        setsumincome(sum)
+    }, [workers])
 
     return (
 
         <div className={styles.parent}>
             <div>
                 <h1>Наймите себе <span>раб</span>отника ({workersarray.length}): </h1>
-                {workers.length > 0 && !currentworker && !newworker && <h1>Ваши рабочие:</h1>}
+                {workers.length > 0 && !currentworker && !newworker && <h1>Ваши рабочие ({workers.length}/{workersmax.value}) :</h1>}
             </div>
             <main>
                 <div className={styles.list}>
 
                     {workersarray.length > 0 ? workersarray.map((v, i) =>
-                    (<div key={i} onClick={() => { setnewworker(false); setcurrentworker(v), getcurrent(Object.values(v)) }}>
+                    (<div key={i} onClick={() => { setnewworker(0); setcurrentworker(v), getcurrent(Object.values(v)) }}>
                         <img alt='' src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} />
                         <span><h2>{v.name} {v.surname}</h2><p>{v.age} лет • {v.sex} • {v.prof}</p></span>
                         <h2>Желаемый заработок: {renderCoins(v.income)}</h2>
                     </div>)) : (<span className={styles.loading}><img src={approval} alt="" /><p>Смотрим на доску объявлений..</p></span>)}
                     {workersarray.length > 0 && (<button onClick={() => getworkers()}>{getmoretext}</button>)}
                 </div>
-                {currentworker && (storycurrent != 'loading' ? (<div className={styles.currentworker}>
+                {currentworker && (storycurrent != 'loading' && newworker != 2 ? (<div className={styles.currentworker}>
                     <img src={'../src/assets/svg/workers/' + currentworker?.imgsrc + '.svg'} alt="" />
                     <div>
                         <h1>{currentworker?.name} {currentworker?.surname}</h1>
@@ -129,15 +163,16 @@ export default function Workers() {
                         <h2>Желаемый заработок: {renderCoins(currentworker.income)}</h2>
                         <div><button onClick={() => setcurrentworker(null)}>Пропуск</button><button onClick={() => addworkerfunc(currentworker)}>Нанять</button></div>
                     </div>
-                </div>) : (<span className={styles.loading}><img src={Questioning} alt="" /><p>Пытаемся разобрать подчерк..</p></span>))}
-                {newworker && (<span className={styles.loading}><img src={deal} alt="" /><p>Новый коллега выйдет на работу завтра</p></span>)}
+                </div>) : newworker != 2 && (<span className={styles.loading}><img src={Questioning} alt="" /><p>Пытаемся разобрать подчерк..</p></span>))}
+                {newworker == 1 ? (<span className={styles.loading}><img src={deal} alt="" /><p>Новый коллега выйдет на работу сегодня же!</p></span>) : newworker == 2 && (<span className={styles.loading}><img src={facepalm} alt="" /><p>Максимальное число рабочих достигнуто..</p></span>)}
                 {!newworker && !currentworker && (<div className={styles.myworkers}>{workers.map((v, i) => (
                     <div key={i}>
                         <img alt='' src={'../src/assets/svg/workers/' + v.imgsrc + '.svg'} />
                         <span><h2>{v.name} {v.surname}</h2><p>{v.age} лет • {v.sex} • {v.prof}</p></span>
-                        <h2>Заработок: {renderCoins(v.income)}</h2>
+                        <img onClick={() => deletecurrentworker(v)} className={styles.deleteworker} src={cancel} alt="" /><h2 className={styles.income}>Заработок: {renderCoins(v.income)}</h2>
                     </div>
-                ))}</div>)}
+                ))}
+                   {sumincome == 0 ? (<span className={styles.loading}><img src={noworkers} alt="" /><p>вы можете нанять рабочих в любое время</p></span>) : ( <h2>ежедневная выплата рабочим: {renderCoins(sumincome)}</h2>)}</div>)}
             </main>
         </div>
     )

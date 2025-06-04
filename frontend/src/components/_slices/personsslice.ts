@@ -30,6 +30,9 @@ export const PersonsState = createSlice({
         deleteworker: (state, action) => {
             state.workers = state.workers.filter(v => v.name != action.payload.name)
         },
+        addaworker: (state, action) => {
+            state.workers.push(action.payload)
+        },
         setnewprice: (state, action) => {
              const [id, newprice]: [number, number] = action.payload;
             state.announcements = state.announcements.map((v, i) =>
@@ -39,6 +42,6 @@ export const PersonsState = createSlice({
     },
 })
 
-export const { setworkers, deleteworker, addannouncements, setnewprice,updateannouncements } = PersonsState.actions //все методы сюда импортировать:3
+export const { setworkers, deleteworker, addannouncements, setnewprice,updateannouncements,addaworker } = PersonsState.actions //все методы сюда импортировать:3
 
 export default PersonsState.reducer

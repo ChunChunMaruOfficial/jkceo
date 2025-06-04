@@ -84,11 +84,22 @@
         }
 
         >.myworkers {
+            >h2{
+            @include mixin.flex(center, center, row, nowrap, 10px);
+            >img{
+                height: 1em;
+            }}
             >div {
                 border: 1px solid #6b705c;
                 border-radius: 20px;
                 padding: 15px;
                 margin-inline: 20px;
+
+                >.deleteworker {
+                    height: 3em;
+                    transition:  .3s ease-in-out;
+                    cursor: pointer;
+                }
             }
         }
 
@@ -135,6 +146,7 @@
 
                 >h2 {
                     @include mixin.flex(center, auto, row, nowrap, 10px);
+
                     >img {
                         height: 1em;
                     }

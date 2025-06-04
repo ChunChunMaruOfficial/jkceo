@@ -42,6 +42,10 @@ export const BaseSlice = createSlice({
 
         newday: (state) => {
             state.day++
+            setactiveCharacter('day', state.day)
+        },
+        setdays: (state, action) => {
+            state.day = action.payload
         },
         setprofessionformulation: (state, action) => { //формулировка профессии
             state.professionformulation = action.payload
@@ -62,12 +66,15 @@ export const BaseSlice = createSlice({
         deletecurrentnote: (state, action) => {
             const [title, price]: [string, number] = action.payload;
             state.notes = state.notes.filter(v => v.title !== title || v.price != price);
-            // setactiveCharacter('notes', state.notes)
             axios.post('http://localhost:3001/deletecurrentnote', { note: action.payload })
         },
         addworker: (state, action): void => {
             state.workersarray.push(action.payload)
             setactiveCharacter('workers', current(state.workersarray))
+        },
+        deletemyworker: (state, action) => {
+            state.workersarray = state.workersarray.filter(v => v.name !== action.payload.name);
+            setactiveCharacter('workers', state.workersarray);
         },
         upgradestatistic: (state, action): void => {
             const [id, characteristic]: [number, string] = action.payload;
@@ -99,8 +106,6 @@ export const BaseSlice = createSlice({
         },
         setmainproduct: (state, action): void => {
             state.mainproduct.push(action.payload)
-            console.log(state.mainproduct);
-
         },
         addtoinventory: (state, action): void => {
             const [product, income]: [string, boolean] = action.payload;
@@ -114,18 +119,25 @@ export const BaseSlice = createSlice({
         },
         removefrominventory: (state, action) => {
             const itemName = action.payload;
-            const item = state.inventory.find(v => v.name === itemName);
-            if (item) {
+            // Находим индекс элемента
+            const itemIndex = state.inventory.findIndex(v => v.name === itemName);
+
+            if (itemIndex !== -1) {
+                const newInventory = [...state.inventory];
+                const item = { ...newInventory[itemIndex] };
+
                 if (item.count > 1) {
                     item.count -= 1;
+                    newInventory[itemIndex] = item;
                 } else {
-                    state.inventory = state.inventory.filter(v => v.name !== itemName);
+                    newInventory.splice(itemIndex, 1);
                 }
+                state.inventory = newInventory;
             }
-            setactiveCharacter('inventory', current(state.inventory))
+            setactiveCharacter('inventory', state.inventory);
             axios.post('http://localhost:3001/removefrominventory', { item: action.payload })
         },
-        
+
         updaterumorsstatus: (state, action): void => {
             state.rumorsstatus += action.payload
         },
@@ -133,7 +145,7 @@ export const BaseSlice = createSlice({
     },
 })
 
-export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct, setinventory } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct, setinventory, deletemyworker,setdays } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

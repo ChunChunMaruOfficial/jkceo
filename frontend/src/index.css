@@ -66,10 +66,6 @@ button {
   font-family: "antique", sans-serif;
 }
 
-html {
-  scrollbar-gutter: stable;
-}
-
 
 a {
   font-weight: 500;

@@ -43,6 +43,9 @@ function POSTmethod(req, res) {
         case '/addnewworker':
             User.addnewworker(req.body.worker)
             break;
+        case '/deletemyworker':
+            User.deletemyworker(req.body.worker)
+            break;
         case '/deletecurrentnote':
             User.deletecurrentnote(req.body.note)
             break;

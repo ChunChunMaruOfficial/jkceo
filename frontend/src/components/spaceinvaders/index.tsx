@@ -6,6 +6,9 @@ import clock from '../../assets/svg/spaceinvaders/clock.svg'
 import stop from '../../assets/svg/spaceinvaders/stop.svg'
 import styles from './style.module.scss'
 import { useEffect, useRef, useState } from 'react'
+import { RootState } from '../mainstore'
+import { useSelector } from 'react-redux'
+
 
 export default function AntiqueInvaders() {
 
@@ -21,6 +24,8 @@ export default function AntiqueInvaders() {
     const [newY, setnewY] = useState<number>(0)
     const [starttimer, setstarttimer] = useState<number>(3)
     const [maintimer, setmaintimer] = useState<number>(100)
+    const invadersscale = useSelector((state: RootState) => state.skills.invadersscale);
+    const bulletspeed = useSelector((state: RootState) => state.skills.bulletspeed);
     const isgoodinitial: boolean = getRandom(0, 4) == 0 ? true : false
     const [invadersArray, setinvadersArray] = useState<{ top: number, left: number, good: boolean }[]>([{ top: getRandom(-150, -50), left: getRandom(-100, parentRef.current ? (parentwidth - 200) : 300), good: isgoodinitial }])
     const [rate, setrate] = useState<number>(0)
@@ -67,7 +72,7 @@ export default function AntiqueInvaders() {
             setTimeout(() => {
                 newbullet.style.top = '-20px'
             }, 1);
-        }, 300)
+        }, bulletspeed.value)
     }
 
     const checkCollision = () => {
@@ -169,7 +174,7 @@ export default function AntiqueInvaders() {
             <main ref={planeRef} className={styles.plane} style={{ opacity: starttimer == 0 ? '1' : '0' }} onMouseDown={(e) => grabbing(e)} onMouseMove={(e) => moving(e)} onMouseUp={() => setisdragging(false)}>
                 <img src={plane} alt="" />
             </main>
-            {invadersArray.map((v, i) => (<p key={i} style={{ top: v.top, left: v.left, backgroundColor: v.good ? "#658761" : '#AC5045' }} >{v.good ? '1' : '0'}</p>))}
+            {invadersArray.map((v, i) => (<p key={i} style={{ scale: v.good ? invadersscale.value : invadersscale.value, top: v.top, left: v.left, backgroundColor: v.good ? "#658761" : '#AC5045' }} >{v.good ? '1' : '0'}</p>))}
 
         </div>
     )

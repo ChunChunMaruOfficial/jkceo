@@ -10,12 +10,33 @@
 
     >div {
         @include mixin.flex(center, space-evenly, row, wrap, 30px);
-        width: calc(100% - 300px);
-        padding-inline: 150px;
+        width: 100%;
         -ms-user-select: none;
         -moz-user-select: none;
         -webkit-user-select: none;
         user-select: none;
+        height: -webkit-fill-available;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0);
+            border-radius: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: var(--soft-green);
+            border-radius: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: var(--soft-green);
+        }
+
 
         >div {
             @include mixin.flex(center, center, column);
@@ -66,5 +87,40 @@
                 transform: translateY(-10px);
             }
         }
+    }
+
+    >.warning {
+        opacity: 0;
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        animation: showwarning 3s ease-in-out forwards;
+        background-color: var(--soft-green);
+        padding: 20px;
+        border-radius: 25px;
+    }
+}
+
+@keyframes showwarning {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 0);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translate(-50%, -40px);
+    }
+
+    90% {
+        opacity: 1;
+        transform: translate(-50%, -40px);
+    }
+
+    100% {
+
+        opacity: 0;
+        transform: translate(-50%, 0);
     }
 }

@@ -1,12 +1,37 @@
 @use '../../mixin.scss' as mixin;
 
 #workers {
-    @include mixin.flex(auto, auto, column, nowrap, 20px);
+    @include mixin.flex(auto, auto, column);
     position: relative;
     height: max-content;
+    max-height: 45vh;
+
+    >h4 {
+        color: var(--soft-green)
+    }
 
     >div {
         @include mixin.flex(auto, auto, column);
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 4px;
+            height: 12px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0);
+            border-radius: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: var(--soft-green);
+            border-radius: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: var(--soft-green);
+        }
 
         >.worker {
             @include mixin.flex(center, auto, column);

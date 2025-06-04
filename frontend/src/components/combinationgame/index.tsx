@@ -2,17 +2,18 @@ import styles from './style.module.scss';
 import getRandom from '../_modules/getRandom';
 import { useDispatch } from 'react-redux';
 import { addtoinventory } from '../_slices/baseslice';
-
+import { useSelector } from 'react-redux';
+import { RootState } from '../mainstore';
 import { Ref, useMemo, useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 
 import close from '../../assets/svg/system/cancel.svg'
 
 
-export default function CombinationGame({ steps, setstepscurrent, title }: { steps: string[], setstepscurrent: React.Dispatch<React.SetStateAction<string[]>>, title: string }) {
+export default function CombinationGame({ steps, setstepscurrent, title, countofitems }: { steps: string[], setstepscurrent: React.Dispatch<React.SetStateAction<string[]>>, title: string, countofitems: number }) {
     const dispatch = useDispatch()
     const parentRef = useRef<HTMLDivElement>(null)
 
-    const [ismistake, setismistake] = useState(false)
+    const [ismistake, setismistake] = useState<string>('')
     const [stepnumber, setstepnumber] = useState(0)
     const [isworkdone, setisworkdone] = useState(false)
     const [intervalState, setintervalState] = useState(false)
@@ -23,6 +24,8 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
     const [newX, setnewX] = useState<number>(0)
     const [newY, setnewY] = useState<number>(0)
 
+    const inventorymax = useSelector((state: RootState) => state.skills.inventorymax);
+    const productcreationspeed = useSelector((state: RootState) => state.skills.productcreationspeed);
 
     const CreateComponents = () => {
         const result = steps.map((v, i) => {
@@ -63,7 +66,6 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
 
     const filling = useCallback((index: number) => {
         setintervalState(true)
-
         const fillinterval = setInterval(() => {
             setintervalState(intervalState => {
                 if (intervalState == false) clearInterval(fillinterval)
@@ -72,20 +74,20 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
             setfillstate(fs => fs.map((v, i) => i == index ? v + 1 : v))
             setfillstate(fs => {
                 fs.forEach((v, i) => {
-                    i == index && setismistake(false)
+                    i == index && setismistake('')
                     if (i == index && v == 100) {
                         setstepnumber(stepnumber => {
                             if (stepnumber == index) { setstepnumber(num => num + 1) } else {
                                 setintervalState(false)
-                                setismistake(true)
+                                setismistake('Надо строго следовать инструкции..')
                                 setstepnumber(0)
-                                componentsarray.map((v, i) => fs[i] > 0 && unfilling(i))
+                                componentsarray.map((_, i) => fs[i] > 0 && unfilling(i))
                             }; return stepnumber
                         }); clearInterval(fillinterval)
                     }
                 }); return fs
             })
-        }, 32)
+        }, productcreationspeed.value)
     }, [fillstate, intervalState])
 
 
@@ -128,13 +130,23 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
         boolvalueY ? componentsRef.current[i].style.top = `${trueE.clientY - parentRef.current?.getBoundingClientRect().top - newY}px` : 0
     }
 
+    const addingtoinventory = () => {
+        if (inventorymax.value >= countofitems) {
+            dispatch(addtoinventory([title, true])); setstepscurrent([])
+        } else {
+            setismistake('инвентарь переполнен!')
+            setTimeout(() => {
+                setismistake('')
+            }, 2800)
+        }
+    }
 
     return (
         <div ref={parentRef} className={styles.parent}>
-            <h2 style={{ top: ismistake ? '10px' : '-60px' }}>Надо строго следовать инструкции..</h2>
+            <h2 style={{ top: ismistake ? '10px' : '-60px' }}>{ismistake}</h2>
             <img src={close} onClick={() => { setstepscurrent([]) }} className={styles.close} alt="" />
             {componentsarray.map((v, i) => (
-                <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i);if (componentsRef.current[i]) componentsRef.current[i].style.zIndex = '2'  }}
+                <div onMouseDown={(e) => { fillstate[i] != 100 && filling(i); grabbing(e, i); if (componentsRef.current[i]) componentsRef.current[i].style.zIndex = '2' }}
                     onMouseUp={(e) => { fillstate[i] != 100 && unfilling(i); setisdragging(false); if (componentsRef.current[i]) componentsRef.current[i].style.zIndex = '1' }}
                     onMouseOut={(e) => { fillstate[i] != 100 && fillstate[i] > 0 && unfilling(i); setisdragging(false) }}
                     onMouseMove={(e) => moving(e, i)}
@@ -149,7 +161,7 @@ export default function CombinationGame({ steps, setstepscurrent, title }: { ste
                     {v.text} {fillstate[i]}%
                 </div>
             ))}
-            {isworkdone && (<button onClick={() => { dispatch(addtoinventory([title, true])); setstepscurrent([]) }}> Закончить работу </button>)}
+            {isworkdone && (<button onClick={() => { addingtoinventory() }}> Закончить работу </button>)}
         </div >
     );
 }

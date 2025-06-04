@@ -1,6 +1,6 @@
 import styles from './styles.module.scss'
 import { useSelector, useDispatch } from 'react-redux';
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import { RootState } from '../mainstore';
 
 import CombinationGame from '../combinationgame';
@@ -23,8 +23,10 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     const CombinationGameRef = useRef<HTMLDivElement>(null)
 
     const rumorsstatus: number = useSelector((state: RootState) => state.base.rumorsstatus);
+    const inventory: { name: string, count: number }[] = useSelector((state: RootState) => state.base.inventory);
 
 
+    const [countofitems, setcountofitems] = useState<number>(0)
     const [stepscurrent, setstepscurrent] = useState<string[]>([])
     const [productiontitle, setproductiontitle] = useState<string>('')
     const [currentworker, setcurrentworker] = useState<number>(-200)
@@ -57,6 +59,13 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }
 
 
+    useEffect(() => {
+        let sum = 0
+        inventory.map(v => {
+            sum += v.count
+        })
+        setcountofitems(sum)
+    }, [inventory]);
 
     return (<main onClick={(e) => {
         if (sidemenuRef.current && CombinationGameRef.current && !sidemenuRef.current.contains(e.target as Node) && !CombinationGameRef.current.contains(e.target as Node)) {
@@ -71,7 +80,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }}>
 
         <div>
-            <Clock seconds={seconds} setsleeping={setsleeping} setisshield={setisshield}/>
+            <Clock seconds={seconds} setsleeping={setsleeping} setisshield={setisshield} />
             <Workers seconds={seconds} productionselect={productionselect} currentworker={currentworker} setcurrentworker={setcurrentworker} />
 
             {/* ------------------------------ SCREEN BUTTONS ------------------------------ */}
@@ -95,22 +104,22 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
             {memoizedStatistic}
 
 
-            <Client setispopupopen={setispopupopen} seconds={seconds} setbuyerword={setbuyerword} buyerword={buyerword} setbuyerstatus={setbuyerstatus} buyerstatus={buyerstatus} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} wrongitem={wrongitem} becomemoney={becomemoney} setbecomemoney={setbecomemoney} newmoney={newmoney} setnewmoney={setnewmoney} isshield={isshield} setisshield={setisshield}/>
+            <Client setispopupopen={setispopupopen} seconds={seconds} setbuyerword={setbuyerword} buyerword={buyerword} setbuyerstatus={setbuyerstatus} buyerstatus={buyerstatus} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} wrongitem={wrongitem} becomemoney={becomemoney} setbecomemoney={setbecomemoney} newmoney={newmoney} setnewmoney={setnewmoney} isshield={isshield} setisshield={setisshield} />
 
         </div>
 
 
 
         {stepscurrent.length != 0 && (<div ref={CombinationGameRef} className={styles.gameplace}>
-            <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} title={productiontitle} />
+            <CombinationGame steps={stepscurrent} setstepscurrent={setstepscurrent} title={productiontitle} countofitems={countofitems} />
 
         </div>)}
 
         {/* ------------------------------ INVENTORY ------------------------------ */}
 
-        <Inventory ispopupopen={ispopupopen} setispopupopen={setispopupopen} newmoney={newmoney} setnewmoney={setnewmoney} setwrongitem={setwrongitem} setbuyerword={setbuyerword} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} setbuyerstatus={setbuyerstatus} setbecomemoney={setbecomemoney}/>
+        <Inventory ispopupopen={ispopupopen} setispopupopen={setispopupopen} newmoney={newmoney} setnewmoney={setnewmoney} setwrongitem={setwrongitem} setbuyerword={setbuyerword} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} setbuyerstatus={setbuyerstatus} setbecomemoney={setbecomemoney} countofitems={countofitems}/>
 
-        <Sidemenu showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} setproductiontitle={setproductiontitle} sidemenuRef={sidemenuRef} setstepscurrent={setstepscurrent}/>
+        <Sidemenu showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} setproductiontitle={setproductiontitle} sidemenuRef={sidemenuRef} setstepscurrent={setstepscurrent} />
 
     </main >)
 }

@@ -4,6 +4,15 @@ const User = {
     name: 'КровьЖонглерШоу',
     professionformulation: 'Я продаю представления жонглеров старикам за анализ их крови.',
     notes: [],
+    day: 0,
+    skills: {
+        productcreationspeed: { value: 42, level: 0, price: 50 },
+        priceagreementwinnings: { value: 1, level: 0, price: 60 },
+        bulletspeed: { value: 300, level: 0, price: 40 },
+        inventorymax: { value: 50, level: 0, price: 40 },
+        workersmax: { value: 7, level: 0, price: 30 },
+        invadersscale: { value: 1, level: 0, price: 40 }
+    },
     money: 2000,
     workers: [],
     invadersattemps: 0,
@@ -28,10 +37,13 @@ const User = {
     addnewworker(worker) {
         this.workers.push(worker)
     },
+    deletemyworker(worker) {
+        this.workers = this.workers.filter(v => worker.name != v.name)
+    },
     deletecurrentnote(note) {
-        const [title, price] = note; 
+        const [title, price] = note;
         console.log(title, price);
-        
+
         this.notes = this.notes.filter(v => v.title != title || v.price != price)
         console.log(this.notes, note);
 

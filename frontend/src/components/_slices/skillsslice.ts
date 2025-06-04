@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import setactiveCharacter from '../_modules/setactiveCharacter'
+
 
 export interface SkillInterface {
     value: number, level: number, price: number
@@ -53,6 +55,7 @@ export const SkillsState = createSlice({
                         state.invadersscale.value += .05
                         break;
                 }
+                setactiveCharacter('skills', state)
             }
         },
 

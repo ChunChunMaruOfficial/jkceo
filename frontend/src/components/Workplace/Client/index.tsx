@@ -16,7 +16,7 @@ import ok from '../../../assets/svg/maininterface/buyerreaction/ok.svg'
 import back from '../../../assets/svg/system/back.svg'
 import money from '../../../assets/svg/buyer/money.svg'
 
-export default function Client({ setispopupopen, seconds, setbuyerword, buyerword, setbuyerstatus, buyerstatus, setbuyertime, buyertime, daysorder, wrongitem, becomemoney, setbecomemoney, newmoney, setnewmoney, isshield, setisshield }: { setispopupopen: React.Dispatch<React.SetStateAction<number>>, seconds: number, setbuyerword: React.Dispatch<React.SetStateAction<string>>, buyerword: string, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, buyerstatus: boolean | null, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, wrongitem: string, becomemoney: boolean, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>,isshield: boolean, setisshield: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function Client({ setispopupopen, seconds, setbuyerword, buyerword, setbuyerstatus, buyerstatus, setbuyertime, buyertime, daysorder, wrongitem, becomemoney, setbecomemoney, newmoney, setnewmoney, isshield, setisshield }: { setispopupopen: React.Dispatch<React.SetStateAction<number>>, seconds: number, setbuyerword: React.Dispatch<React.SetStateAction<string>>, buyerword: string, setbuyerstatus: React.Dispatch<React.SetStateAction<boolean | null>>, buyerstatus: boolean | null, setbuyertime: React.Dispatch<React.SetStateAction<number>>, buyertime: number, daysorder: React.MutableRefObject<{ time: number; text: string; done: boolean }[] | null>, wrongitem: string, becomemoney: boolean, setbecomemoney: React.Dispatch<React.SetStateAction<boolean>>, newmoney: number, setnewmoney: React.Dispatch<React.SetStateAction<number>>, isshield: boolean, setisshield: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const dispatch = useDispatch()
     const talksoundRef = useRef<HTMLAudioElement>(null)
@@ -77,6 +77,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
             setbuyertime(bt => {
                 bt == 0 && clearInterval(buyertimeInterval);
                 if (bt < 1.5 && bt != 0) {
+                    setispopupopen(0)
                     clearInterval(buyertimeInterval);
                     clientissatisfied(false, setbuyerword, setbuyertime, setispopupopen, setbuyerstatus, daysorder, buyerlucky, buyerrefusal, noanswer, buyertime);
                     return 0
