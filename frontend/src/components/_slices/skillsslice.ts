@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import setactiveCharacter from '../_modules/setactiveCharacter'
+import axios from 'axios'
 
 
 export interface SkillInterface {
@@ -29,7 +30,7 @@ export const SkillsState = createSlice({
     initialState,
     reducers: {
 
-        upgradeskill: (state, action: PayloadAction<string>) => {
+        upgradeskill: (state, action: PayloadAction<keyof SkillsState>) => {
             const key = action.payload as keyof SkillsState;
             if (state[key].level < 6) {
                 state[key].level += 1
@@ -55,6 +56,7 @@ export const SkillsState = createSlice({
                         state.invadersscale.value += .05
                         break;
                 }
+                axios.post('http://localhost:3001/updateskill', { skill: action.payload, value: state[action.payload] })
                 setactiveCharacter('skills', state)
             }
         },

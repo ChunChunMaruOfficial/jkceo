@@ -4,9 +4,8 @@ import { RootState } from '../../mainstore';
 import { useMemo } from 'react';
 
 export default function Statistic() {
-    const productionArray: number[] = useSelector((state: RootState) => state.base.productionArray);
     
-    // Use useMemo to calculate the max value only when productionArray changes
+    const productionArray: number[] = useSelector((state: RootState) => state.base.productionArray);
     const productionmax = useMemo(() => {
         let max = 0;
         productionArray.forEach(v => {

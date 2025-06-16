@@ -14,7 +14,7 @@ import Inventory from './Inventory';
 import logcabin from '../../assets/svg/maininterface/logcabin.svg'
 
 
-export default function Workplace({ showsidemenu, setshowsidemenu, seconds, setsleeping }: { showsidemenu: number, setshowsidemenu: React.Dispatch<React.SetStateAction<number>>, seconds: number, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function Workplace({ isspeedup, setisspeedup, showsidemenu, setshowsidemenu, seconds, setsleeping }: { isspeedup: boolean, setisspeedup: React.Dispatch<React.SetStateAction<boolean>>, showsidemenu: number, setshowsidemenu: React.Dispatch<React.SetStateAction<number>>, seconds: number, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
 
     const daysorder = useRef<{ time: number, text: string, done: boolean }[]>(null)
 
@@ -80,7 +80,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
     }}>
 
         <div>
-            <Clock seconds={seconds} setsleeping={setsleeping} setisshield={setisshield} />
+            <Clock isspeedup={isspeedup} setisspeedup={setisspeedup} seconds={seconds} setsleeping={setsleeping} setisshield={setisshield} />
             <Workers seconds={seconds} productionselect={productionselect} currentworker={currentworker} setcurrentworker={setcurrentworker} />
 
             {/* ------------------------------ SCREEN BUTTONS ------------------------------ */}
@@ -117,7 +117,7 @@ export default function Workplace({ showsidemenu, setshowsidemenu, seconds, sets
 
         {/* ------------------------------ INVENTORY ------------------------------ */}
 
-        <Inventory ispopupopen={ispopupopen} setispopupopen={setispopupopen} newmoney={newmoney} setnewmoney={setnewmoney} setwrongitem={setwrongitem} setbuyerword={setbuyerword} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} setbuyerstatus={setbuyerstatus} setbecomemoney={setbecomemoney} countofitems={countofitems}/>
+        <Inventory ispopupopen={ispopupopen} setispopupopen={setispopupopen} newmoney={newmoney} setnewmoney={setnewmoney} setwrongitem={setwrongitem} setbuyerword={setbuyerword} setbuyertime={setbuyertime} buyertime={buyertime} daysorder={daysorder} setbuyerstatus={setbuyerstatus} setbecomemoney={setbecomemoney} countofitems={countofitems} />
 
         <Sidemenu showsidemenu={showsidemenu} setshowsidemenu={setshowsidemenu} setproductiontitle={setproductiontitle} sidemenuRef={sidemenuRef} setstepscurrent={setstepscurrent} />
 

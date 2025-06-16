@@ -68,6 +68,7 @@ export default function AntiqueInvaders() {
             setmaintimer((mt) => {
                 if (mt < 2) { clearInterval(bulletsInterval) } return mt
             })
+            console.log('newbullet');
 
             setTimeout(() => {
                 newbullet.style.top = '-20px'
@@ -121,6 +122,12 @@ export default function AntiqueInvaders() {
 
 
     useEffect(() => {
+
+        axios.get('http://localhost:3001/getinvaders').then((res) => {
+            hates.current = res.data.hate
+            prides.current = res.data.pride
+        });
+
         parentwidth = parentRef.current!.getBoundingClientRect().width
         parentheight = parentRef.current!.getBoundingClientRect().height + 200 //+200!!!!!!!!!!!!
 
@@ -134,11 +141,6 @@ export default function AntiqueInvaders() {
             planeRef.current.style.left = `${(parentwidth / 2) - 50}px`
             planeRef.current.style.top = `${(parentheight / 2)}px`
         }
-
-        axios.get('http://localhost:3001/getinvaders').then((res) => {
-            hates.current = res.data.hate
-            prides.current = res.data.pride
-        });
 
     }, [])
 

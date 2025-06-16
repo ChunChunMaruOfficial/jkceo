@@ -1,3 +1,5 @@
+@use '../mixin.scss' as mixin;
+
 .parent {
     width: 100%;
     height: 100%;
@@ -31,7 +33,7 @@
         border-radius: 15px;
         outline: none;
         color: var(--system-white);
-        transition: border-color 0.3s; 
+        transition: border-color 0.3s;
         background-color: var(--body-color);
         position: absolute;
         left: 50%;
@@ -40,11 +42,25 @@
         z-index: 2;
     }
 
-    >.close{
+    >.close {
         position: absolute;
         right: 20px;
         top: 20px;
         height: 5em;
         cursor: pointer;
+    }
+
+    >span {
+        width: fit-content;
+        z-index: -1;
+        color: var(--system-white);
+        opacity: .3;
+        font-size: 24px;
+        @include mixin.flex(center, center, column);
+        margin: 90px auto;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
     }
 }

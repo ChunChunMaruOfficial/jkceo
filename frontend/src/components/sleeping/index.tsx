@@ -10,9 +10,7 @@ import { setmoney, newday } from '../_slices/baseslice'
 import { updateannouncements } from '../_slices/personsslice'
 import { RootState } from '../mainstore'
 import { AnnouncementsInterface } from '../_Interfaces/AnnouncementsInterface'
-
-
-
+import axios from 'axios'
 
 export default function Sleeping({ hour, sethour, setsleeping }: { hour: number, sethour: React.Dispatch<React.SetStateAction<number>>, setsleeping: React.Dispatch<React.SetStateAction<boolean>> }) {
     const dispatch = useDispatch()
@@ -20,6 +18,7 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
     const announcements: AnnouncementsInterface[] = useSelector((state: RootState) => state.persons.announcements);
     const workers: workerInterface[] = useSelector((state: RootState) => state.base.workersarray);
     const money: number = useSelector((state: RootState) => state.base.money);
+    const day: number = useSelector((state: RootState) => state.base.day);
 
     let sum = 0
     workers.map((v) => sum += v.income)
@@ -36,14 +35,12 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
         }, cooldown)
         dispatch(newday())
         money - sum < 0 ? settext(`Рабочим выплачена зарплата в размере ${renderCoins(sum)}`) : settext(`у вас не хватило денег для зарплаты рабочим..`)
-        dispatch(setmoney(money - sum))
+        dispatch(setmoney([money - sum, false]))
+        axios.post('http://localhost:3001/setday', { day: day + 1 })
         const newannouncements = announcements.map(v => ({ ...v, date: v.date - 1 })).filter(v => v.date > 0)
         dispatch(updateannouncements(newannouncements))
 
     }, [])
-
-
-
 
     return (
         <div className={hour == 6 ? styles.parent + ' ' + styles.hide : styles.parent}>

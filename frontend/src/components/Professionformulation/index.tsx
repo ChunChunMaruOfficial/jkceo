@@ -11,6 +11,8 @@ import accept from '../../assets/svg/system/accept.svg'
 import loading from '../../assets/svg/system/loading.svg'
 import { addnewnote } from '../_slices/baseslice';
 import { NoteInterface } from '../_Interfaces/NoteInterface';
+
+
 export default function Professionformulation() {
     const navigate = useNavigate()
     const dispatch = useDispatch()

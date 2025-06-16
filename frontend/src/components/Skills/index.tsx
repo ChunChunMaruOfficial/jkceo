@@ -38,7 +38,7 @@ export default function Skills() {
     const upgrading = (v: any, i: number) => {
         if (money - SkillsItems[i].price > 0) {
             dispatch(upgradeskill(v.name))
-            dispatch(setmoney(money - SkillsItems[i].price))
+            dispatch(setmoney([money - SkillsItems[i].price, false]))
         } else {
             setnotenough(true)
             setTimeout(() => setnotenough(false), 3000)

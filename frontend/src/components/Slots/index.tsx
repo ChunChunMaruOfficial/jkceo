@@ -42,7 +42,7 @@ export default function Slots() {
     const pos = useRef({ y: 0, top: 0 })
 
     const fatesaccept = () => {
-        dispatch(setmoney(silvercoins))
+        dispatch(setmoney([silvercoins, false]))
         dispatch(setprofessionformulation(serveranswer))
         setactiveCharacter('professionformulation', serveranswer)
     }

@@ -33,6 +33,10 @@ const pride = require('../data/invaders/pride.json')
 function GETmethod(req, res) {
   switch (req.path) {
 
+    case '/getstartstates':
+      res.json({ inventory: User.inventory, day: User.day, productionArray: User.productionArray, seconds: User.time, skills: User.skills, money: User.money  })
+      break;
+
     /*---------------- Mistral ----------------*/
     case '/getexamplename':
       getMistral(promts.examplename, User.professionformulation, res)
@@ -51,25 +55,37 @@ function GETmethod(req, res) {
     case '/getnotes':
       res.json({ notes: User.notes })
       break;
-    case '/getdays':
-      res.json({ notes: User.day })
+
+    case '/getday':
+      res.json({ day: User.day })
       break;
+
     case '/getskills':
-      console.log(skills);
-      
-      res.json({ notes: User.skills })
+      res.json({ skills: User.skills })
       break;
+
     case '/getmoney':
       res.json({ money: User.money })
       break;
+
+    case '/gettime':
+      res.json({ seconds: User.time })
+      break;
+
     case '/getinventory':
       res.json({ inventory: User.inventory })
       break;
+
     case '/getprofessionformulation':
       res.json({ answer: User.professionformulation })
       break;
+
     case '/getmyworkers':
       res.json({ workers: User.workers })
+      break;
+
+    case '/getproductionArray':
+      res.json({ productionArray: User.productionArray })
       break;
 
     /*---------------- JSON ----------------*/

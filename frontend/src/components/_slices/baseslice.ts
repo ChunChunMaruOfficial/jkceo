@@ -44,16 +44,21 @@ export const BaseSlice = createSlice({
             state.day++
             setactiveCharacter('day', state.day)
         },
-        setdays: (state, action) => {
+        setday: (state, action) => {
             state.day = action.payload
         },
         setprofessionformulation: (state, action) => { //формулировка профессии
             state.professionformulation = action.payload
         },
         setmoney: (state, action) => {
-            state.money = action.payload
-            axios.post('http://localhost:3001/setmoney', { money: action.payload })
-            setactiveCharacter('money', action.payload)
+            const [money, fromserver]: [number, boolean] = action.payload;
+            console.log(money);
+            
+            state.money = money
+            if (!fromserver) {
+                axios.post('http://localhost:3001/setmoney', { money: money })
+                setactiveCharacter('money', money)
+            }
         },
         setname: (state, action) => {
             state.name = action.payload
@@ -117,6 +122,9 @@ export const BaseSlice = createSlice({
         setinventory: (state, action): void => {
             state.inventory = action.payload
         },
+        setproductionArray: (state, action): void => {
+            state.productionArray = action.payload
+        },
         removefrominventory: (state, action) => {
             const itemName = action.payload;
             // Находим индекс элемента
@@ -145,7 +153,7 @@ export const BaseSlice = createSlice({
     },
 })
 
-export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct, setinventory, deletemyworker,setdays } = BaseSlice.actions //все методы сюда импортировать:3
+export const { newday, setmoney, setprofessionformulation, setname, addnewnote, deletecurrentnote, addworker, upgradestatistic, setproduction, addtoinventory, updaterumorsstatus, removefrominventory, setmainproduct, setinventory, deletemyworker, setday,setproductionArray } = BaseSlice.actions //все методы сюда импортировать:3
 
 export default BaseSlice.reducer
 

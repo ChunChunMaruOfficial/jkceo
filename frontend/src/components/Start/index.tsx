@@ -8,7 +8,7 @@ import table from '../../assets/svg/start/table.svg'
 import mainlogo from '../../assets/svg/system/mainlogo.svg'
 import entersound from '../../assets/sounds/enter.wav'
 import talksound from '../../assets/sounds/talk.wav'
- 
+
 import UserInterface from '../_Interfaces/UserInterface'
 import UserClass from '../_Classes/UserClass'
 
@@ -47,8 +47,11 @@ export default function Start() {
 
         users.current = JSON.parse(localStorage.getItem('users')!)
         const olduser = users.current.find((v: UserInterface) => v.key == Keytext)
-        if (olduser) { entry(olduser); setisanewmember(false); } else {
-            setisanewmember(true)
+        if (olduser) {
+            entry(olduser); setisanewmember(false)
+        } else {
+            setisanewmember(true); generatebuyerword(newpersonbefore.current[getRandom(0, newpersonbefore.current.length - 1)], sethellowords)
+
         }
     }
 
@@ -89,9 +92,7 @@ export default function Start() {
     }, [hellowords]);
 
     useEffect(() => {
-        if (isanewmember == true) {
-            generatebuyerword(newpersonbefore.current[getRandom(0, newpersonbefore.current.length - 1)], sethellowords)
-        } else if (isanewmember == false) {
+        if (isanewmember == false) {
             generatebuyerword('хотите ли вы выбрать ваше призвание заново?', sethellowords)
         }
 
@@ -111,7 +112,12 @@ export default function Start() {
                 </div>
                 <div className={styles.window}>
                     <div className={styles.inputgroup} data-hint={`От 4х символов`}>
-                        <input type="text" value={Keytext} onChange={(e) => { setKeytext(e.target.value), setbuttonstatus(e.target.value == '' ? 0 : 1) }} className={styles.inputfield} id="password" placeholder=' ' />
+                        <input type="text" onKeyDown={(e) => {
+                            if (buttonstatus != -1 && e.key === 'Enter') {
+                                checkverification()
+                            }
+                        }
+                        } value={Keytext} onChange={(e) => { setKeytext(e.target.value), setbuttonstatus(e.target.value == '' ? 0 : 1) }} className={styles.inputfield} id="password" placeholder=' ' />
                         <label htmlFor="password" className={styles.inputlabel}>Кодовое слово для входа</label>
                     </div>
 

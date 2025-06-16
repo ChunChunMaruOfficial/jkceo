@@ -106,11 +106,13 @@
 
 
                     &:nth-of-type(2) {
-
-
                         background-color: var(--soft-green);
                         color: var(--system-white);
                         border-radius: 10px;
+
+                        >p{
+                            text-wrap: nowrap;
+                        }
                     }
 
                     >p {

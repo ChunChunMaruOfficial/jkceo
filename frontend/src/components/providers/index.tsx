@@ -70,7 +70,7 @@ export default function Provider() {
             setdealeranswer('вы столько не унесете!')
         } else
             if ((money - price) > 0) {
-                dispatch(setmoney(money - price))
+                dispatch(setmoney([money - price, false]))
                 setdealeranswer(answer)
                 materials.map((v) => {
                     for (let i = 0; i < v.count; i++) {
@@ -157,7 +157,8 @@ export default function Provider() {
                         </div>
                         <button onClick={() => {
                             setmaxprice(v.price); setispopupopen(true);
-                            setcurrentannouncement(i); setanswers(getRandoms())
+                            setcurrentannouncement(i); setanswers(getRandoms());
+                            setinputvalue(v.price - 5)
                         }}>Ознакомится с ценой</button>
                     </div>
                 ))}

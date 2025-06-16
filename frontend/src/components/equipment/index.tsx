@@ -64,7 +64,7 @@ export default function Equipment() {
 
     const upgradestat = (i: number) => {
         if (money > statistics[i].price) {
-            dispatch(setmoney(money - statistics[i].price))
+            dispatch(setmoney([money - statistics[i].price, false ]))
             dispatch(upgradestatistic([workerindex, characteristic[i]]))
         } else {
             setnotenough(true)

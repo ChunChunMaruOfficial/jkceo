@@ -1,74 +1,99 @@
-            #clockplace {
+@use '../../mixin.scss' as mixin;
+
+#clockplace {
+    position: absolute;
+    left: -50px;
+    bottom: -140px;
+    border: none;
+
+    >.clock {
+        background-color: var(--soft-orange);
+        border-radius: 20px;
+        border: none;
+        padding: 10px;
+        height: fit-content;
+        position: relative;
+        z-index: 1;
+        transform: translateY(125%);
+
+        >.clockdisplay {
+            border-radius: 10px;
+            border: 6px solid var(--strong-orange);
+            background-color: var(--soft-pink);
+            padding: 10px;
+            position: relative;
+
+            >p {
                 position: absolute;
-                left: -50px;
-                bottom: -140px;
-                border: none;
-                >.clock {
-                    background-color: var(--soft-orange);
-                    border-radius: 20px;
-                    border: none;
-                    padding: 10px;
-                    height: fit-content;
-                    position: relative;
-                    z-index: 1;
-                    transform: translateY(125%);
+                color: var(--strong-green);
 
-                    >.clockdisplay {
-                        border-radius: 10px;
-                        border: 6px solid var(--strong-orange);
-                        background-color: var(--soft-pink);
-                        padding: 10px;
-                        position: relative;
+                &:nth-of-type(2) {
+                    top: 45px;
+                }
+            }
 
-                        >p {
-                            position: absolute;
-                            color: var(--strong-green); 
+            >h1 {
+                margin-inline: 30px;
+                color: var(--strong-green);
+            }
 
-                            &:nth-of-type(2) {
-                                top: 45px;
-                            }
-                        }
+            >.speedup {
+                @include mixin.flex(center, center, row);
+                position: absolute;
+                right: 0;
+                top: 5px;
+                cursor: pointer;
+                transition: .3s ease-in-out;
 
-                        >h1 {
-                            margin-inline: 30px 15px;
-                            color: var(--strong-green);
-                        }
-                    }
-
-                    >.button {
-                        position: absolute;
-                        width: 50%;
-                        z-index: -1;
-                        height: 15px;
-                        left: 50%;
-                        transform: translate(-50%, -150%);
-                        background-color: var(--strong-orange);
-                        border-radius: 10px 10px 0 0;
-                        transition: .1s ease-in-out;
-                        cursor: pointer;
-
-                        &:active {
-                            height: 12px;
-                        }
-                    }
-
-                    >span {
-                        position: absolute;
-                        right: -200px;
-                        top: -50px;
-
-                        >img {
-                            height: 12em;
-                        }
-
-                        >p {
-                            font-size: 20px;
-                            transform: translate(55px, -118px);
-                        }
-                    }
+                &:hover {
+                    scale: 1.1;
                 }
 
                 >img {
-                    height: 25em;
+                    height: 2em;
+
+                    &.isup {
+                        transform: translateX(25px);
+                    }
                 }
             }
+        }
+
+        >.button {
+            position: absolute;
+            width: 50%;
+            z-index: -1;
+            height: 15px;
+            left: 50%;
+            transform: translate(-50%, -150%);
+            background-color: var(--strong-orange);
+            border-radius: 10px 10px 0 0;
+            transition: .1s ease-in-out;
+            cursor: pointer;
+
+            &:active {
+                height: 12px;
+            }
+        }
+
+        >span {
+            position: absolute;
+            right: -200px;
+            top: -50px;
+
+            >img {
+                height: 12em;
+            }
+
+            >p {
+                font-size: 20px;
+                transform: translate(55px, -118px);
+            }
+        }
+
+    }
+
+    >img {
+        height: 25em;
+    }
+}

@@ -3,6 +3,8 @@ const User = {
     professionformulation: 'Я продаю представления жонглеров старикам за анализ их крови.',
     notes: [],
     day: 0,
+    rumors: 2.5,
+    time: 360,
     skills: {
         productcreationspeed: { value: 42, level: 0, price: 50 },
         priceagreementwinnings: { value: 1, level: 0, price: 60 },
@@ -19,6 +21,18 @@ const User = {
 
     setmoney(money) {
         this.money = money
+    },
+    setrumors(rumors) {
+        this.rumors = rumors
+    },
+    settime(time){
+        this.time = time
+    },
+    setday(day){
+        this.day = day
+    },
+    updateskill(skill, value){
+        this.skills[skill] = value
     },
 
     setname(name) {

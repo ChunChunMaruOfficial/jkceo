@@ -9,9 +9,11 @@ import { SkillsState } from "../_slices/skillsslice";
 export default class UserClass implements UserInterface {
     key: string;
     name: string;
+    time: number;
     invadersattemps: number;
     day: number;
     skills: SkillsState;
+    rumors: number;
     professionformulation: '';
     notes: NoteInterface[];
     money: number;
@@ -20,9 +22,11 @@ export default class UserClass implements UserInterface {
     productionArray: [];
 
     constructor(key: string) {
+        this.time = 360
         this.key = key;
         this.name = '';
         this.day = 0;
+        this.rumors = 2.5;
         this.skills = {
             productcreationspeed: { value: 42, level: 0, price: 50 },
             priceagreementwinnings: { value: 1, level: 0, price: 60 },

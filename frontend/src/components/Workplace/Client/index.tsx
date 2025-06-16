@@ -42,7 +42,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
     }, [])
 
     useEffect(() => {
-        if (talksoundRef.current) {
+        if (buyerword.length > 0 && talksoundRef.current) {
             talksoundRef.current.play().catch(e => console.log("Audio play failed:", e));
         }
     }, [buyerword]);
@@ -61,7 +61,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
 
     useEffect(() => {
         becomemoney == true && setTimeout(() => {
-            dispatch(setmoney(mymoney + newmoney))
+            dispatch(setmoney([mymoney + newmoney, false]))
             setbecomemoney(false)
             setnewmoney(0)
         }, 4000)
@@ -116,7 +116,7 @@ export default function Client({ setispopupopen, seconds, setbuyerword, buyerwor
             </div>
             <div className={styles.time} style={{ background: buyertime > 0 ? `linear-gradient(to right, #CB997E ${buyertime}%, rgba(255, 0, 0, 0) 10%)` : 'none' }}></div>
             <div className={styles.client}>
-                <audio ref={talksoundRef} src={talksound} autoPlay></audio>
+                <audio ref={talksoundRef} src={talksound}></audio>
                 <p>{buyerword}</p>
                 <div>
                     {buyerword && (<img className={buyerstatus == null ? (styles.clientimg + ' ' + styles.clientscomming) : (buyerstatus == true ? (styles.clientimg + ' ' + styles.clientsatisfied) : (styles.clientimg + ' ' + styles.clientdissatisfied))} src={`../src/assets/svg/workers${buyerpfp}.svg`} alt="" />)}
