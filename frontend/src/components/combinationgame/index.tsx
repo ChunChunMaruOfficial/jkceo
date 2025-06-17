@@ -143,7 +143,7 @@ export default function CombinationGame({ steps, setstepscurrent, title, countof
 
     return (
         <div ref={parentRef} className={styles.parent}>
-            <span>{steps.map((v,i) => (<p style={{textDecoration: stepnumber == (i + 1) ? 'line-through' : '' }}>{v}</p>))}</span>
+            <span>{steps.map((v,i) => (<p key={i} style={{textDecoration: stepnumber >= (i + 1) ? 'line-through' : '' }}>{v}</p>))}</span>
             <h2 style={{ top: ismistake ? '10px' : '-60px' }}>{ismistake}</h2>
             <img src={close} onClick={() => { setstepscurrent([]) }} className={styles.close} alt="" />
             {componentsarray.map((v, i) => (

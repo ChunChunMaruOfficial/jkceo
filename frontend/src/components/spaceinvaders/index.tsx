@@ -8,7 +8,7 @@ import styles from './style.module.scss'
 import { useEffect, useRef, useState } from 'react'
 import { RootState } from '../mainstore'
 import { useSelector } from 'react-redux'
-
+import { Link } from 'react-router-dom'
 
 export default function AntiqueInvaders() {
 
@@ -167,7 +167,7 @@ export default function AntiqueInvaders() {
                 <section className={styles.popup}><h1><img src={stop} alt="" />На сегодня все!<img src={stop} alt="" /></h1>
                     <hr />
                     <h2>Вы набрали: &nbsp; <h3> {rate}</h3><img src={star} alt="" /></h2>
-                    <button>Вернуться домой</button>
+                    <Link to={'../current/workplace'}><button>Вернуться домой</button></Link>
                     <h5>Этот результат изменит слухи о вас</h5>
                 </section>
             </section>)}

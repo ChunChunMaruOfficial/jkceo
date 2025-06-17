@@ -12,7 +12,7 @@ import { addtoinventory, setmoney, updaterumorsstatus } from '../_slices/basesli
 import renderCoins from '../_modules/renderCoins'
 import setactiveCharacter from '../_modules/setactiveCharacter'
 import shrug from '../../assets/svg/providers/shrug.svg'
-
+import { setoffers, setagreement, setprovidersrefusal, setdeal, setbreakdeal, setconcessions, setnotenoughmoney } from '../_slices/phraseslice'
 export default function Provider() {
     const dispatch = useDispatch()
     const popupRef = useRef<HTMLDivElement>(null)
@@ -24,6 +24,16 @@ export default function Provider() {
     const inventorymax = useSelector((state: RootState) => state.skills.inventorymax);
     const priceagreementwinnings = useSelector((state: RootState) => state.skills.priceagreementwinnings);
 
+    const offers: string[] = useSelector((state: RootState) => state.phrase.offers);
+    const agreement: string[] = useSelector((state: RootState) => state.phrase.agreement);
+    const providersrefusal: string[] = useSelector((state: RootState) => state.phrase.providersrefusal);
+    const deal: string[] = useSelector((state: RootState) => state.phrase.deal);
+    const breakdeal: string[] = useSelector((state: RootState) => state.phrase.breakdeal);
+    const concessions: string[] = useSelector((state: RootState) => state.phrase.concessions);
+    const notenoughmoney: string[] = useSelector((state: RootState) => state.phrase.notenoughmoney);
+
+
+
     const getRandoms = () => {
         return [getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29), getRandom(0, 29)]
     }
@@ -34,18 +44,8 @@ export default function Provider() {
     const [currentannouncement, setcurrentannouncement] = useState<number>(0)
     const [ispopupopen, setispopupopen] = useState<boolean>(false)
     const [answers, setanswers] = useState<number[]>(getRandoms())
-
-    const [dealeranswer, setdealeranswer] = useState<string>('') //2 - положительный ответ, 1 - удовлетворительный, 0 - отказ
-
-    const [notenoughmoney, setnotenoughmoney] = useState<string[]>([]) // нет деняк
-
-    const [deal, setdeal] = useState<string[]>([]) // 2
-    const [concessions, setconcessions] = useState<string[]>([]) // 1
-    const [breakdeal, setbreakdeal] = useState<string[]>([]) // 0
     const [countofitems, setcountofitems] = useState<number>(0)
-    const [refusal, setrefusal] = useState<string[]>([])
-    const [agreement, setagreement] = useState<string[]>([])
-    const [offers, setoffers] = useState<string[]>([])
+    const [dealeranswer, setdealeranswer] = useState<string>('')
 
     useEffect(() => {
         setannouncements(announcementsslice)
@@ -57,6 +57,12 @@ export default function Provider() {
             sum += v.count
         })
         setcountofitems(sum)
+        console.log(inventory);
+        if (inventory.length > 0) {
+            axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
+            console.log(' updated!!!!');
+        }
+
     }, [inventory]);
 
 
@@ -77,8 +83,6 @@ export default function Provider() {
                         dispatch(addtoinventory([v.name.trim(), false]))
                     }
                 })
-                axios.post('http://localhost:3001/updateinventory', { inventory: inventory })
-                setactiveCharacter('inventory', inventory)
             } else setdealeranswer(notenoughmoney[answers[3]])
 
         setTimeout(() => {
@@ -119,13 +123,13 @@ export default function Provider() {
 
         axios.get('http://localhost:3001/getmessages')
             .then((res) => {
-                setoffers(res.data.offers)
-                setagreement(res.data.agreement)
-                setrefusal(res.data.refusal)
-                setdeal(res.data.deal)
-                setbreakdeal(res.data.breakdeal)
-                setconcessions(res.data.concessions)
-                setnotenoughmoney(res.data.notenoughmoney)
+                dispatch(setoffers(res.data.offers))
+                dispatch(setagreement(res.data.agreement))
+                dispatch(setprovidersrefusal(res.data.refusal))
+                dispatch(setdeal(res.data.deal))
+                dispatch(setbreakdeal(res.data.breakdeal))
+                dispatch(setconcessions(res.data.concessions))
+                dispatch(setnotenoughmoney(res.data.notenoughmoney))
             })
 
         announcementsslice.length == 0 ? axios.get('http://localhost:3001/getmaterialannouncement')
@@ -175,7 +179,7 @@ export default function Provider() {
 
                     <p onClick={() => bidding(announcements[currentannouncement].materials, inputvalue)}>Неа, возьму за <b>  {renderCoins(inputvalue)}</b></p>
 
-                    <p onClick={() => setispopupopen(false)}>{refusal[answers[2]]}</p>
+                    <p onClick={() => setispopupopen(false)}>{providersrefusal[answers[2]]}</p>
 
                     {dealeranswer == '' ? (<span>
                         <p>1</p>

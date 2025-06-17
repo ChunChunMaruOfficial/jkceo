@@ -28,7 +28,7 @@ function POSTmethod(req, res) {
             break;
         case '/setuserinfo':
             console.log(req.body.user.name);
-            
+
             User.setname(req.body.user.name)
             User.settime(req.body.user.time)
             User.setrumors(req.body.user.rumors)
@@ -39,7 +39,7 @@ function POSTmethod(req, res) {
             User.workers = req.body.user.workers
             User.invadersattemps = req.body.user.invadersattemps
             User.updateinventory(req.body.user.inventory)
-            User.setmoney(req.body.user.inventory)
+            User.setmoney(req.body.user.money)
             User.productionArray = req.body.user.productionArray
 
             break;
@@ -69,9 +69,14 @@ function POSTmethod(req, res) {
             break;
         case '/updateinventory':
             User.updateinventory(req.body.inventory)
+            console.log('INVENTORY: ', User.inventory);
+
             break;
         case '/removefrominventory':
             User.removefrominventory(req.body.item)
+            break;
+        case '/updateproductionArray':
+            User.updateproductionArray(req.body.day, req.body.value)
             break;
 
     }

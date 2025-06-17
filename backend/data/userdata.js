@@ -25,13 +25,14 @@ const User = {
     setrumors(rumors) {
         this.rumors = rumors
     },
-    settime(time){
+    settime(time) {
         this.time = time
     },
-    setday(day){
+    setday(day) { 
         this.day = day
+        console.log('DAY UPDATED: ', this.day);
     },
-    updateskill(skill, value){
+    updateskill(skill, value) {
         this.skills[skill] = value
     },
 
@@ -58,7 +59,9 @@ const User = {
 
         this.notes = this.notes.filter(v => v.title != title || v.price != price)
         console.log(this.notes, note);
-
+    },
+    updateproductionArray(day, value) {
+        this.productionArray[day] = value
     },
     updateworkerstat(index, worker) { //потом можно оптимизировать на обновление определенной характеристики для экономии траффика
         this.workers[index] = worker

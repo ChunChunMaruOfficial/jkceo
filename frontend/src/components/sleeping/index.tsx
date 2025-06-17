@@ -36,7 +36,7 @@ export default function Sleeping({ hour, sethour, setsleeping }: { hour: number,
         dispatch(newday())
         money - sum < 0 ? settext(`Рабочим выплачена зарплата в размере ${renderCoins(sum)}`) : settext(`у вас не хватило денег для зарплаты рабочим..`)
         dispatch(setmoney([money - sum, false]))
-        axios.post('http://localhost:3001/setday', { day: day + 1 })
+        axios.post('http://localhost:3001/setday', { day: day + 1 }) 
         const newannouncements = announcements.map(v => ({ ...v, date: v.date - 1 })).filter(v => v.date > 0)
         dispatch(updateannouncements(newannouncements))
 

@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import Professionformulation from '../Professionformulation';
 import { useEffect, useRef, useState } from 'react';
-
+import setactiveCharacter from '../_modules/setactiveCharacter';
 import skills from '../../assets/svg/maininterface/skills.svg'
 import provider from '../../assets/svg/maininterface/provider.svg'
 import rating from '../../assets/svg/maininterface/rating.svg'
@@ -47,12 +47,14 @@ export default function Mainscreen() {
     useEffect(() => {
         axios.get('http://localhost:3001/getstartstates')
             .then((res) => {
+                console.log(res.data.inventory);
+                
                 dispatch(setinventory(res.data.inventory));
                 dispatch(setday(res.data.day));
                 dispatch(setproductionArray(res.data.productionArray));
                 setseconds(res.data.seconds)
                 dispatch(setskills(res.data.skills));
-                dispatch(setmoney(res.data.money));
+                dispatch(setmoney([res.data.money, true]));
             });
     }, [])
 
@@ -69,6 +71,7 @@ export default function Mainscreen() {
             setseconds(sec => {
                 if (sec % 60 == 0) {
                     axios.post('http://localhost:3001/settime', { time: sec })
+                    setactiveCharacter('time', sec)
                 } return sec + 10
             })
 
