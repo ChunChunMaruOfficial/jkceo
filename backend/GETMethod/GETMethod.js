@@ -29,12 +29,13 @@ const choise = require('../data/slots/choise.json')
 
 const hate = require('../data/invaders/hating.json')
 const pride = require('../data/invaders/pride.json')
+const getRandom = require("./GETMethods/getRandom.js")
 
 function GETmethod(req, res) {
   switch (req.path) {
 
     case '/getstartstates':
-      res.json({ inventory: User.inventory, day: User.day, productionArray: User.productionArray, seconds: User.time, skills: User.skills, money: User.money  })
+      res.json({ inventory: User.inventory, day: User.day, productionArray: User.productionArray, seconds: User.time, skills: User.skills, money: User.money })
       break;
 
     /*---------------- Mistral ----------------*/
@@ -103,10 +104,10 @@ function GETmethod(req, res) {
       break;
 
     case '/getstart':
-      res.json({ newperson: newperson, ownerisback: ownerisback, newpersonbefore: newpersonbefore })
+      res.json({ newperson: newperson[getRandom(0, newperson.length)], ownerisback: ownerisback[getRandom(0, ownerisback.length)], newpersonbefore: newpersonbefore[getRandom(0, newpersonbefore.length)] })
       break;
     case '/getslots':
-      res.json({ fate: fate, choise: choise })
+      res.json({ fate: fate[getRandom(0, fate.length)], choise: choise[getRandom(0, choise.length)] })
       break;
     case '/getinvaders':
       res.json({ hate: hate, pride: pride })

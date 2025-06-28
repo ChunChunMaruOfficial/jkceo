@@ -12,8 +12,46 @@ import { Link } from 'react-router-dom'
 
 export default function AntiqueInvaders() {
 
+
+
+    useEffect(() => {
+
+        axios.get('http://localhost:3001/getinvaders').then((res) => {
+            hates.current = res.data.hate
+            prides.current = res.data.pride
+        });
+
+        parentwidth = parentRef.current!.getBoundingClientRect().width
+        parentheight = parentRef.current!.getBoundingClientRect().height + 200 //+200!!!!!!!!!!!!
+
+        const startInter = setInterval(() => {
+            setstarttimer(st => {
+                if (st < 2) { clearInterval(startInter); invadersRender(); checkCollision(); bulletsRender(); startmaininterval(); return 0 } else return st - 1
+            })
+        }, 1000)
+
+        if (planeRef.current) {
+            planeRef.current.style.left = `${(parentwidth / 2) - 50}px`
+            planeRef.current.style.top = `${(parentheight / 2)}px`
+        }
+
+    }, [])
+
     const planeRef = useRef<HTMLImageElement>(null)
     const parentRef = useRef<HTMLImageElement>(null)
+
+    const intervalsRef = useRef<{
+        invadersRender: ReturnType<typeof setInterval> | null;
+        bulletsRender: ReturnType<typeof setInterval> | null;
+        collisionCheck: ReturnType<typeof setInterval> | null;
+        mainTimer: ReturnType<typeof setInterval> | null;
+    }>({
+        invadersRender: null,
+        bulletsRender: null,
+        collisionCheck: null,
+        mainTimer: null
+    });
+
 
     const hates = useRef([])
     const prides = useRef([])
@@ -31,12 +69,12 @@ export default function AntiqueInvaders() {
     const [rate, setrate] = useState<number>(0)
 
     const invadersRender = () => {
-        const invadersRenderinterval = setInterval(() => {
+        intervalsRef.current.invadersRender = setInterval(() => {
             let invaders: any = []
             try {
                 invaders = Array.from(parentRef.current?.children as HTMLCollectionOf<HTMLParagraphElement>).filter(child => child.matches('p'))
             } catch {
-                clearInterval(invadersRenderinterval)
+                clearInterval(intervalsRef.current.invadersRender)
             }
             const lastinvader = invaders[invaders.length - 1]
 
@@ -50,10 +88,16 @@ export default function AntiqueInvaders() {
             setinvadersArray(invadersArray => [...invadersArray, { top: getRandom(-150, -100), left: getRandom(-100, parentRef.current ? (parentwidth - 200) : 300), good: isgoodinitial }])
 
             setmaintimer((mt) => {
-                if (mt < 2) { clearInterval(invadersRenderinterval) } return mt
+                if (mt < 2) { clearInterval(intervalsRef.current.invadersRender) } return mt
             })
         }, 800)
     }
+
+    useEffect(() => {
+        if (maintimer < 2) {
+            // Сохраните ID интервалов в ref и очистите их здесь
+        }
+    }, [maintimer]);
 
     const bulletsRender = () => {
         const bulletsInterval = setInterval(() => {
@@ -119,30 +163,6 @@ export default function AntiqueInvaders() {
             })
         }, 1000)
     }
-
-
-    useEffect(() => {
-
-        axios.get('http://localhost:3001/getinvaders').then((res) => {
-            hates.current = res.data.hate
-            prides.current = res.data.pride
-        });
-
-        parentwidth = parentRef.current!.getBoundingClientRect().width
-        parentheight = parentRef.current!.getBoundingClientRect().height + 200 //+200!!!!!!!!!!!!
-
-        const startInter = setInterval(() => {
-            setstarttimer(st => {
-                if (st < 2) { clearInterval(startInter); invadersRender(); checkCollision(); bulletsRender(); startmaininterval(); return 0 } else return st - 1
-            })
-        }, 1000)
-
-        if (planeRef.current) {
-            planeRef.current.style.left = `${(parentwidth / 2) - 50}px`
-            planeRef.current.style.top = `${(parentheight / 2)}px`
-        }
-
-    }, [])
 
     const grabbing = (e: unknown) => {
         if (!planeRef.current) return

@@ -32,8 +32,8 @@ export default function Slots() {
     const [serveranswer, setserveranswer] = useState<string>('')
 
     const [hellowords, sethellowords] = useState<string>('')
-    const fatewords = useRef([])
-    const choisewords = useRef([])
+    const fatewords = useRef<string>('')
+    const choisewords = useRef<string>('')
 
     const [attempts, setattempts] = useState<number>(0)
     const [winning, setwinning] = useState<string[]>()
@@ -65,7 +65,7 @@ export default function Slots() {
                 choisewords.current = (res.data.choise);
                 console.log(fatewords.current);
 
-                generatebuyerword(fatewords.current[getRandom(0, fatewords.current.length - 1)], sethellowords)
+                generatebuyerword(fatewords.current, sethellowords)
             })
 
 
@@ -79,7 +79,7 @@ export default function Slots() {
 
     useEffect(() => {
         if (winning?.length == 3) {
-            generatebuyerword(choisewords.current[getRandom(0, choisewords.current.length - 1)], sethellowords)
+            generatebuyerword(choisewords.current, sethellowords)
             axios.post('http://localhost:3001/getwinningtext', { promt: winning.join() })
                 .then((res) => {
                     setserveranswer(res.data.answer)
@@ -240,7 +240,7 @@ export default function Slots() {
                                 </div>
 
                                 <div className={styles.botomcenter}>
-                                    {[...Array(4)].map(() => (<p className={styles.microbolt}></p>))}
+                                    {[...Array(4)].map((_,i) => (<p key={i} className={styles.microbolt}></p>))}
                                     <div className={styles.botomcenter_front}>
                                         <p className={styles.textarea}>{typeof serveranswer == 'string' && serveranswer}</p>
                                     </div>
@@ -253,7 +253,7 @@ export default function Slots() {
                                     <span>Попытки</span>
                                     <span>{attempts}</span>
                                 </div>
-                                <div> {[...Array(4)].map((_, i) => (<p style={{ background: slotsspeed <= i ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
+                                <div> {[...Array(4)].map((_, i) => (<p key={i} style={{ background: slotsspeed <= i ? "#F0EFEB" : '#A5A58D' }} className={styles.microbolt}></p>))}</div>
                             </div>
                         </div>
                         <div className={styles.lever}>

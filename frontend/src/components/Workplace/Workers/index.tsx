@@ -110,7 +110,7 @@ export default function Workers({ seconds, productionselect, currentworker, setc
             Object.values(intervalsRef.current).forEach(clearInterval);
             intervalsRef.current = {}
         };
-    }, [workers, seconds, workerstatus, inventory])
+    }, [workers, workerstatus, inventory])
 
     const handleRestart = useCallback((id: number, coldown: number) => {
         setworkerstatus(ws => ws.map((v, i) => (i == id ? false : v)));

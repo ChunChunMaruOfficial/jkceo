@@ -25,9 +25,9 @@ export default function Start() {
     const [isanewmember, setisanewmember] = useState<boolean | null>(null)
     const [isinteracted, setisinteracted] = useState<boolean>(false)
 
-    const ownerisback = useRef([])
-    const newperson = useRef([])
-    const newpersonbefore = useRef([])
+    const ownerisback = useRef<string>('')
+    const newperson = useRef<string>('')
+    const newpersonbefore = useRef<string>('')
     const users = useRef<UserInterface[]>([])
 
     const entry = (user: UserInterface) => {
@@ -50,7 +50,7 @@ export default function Start() {
         if (olduser) {
             entry(olduser); setisanewmember(false)
         } else {
-            setisanewmember(true); generatebuyerword(newpersonbefore.current[getRandom(0, newpersonbefore.current.length - 1)], sethellowords)
+            setisanewmember(true); generatebuyerword(newpersonbefore.current, sethellowords)
 
         }
     }
@@ -69,12 +69,12 @@ export default function Start() {
 
     useEffect(() => {
         localStorage.setItem('activeuser', JSON.stringify({}))
-        axios.get('http://localhost:3001/getstart').then((res) => {
+        axios.get('http://localhost:3001/getstart').then((res) => { 
             ownerisback.current = res.data.ownerisback
             newperson.current = res.data.newperson
             newpersonbefore.current = res.data.newpersonbefore
             setTimeout(() => {
-                generatebuyerword(ownerisback.current[getRandom(0, ownerisback.current.length - 1)], sethellowords)
+                generatebuyerword(ownerisback.current, sethellowords)
             }, 3200)
         });
     }, [])
