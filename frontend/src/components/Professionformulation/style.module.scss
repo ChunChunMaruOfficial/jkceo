@@ -103,7 +103,7 @@ h2.hideelement {
                 border: 2px solid var(--soft-orange);
                 border-radius: 4px;
                 background-color: var(--body-color);
-                height: -webkit-fill-available;
+                height: fit-content;
                 padding: 8px;
 
                 >img {

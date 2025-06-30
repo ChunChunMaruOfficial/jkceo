@@ -284,7 +284,7 @@
                   >div:last-of-type {
                     position: absolute;
                     left: 50%;
-                    bottom: -12%;
+                    bottom: -16px;
                     transform: translateX(-70%);
                     @include mixin.flex(auto, auto, row, nowrap, 15px);
 
@@ -340,6 +340,7 @@
 
                       >.textarea {
                         margin: 10px;
+                        font-size: 20px;
                       }
                     }
 
@@ -383,7 +384,7 @@
                   }
 
                   >div {
-                     @include mixin.flex(auto, center, column, nowrap, 15px);
+                    @include mixin.flex(auto, center, column, nowrap, 15px);
 
                     >span {
                       border: 3px solid #242423;
@@ -413,7 +414,7 @@
                 background-color: var(--soft-pink);
 
                 >div {
-                  height: -webkit-fill-available;
+                  height: 100%;;
 
                   &:nth-of-type(2) {
                     width: 36px;
@@ -422,7 +423,7 @@
                     border-radius: 50px;
                     padding: 7px;
                     margin: 15px 20px;
-
+                    
 
 
                     >span {
@@ -432,6 +433,7 @@
                       height: -webkit-fill-available;
                       width: 30px;
                       background-color: var(--strong-orange);
+                      height: 98%;
 
                       >.circle {
                         left: 50%;

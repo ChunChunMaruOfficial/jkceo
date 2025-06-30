@@ -1,22 +1,22 @@
-const getMistral = require("./POSTMethods/getmistral")
+const getLLM = require("./POSTMethods/getLLM.js")
 const User = require('../data/userdata.js')
 const promts = require('../data/promts.json')
-
+ 
 
 function POSTmethod(req, res) {
     switch (req.path) {
         /*---------------- Mistral ----------------*/
         case '/getwinningtext':
-            getMistral(promts.emoji, req.body.promt, res)
+            getLLM(promts.emoji, req.body.promt, res)
             break;
         case '/getstory':
-            getMistral(promts.getstory, req.body.worker, res)
+            getLLM(promts.getstory, req.body.worker, res)
             break;
         case '/getorder':
-            getMistral(promts.getorder, req.body.count + ' таких фраз в одно предложение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
+            getLLM(promts.getorder, req.body.count + ' таких фраз в одно предложение, разделенных через точку, даже если стоит дркгой знак, поле него ты ставишь точку. описание моего дела: ' + User.professionformulation, res)
             break;
         case '/getmaterials':
-            getMistral(promts.getmaterials, req.body.product, res)
+            getLLM(promts.getmaterials, req.body.product, res)
             break;
 
         /*---------------- User ----------------*/

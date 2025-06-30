@@ -1,5 +1,5 @@
 const GetAllEmoji = require("./GETMethods/getemoji")
-const getMistral = require("../POSTMethod/POSTMethods/getmistral")
+const getLLM = require("../POSTMethod/POSTMethods/getLLM.js")
 
 const motivation = require('../data/race/motivation.json')
 const demotivation = require('../data/race/demotivation.json')
@@ -23,7 +23,7 @@ const noanswer = require('../data/buyer/noanswer.json')
 const newperson = require('../data/start/newperson.json')
 const ownerisback = require('../data/start/ownerisback.json')
 const newpersonbefore = require('../data/start/newpersonbefore.json')
-
+ 
 const fate = require('../data/slots/fate.json')
 const choise = require('../data/slots/choise.json')
 
@@ -38,18 +38,18 @@ function GETmethod(req, res) {
       res.json({ inventory: User.inventory, day: User.day, productionArray: User.productionArray, seconds: User.time, skills: User.skills, money: User.money })
       break;
 
-    /*---------------- Mistral ----------------*/
+    /*---------------- LLM ----------------*/
     case '/getexamplename':
-      getMistral(promts.examplename, User.professionformulation, res)
+      getLLM(promts.examplename, User.professionformulation, res)
       break;
     case '/getsteps':
-      getMistral(promts.steps, User.professionformulation, res)
+      getLLM(promts.steps, User.professionformulation, res)
       break;
     case '/getworkers':
-      getMistral(promts.getworkers, '', res)
+      getLLM(promts.getworkers, '', res)
       break;
     case '/getmaterialannouncement':
-      getMistral(promts.getmaterialannouncement, '', res)
+      getLLM(promts.getmaterialannouncement, '', res)
       break;
 
     /*---------------- User ----------------*/
